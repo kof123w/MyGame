@@ -14,17 +14,13 @@ namespace ET.Client
             root.AddComponent<UIComponent>();
             root.AddComponent<ResourcesLoaderComponent>();
             root.AddComponent<PlayerComponent>();
-            root.AddComponent<CurrentScenesComponent>();
-            root.AddComponent<ComputersComponent>();
+            root.AddComponent<CurrentScenesComponent>(); 
             
             // 根据配置修改掉Main Fiber的SceneType
             SceneType sceneType = EnumHelper.FromString<SceneType>(globalComponent.GlobalConfig.AppType.ToString());
             root.SceneType = sceneType;
             
-            await EventSystem.Instance.PublishAsync(root, new AppStartInitFinish());
-            /*EventSystem.Instance.Publish(root,new TestEventStruct(){TestValue = 10});
-            
-            Log.Debug("After TestEventStruct");*/
+            await EventSystem.Instance.PublishAsync(root, new AppStartInitFinish()); 
         }
     }
 }

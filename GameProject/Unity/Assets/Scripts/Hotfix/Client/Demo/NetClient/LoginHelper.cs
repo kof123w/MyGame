@@ -12,7 +12,7 @@ namespace ET.Client
 
             root.GetComponent<PlayerComponent>().MyId = playerId;
             
-            await EventSystem.Instance.PublishAsync(root, new LoginFinish());
+            //await EventSystem.Instance.PublishAsync(root, new LoginFinish());
         }
     }
 }

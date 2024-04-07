@@ -20,10 +20,6 @@
     {
     }
 
-    public struct LoginFinish
-    {
-    }
-
     public struct EnterMapFinish
     {
     }
@@ -33,8 +29,8 @@
         public Unit Unit;
     }
 
-    public struct TestEventStruct
+    public struct EnterSceneFinish
     {
-        public int TestValue;
+        
     }
 }

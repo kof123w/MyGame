@@ -13,7 +13,7 @@ namespace ET
         {
             Dictionary<string, Type> addTypes = AssemblyHelper.GetAssemblyTypes(assemblies);
             foreach ((string fullName, Type type) in addTypes)
-            {
+            { 
                 this.allTypes[fullName] = type;
                 
                 if (type.IsAbstract)
