@@ -66,9 +66,10 @@ namespace ET.Client
             self.MSelectPlayMode.SetActive(true);
         }
 
-        private static void EnterClick(this UITitleComponent self)
+        private static  void EnterClick(this UITitleComponent self)
         {
-            Log.Debug("离线进入游戏!");
+            Log.Debug("进入故事模式!");
+            EventSystem.Instance.Publish(self.Root(), new EnterScene());
         }
 
         private static void AllClose(this UITitleComponent self)

@@ -29,6 +29,11 @@
         public Unit Unit;
     }
 
+    public struct EnterScene
+    {
+        
+    }
+
     public struct EnterSceneFinish
     {
         
