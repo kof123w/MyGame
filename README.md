@@ -22,15 +22,6 @@ VI.ModelView、HotfixView与Model、Hotfix区别是表现层和逻辑层，Model
 VII.如实体或组件有数据字段声明必须编写相关生命周期函数，以防止实体对象池回收再利用导致逻辑错误
 
 
-# 游戏框架结构
-## 客户端树形结构
-World -> FiberManager -> Fiber -> Scene -> XXXCompoent -> Entity
-![image](https://github.com/kof123w/MyGame/assets/40864999/c0589e55-313d-4e77-add5-2267658ae5b1)
-
-## 服务器端树形结构
-World -> FiberManager->Fiber->Scene->ProcessOuterSender(业务组件)
-![image](https://github.com/kof123w/MyGame/assets/40864999/47996eb6-51ff-472e-9c56-82f76cd5200e)
-
 # Git代码
 [控制台下克隆、拉新、提交、发布](https://blog.csdn.net/m0_45234510/article/details/120181503)
 
