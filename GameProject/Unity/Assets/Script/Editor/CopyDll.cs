@@ -10,12 +10,27 @@ public static class CopyDll
     public static void MergeSprite()
     {
         HashSet<string> containDll = new HashSet<string>();
-        containDll.Add("Library/ScriptAssemblies\\Hotfix.dll");
-        containDll.Add("Library/ScriptAssemblies\\Hotfix.pdb");
-        containDll.Add("Library/ScriptAssemblies\\Core.dll");
-        containDll.Add("Library/ScriptAssemblies\\Core.pdb");
-        string path = "Library/ScriptAssemblies";
+        containDll.Add("Hotfix.dll");
+        containDll.Add("Hotfix.pdb");
+        containDll.Add("Core.dll");
+        containDll.Add("Core.pdb");
+        string path = "Temp\\Bin\\Debug\\Hotfix";
         string destinPath = "Assets\\AotDll";
+
+        if (Directory.Exists(destinPath))
+        {
+            string[] files = Directory.GetFiles(destinPath);
+            foreach (string file in files)
+            {
+                if (file.Contains(".meta"))
+                {
+                    continue;
+                }
+
+                File.Delete(file);
+            }
+        }
+
         if (Directory.Exists(path))
         {
             string[] files = Directory.GetFiles(path);
@@ -24,8 +39,9 @@ public static class CopyDll
                 string fileName = Path.GetFileName(file);
                 string destin = Path.Combine(destinPath);
                 if (containDll.Contains(fileName))
-                {
-                    File.Move(file,destin);
+                { 
+                    File.Copy(file,string.Format("{0}\\{1}",destinPath,fileName));
+                    Debug.Log("移动文件"+fileName);
                 }
             }
         }
