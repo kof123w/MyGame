@@ -1,5 +1,5 @@
 {
-    "name": "Hotfix",
+    "name": "Framework.Hotfix",
     "rootNamespace": "",
     "references": [
         "GUID:4c7d99ce0906d2f498c5253608a5e59a"

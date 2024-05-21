@@ -1,5 +1,5 @@
 {
-    "name": "Framework.Core",
+    "name": "Framework.Model",
     "rootNamespace": "",
     "references": [],
     "includePlatforms": [],
