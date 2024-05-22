@@ -18,7 +18,7 @@ class StartGame : UnitySingleton<StartGame>
         // todo
         
         //进入游戏 
-        Assembly hotUpdateAss = Assembly.Load(File.ReadAllBytes($"Library//ScriptAssemblies//Framework.Core.dll.bytes"));
+        Assembly hotUpdateAss = Assembly.Load(File.ReadAllBytes($"Assets\\StreamingAssets\\AotDll\\Framework.Core.dll"));
         var type = hotUpdateAss.GetType("GameLogic");
         type.GetMethod("HotTest").Invoke(null, null);
     }

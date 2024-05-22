@@ -6,6 +6,6 @@ public class GameLogic
 {
      public static void HotTest()
      {
-          Debug.Log("测试下热更新！我是热更新前的打印。");
+          Debug.Log("测试下热更新！我是热更新后的打印。");
      }
 }

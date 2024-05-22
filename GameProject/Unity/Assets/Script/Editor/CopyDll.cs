@@ -10,12 +10,12 @@ public static class CopyDll
     public static void MergeSprite()
     {
         HashSet<string> containDll = new HashSet<string>();
-        containDll.Add("Hotfix.dll");
-        containDll.Add("Hotfix.pdb");
-        containDll.Add("Core.dll");
-        containDll.Add("Core.pdb");
+        containDll.Add("Framework.Hotfix.dll");
+        containDll.Add("Framework.Hotfix.pdb");
+        containDll.Add("Framework.Core.dll");
+        containDll.Add("Framework.Core.pdb");
         string path = "Temp\\Bin\\Debug\\Hotfix";
-        string destinPath = "Assets\\AotDll";
+        string destinPath = "Assets\\StreamingAssets\\AotDll";
 
         if (Directory.Exists(destinPath))
         {
