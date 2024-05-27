@@ -1,4 +1,7 @@
+using System.Data;
 using System.IO;
+using System.Linq;
+using OfficeOpenXml;
 using UnityEditor;
 
 public static class ProcessExcel
@@ -18,7 +21,13 @@ public static class ProcessExcel
         
         //加载excel
         string testExcel = $"{excelPath}\\测试用配置.xlsx";
-        
-        
+        var fileInfo = new FileInfo(testExcel);
+        using (ExcelPackage pack = new ExcelPackage(fileInfo))
+        {
+            ExcelWorkbook workBook = pack.Workbook;
+            var currentWorksheet = workBook.Worksheets.First();
+            currentWorksheet.Workbook.CalcMode = ExcelCalcMode.Automatic; 
+            UnityEngine.Debug.Log(currentWorksheet.Cells["A1"].Value);
+        }
     } 
 }
