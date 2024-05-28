@@ -13,6 +13,7 @@ public static class ProcessExcel
     private const string excelPath = "F:\\GitHubProject\\MyGame\\Excel";
     private const string outPutPath = "Assets\\StreamingAssets\\Config";
     private const string excelIndex = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private const string voPath = "Assets\\Script\\Excel\\ConfigVO";
     
     [MenuItem("ProcessExcel/ReBuildConfig")]
     public static void RebuildConfig()
@@ -21,6 +22,9 @@ public static class ProcessExcel
         {
             Directory.CreateDirectory(outPutPath);
         }
+
+        //保持vo文件夹的干净
+        ClearVoFile();
 
         if (Directory.Exists(excelPath))
         {
@@ -35,10 +39,7 @@ public static class ProcessExcel
                 {
                     ExcelWorkbook workBook = pack.Workbook;
                     var currentWorksheet = workBook.Worksheets.First();
-                    currentWorksheet.Workbook.CalcMode = ExcelCalcMode.Automatic;
-                    //A2是表名
-                    string outPutFileName = currentWorksheet.Cells["B2"].Value as string;
-
+                    currentWorksheet.Workbook.CalcMode = ExcelCalcMode.Automatic; 
                     //获取这张表最大的列索引
                     int maxRow = 0;
                     int row = 1;
@@ -51,11 +52,13 @@ public static class ProcessExcel
                         str = currentWorksheet.Cells[$"{indexStr}4"].Value as string; 
                     }
                     maxRow = row - 1;
-                     
+                    
+                    //A2是表名
+                    string outPutFileName = currentWorksheet.Cells["B2"].Value as string;
 
                     //生成配置VO模板
                     // todo
-
+                   // GenVoClass(currentWorksheet,maxRow);
 
                     //生成配置单例模板
                     // todo
@@ -92,5 +95,34 @@ public static class ProcessExcel
         } while (isCon);
 
         return str;
+    }
+
+    private static void ClearVoFile()
+    {
+        if (Directory.Exists(voPath))
+        {
+            string[] voFiles = Directory.GetFiles(voPath);
+            foreach (string voFile in voFiles)
+            { 
+                if (voFile.Contains(".meta"))
+                {
+                    continue;
+                }
+                File.Delete(voFile);
+            }
+        }
+    }
+
+    //生成vo class
+    private static void GenVoClass(ExcelWorksheet worksheet,int maxRow,string tableName)
+    {
+        
+        string fileName = $"{voPath}\\{tableName}.cs";
+        if (!File.Exists(fileName))
+        {
+            File.Exists(fileName);
+        }
+        
+        
     }
 }
