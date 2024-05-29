@@ -1,7 +1,9 @@
 {
     "name": "Framework.Excel",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "GUID:78ee34f1f9e014e4c935ab07fe09726e"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

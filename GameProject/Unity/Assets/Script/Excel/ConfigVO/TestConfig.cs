@@ -1,8 +1,8 @@
-namespace MyNamespace
+namespace Config
 {
   class TestConfig
    {
-    public int ID  {get;set;}
-    public string Name  {get;set;}
+    public int ID  {get;set;} //ID
+    public string Name  {get;set;} //名字
    }
 }
