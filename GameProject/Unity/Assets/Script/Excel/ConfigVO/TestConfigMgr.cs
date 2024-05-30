@@ -7,7 +7,7 @@ namespace Config
              private  Dictionary<int,TestConfig> m_dict = new Dictionary<int,TestConfig>();
              public TestConfigMgr()
               {
-                      using (StreamReader sr = new StreamReader(Assets\Script\Excel\ConfigVO\TestConfigMgr.cs))
+                      using (StreamReader sr = new StreamReader("Assets\\StreamingAssets\\Config\\TestConfig.bin"))
                       {
                               while (sr.Peek() >= 0)
                               {
@@ -18,7 +18,7 @@ namespace Config
                                      data.Name=splitArr[1];
                                      m_dict.Add(data.ID,data); 
                               }
-                      {
+                      }
               }
              public TestConfig GetTestConfigConfig(int id)
               {

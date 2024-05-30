@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing.Text;
 using System.IO;
 using System.Linq;
+using System.Text;
 using OfficeOpenXml;
 using UnityEditor;
 using Debug = UnityEngine.Debug;
@@ -31,6 +32,8 @@ public static class ProcessExcel
         } 
         //保持vo文件夹的干净
         ClearVoFile(); 
+        //报错config文件夹干净
+        ClearConfigFile();
         if (Directory.Exists(ExcelPathGlo))
         {
             string[] files = Directory.GetFiles(ExcelPathGlo); 
@@ -59,24 +62,17 @@ public static class ProcessExcel
                     maxRow = row - 1;
                     
                     //A2是表名
-                    string outPutFileName = currentWorksheet.Cells["B1"].Value as string;
-                    
-                    Debug.Log($"{outPutFileName}");
-                    
+                    string outPutFileName = currentWorksheet.Cells["B1"].Value as string; 
+                    string filePath = $"{OutPutPathGlo}\\{outPutFileName}.bin";
+                    string fileMgrPath = $"Assets\\\\StreamingAssets\\\\Config\\\\{outPutFileName}.bin";
                     //生成配置VO模板 
                     GenVoClass(currentWorksheet,maxRow,outPutFileName);
 
+                    Debug.Log(fileMgrPath);
                     //生成配置单例模板
-                    GenVoClassMgr(currentWorksheet,maxRow,outPutFileName);
-                    
-                    string filePath = $"{OutPutPathGlo}\\{outPutFileName}.bin";
-                  
-                    ClearPathFile(filePath); 
+                    GenVoClassMgr(currentWorksheet,maxRow,outPutFileName,fileMgrPath); 
                     //创建出来这个文件
-                    if (!File.Exists(filePath))
-                    {
-                        File.Create(filePath);
-                    } 
+                    GenConfigBind(currentWorksheet,filePath,maxRow);
                 }
             }
         }  
@@ -104,6 +100,22 @@ public static class ProcessExcel
         if (Directory.Exists(VoPathGlo))
         {
             string[] voFiles = Directory.GetFiles(VoPathGlo);
+            foreach (string voFile in voFiles)
+            { 
+                if (voFile.Contains(".meta"))
+                {
+                    continue;
+                }
+                File.Delete(voFile);
+            }
+        }
+    }
+
+    private static void ClearConfigFile()
+    {
+        if (Directory.Exists(OutPutPathGlo))
+        {
+            string[] voFiles = Directory.GetFiles(OutPutPathGlo);
             foreach (string voFile in voFiles)
             { 
                 if (voFile.Contains(".meta"))
@@ -162,14 +174,9 @@ public static class ProcessExcel
     }
  
     //生成vo mgr class
-    private static void GenVoClassMgr(ExcelWorksheet worksheet,int maxRow,string tableName)
+    private static void GenVoClassMgr(ExcelWorksheet worksheet,int maxRow,string tableName,string binFile)
     {
-        string fileName = $"{VoPathGlo}\\{tableName}Mgr.cs";
-        if (!File.Exists(fileName))
-        {
-            File.Exists(fileName);
-            Debug.Log("创建文件:"+fileName);
-        }
+        string fileName = $"{VoPathGlo}\\{tableName}Mgr.cs"; 
  
         //主字段名
         string mainDataName = worksheet.Cells["C1"].Value as string;
@@ -185,7 +192,7 @@ public static class ProcessExcel
             sw.WriteLine($"             private  Dictionary<{mainDataType},{tableName}> m_dict = new Dictionary<{mainDataType},{tableName}>();");
             sw.WriteLine($"             public {tableName}Mgr()");
             sw.WriteLine("              {"); 
-            sw.WriteLine($"                      using (StreamReader sr = new StreamReader(\"{fileName}\")");
+            sw.WriteLine($"                      using (StreamReader sr = new StreamReader(\"{binFile}\"))");
             sw.WriteLine("                      {");
             sw.WriteLine("                              while (sr.Peek() >= 0)");
             sw.WriteLine("                              {");
@@ -214,7 +221,7 @@ public static class ProcessExcel
             }
             sw.WriteLine($"                                     m_dict.Add(data.{mainDataName},data); "); 
             sw.WriteLine("                              }");
-            sw.WriteLine("                      {");
+            sw.WriteLine("                      }");
             sw.WriteLine("              }");
             
             sw.WriteLine($"             public {tableName} Get{tableName}Config({mainDataType} id)");
@@ -223,8 +230,107 @@ public static class ProcessExcel
             sw.WriteLine("                      if(m_dict.TryGetValue(id,out res)) return res;");
             sw.WriteLine("                      return null;");
             sw.WriteLine("              }");
-            sw.WriteLine("      }");  
+            sw.WriteLine("      }");
             sw.WriteLine("}");
         }
     }
+
+    //生成config文件
+    private static void GenConfigBind(ExcelWorksheet worksheet,string filePath,int maxRow)
+    {
+        using (StreamWriter sw = new StreamWriter(filePath))
+        {
+            int curCulomn = 7;
+            while (true)
+            { 
+                string dataType = worksheet.Cells[$"{GetRowStrByIndex(1)}4"].Value as string;
+                string val;
+                uint uintval;
+                ulong ulongval; 
+                int intval; 
+                long longval;
+                float floatval;
+                double doubleval;
+                
+                if (dataType == null)
+                {
+                    Debug.Log($"配置表{filePath}异常，无配置主ID");
+                }
+                else if (dataType.Contains("string"))
+                {
+                    val = worksheet.Cells[$"{GetRowStrByIndex(1)}{curCulomn}"].Value as string; 
+                    Debug.Log(val+$"{GetRowStrByIndex(1)}{curCulomn}");
+                    if (string.IsNullOrEmpty(val))
+                    { 
+                        break; 
+                    }
+                }else if (dataType.Contains("uint"))
+                {
+                    uintval = worksheet.Cells[$"{GetRowStrByIndex(1)}{curCulomn}"].GetValue<uint>();  
+                    if (uintval==0)
+                    { 
+                        break; 
+                    }
+                }
+                else if (dataType.Contains("ulong"))
+                {
+                    ulongval = worksheet.Cells[$"{GetRowStrByIndex(1)}{curCulomn}"].GetValue<uint>();  
+                    if (ulongval==0)
+                    { 
+                        break; 
+                    }
+                } 
+                else if (dataType.Contains("int"))
+                {
+                    intval = worksheet.Cells[$"{GetRowStrByIndex(1)}{curCulomn}"].GetValue<int>();  
+                    if (intval==0)
+                    { 
+                        break; 
+                    }
+                } 
+                else if (dataType.Contains("long"))
+                {
+                    longval = worksheet.Cells[$"{GetRowStrByIndex(1)}{curCulomn}"].GetValue<long>();  
+                    if (longval==0)
+                    { 
+                        break; 
+                    }
+                } 
+                else if (dataType.Contains("float"))
+                {
+                    floatval = worksheet.Cells[$"{GetRowStrByIndex(1)}{curCulomn}"].GetValue<float>();  
+                    if (floatval==0)
+                    { 
+                        break; 
+                    }
+                } 
+                else if (dataType.Contains("double"))
+                {
+                    doubleval = worksheet.Cells[$"{GetRowStrByIndex(1)}{curCulomn}"].GetValue<uint>();  
+                    if (doubleval==0)
+                    { 
+                        break; 
+                    }
+                } 
+                
+                //判断是否被注释
+                 val = worksheet.Cells[$"{GetRowStrByIndex(0)}{curCulomn}"].Value as string;
+                if (val!=null && !val.Contains("#"))
+                { 
+                    string writeTxt = "";
+                    for (int i = 2; i <= maxRow;i++)
+                    { 
+                        val = worksheet.Cells[$"{GetRowStrByIndex(i)}{curCulomn}"].Value as string;
+                        writeTxt += i == maxRow ? $"{val}" : $"{val}\t";
+                    }
+                    sw.WriteLine(writeTxt);
+                    Debug.Log("写入"+writeTxt);
+                }
+                curCulomn++;
+            }
+            
+        }
+        
+        Debug.Log($"创建Bin文件{filePath}");
+    } 
 }
