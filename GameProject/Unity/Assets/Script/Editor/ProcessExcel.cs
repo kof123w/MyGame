@@ -223,7 +223,7 @@ public static class ProcessExcel
             sw.WriteLine("                      }");
             sw.WriteLine("              }");
 
-            sw.WriteLine($"             public {tableName} Get{tableName}Config({mainDataType} id)");
+            sw.WriteLine($"             public {tableName} Get{tableName}({mainDataType} id)");
             sw.WriteLine("              {");
             sw.WriteLine($"                     {tableName} res = null;");
             sw.WriteLine("                      if(m_dict.TryGetValue(id,out res)) return res;");
