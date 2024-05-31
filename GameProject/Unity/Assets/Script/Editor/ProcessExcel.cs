@@ -145,7 +145,7 @@ public static class ProcessExcel
         {
             sw.WriteLine("namespace Config");
             sw.WriteLine("{");
-            sw.WriteLine($"  class {tableName}");
+            sw.WriteLine($"  public class {tableName}");
             sw.WriteLine("   {");
 
             for (int i = 1; i <= maxRow; i++)
@@ -183,7 +183,7 @@ public static class ProcessExcel
             sw.WriteLine("using System.IO;");
             sw.WriteLine("namespace Config");
             sw.WriteLine("{");
-            sw.WriteLine($"     class {tableName}Mgr : Singleton<{tableName}Mgr>");
+            sw.WriteLine($"     public class {tableName}Mgr : Singleton<{tableName}Mgr>");
             sw.WriteLine("      {");
             sw.WriteLine(
                 $"             private  Dictionary<{mainDataType},{tableName}> m_dict = new Dictionary<{mainDataType},{tableName}>();");

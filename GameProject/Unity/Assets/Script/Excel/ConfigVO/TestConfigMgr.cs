@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 namespace Config
 {
-     class TestConfigMgr : Singleton<TestConfigMgr>
+     public class TestConfigMgr : Singleton<TestConfigMgr>
       {
              private  Dictionary<int,TestConfig> m_dict = new Dictionary<int,TestConfig>();
              public TestConfigMgr()

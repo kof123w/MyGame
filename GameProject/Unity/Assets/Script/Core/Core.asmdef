@@ -1,7 +1,10 @@
 {
     "name": "Framework.Core",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "GUID:cdbf023b91f45ae47b0cd4fb6f80cb40",
+        "GUID:78ee34f1f9e014e4c935ab07fe09726e"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
