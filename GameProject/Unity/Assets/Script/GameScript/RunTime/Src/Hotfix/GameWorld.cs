@@ -48,18 +48,14 @@ namespace MyGame
         //所有实体的生命周期都从这里获取
         public void Update()
         {
-            using ( var itor = m_dictSystem.GetEnumerator())
+            using var itor = m_dictSystem.GetEnumerator();
+            while (itor.MoveNext())
             {
-                while (itor.MoveNext())
-                { 
-                    IUpdate updateObj = itor.Current.Value as IUpdate;
-                    if (updateObj != null) 
-                    {
-                        updateObj.Update();
-                    }
+                if (itor.Current.Value is IUpdate updateObj) 
+                {
+                    updateObj.Update();
                 }
             }
-
         }
 
         public ISystem GetSystem(long entityId,long componentId)

@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using OfficeOpenXml;
@@ -7,7 +8,7 @@ public static class ExcelTool
 { 
     private const string OutPutPathGlo = "Assets\\StreamingAssets\\Config";
     private const string ExcelIndexGlo = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private const string VoPathGlo = "Asset\\..\\GameScript\\GameLib\\GameCore\\Excel\\ConfigVO";
+    private const string VoPathGlo = "Assets\\Script\\GameScript\\Excel\\ConfigVO";
     private const int ExploreRowGlo = 2; //注释掉的列索引
     private const int ExploreColumnGlo = 1; //注释掉的列索引
     private const int DataTypeColumnGlo = 4; //字段类型
@@ -20,7 +21,7 @@ public static class ExcelTool
     {
         if (!Directory.Exists(OutPutPathGlo))
         {
-            Directory.CreateDirectory(OutPutPathGlo);
+            var stream = Directory.CreateDirectory(OutPutPathGlo); 
         } 
 
         //保持vo文件夹的干净
@@ -134,9 +135,11 @@ public static class ExcelTool
     private static void GenVoClass(ExcelWorksheet worksheet, int maxRow, string tableName)
     {
         string fileName = $"{VoPathGlo}\\{tableName}.cs";
+        Debug.Log(fileName);
         if (!File.Exists(fileName))
         {
-            File.Exists(fileName);
+            var fileStream =  File.Create(fileName);
+            fileStream.Close();
             Debug.Log("创建文件:" + fileName);
         }
 

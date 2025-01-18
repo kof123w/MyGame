@@ -17,8 +17,8 @@ public class GameMain
         //计时器环境初始化
         TimerManger.Instance.Init();
         
-        //网络链接
-        NetManager.Instance.ConnectSvr();
+        //todo 网络链接
+        //NetManager.Instance.ConnectSvr();
          
         
     }
