@@ -23,18 +23,14 @@ class Launch : MonoBehaviour
         
         //进入游戏 
 #if UNITY_EDITOR
-        GameMain.LaunchGame((int)logMode);
-#else
-   HotfixManager.Instance.InitAssembly((int)logMode);
+        GameMain.LaunchGame((int)logMode); 
 #endif
     }
 
     private void Update()
     {
 #if UNITY_EDITOR
-        GameMain.Update();
-#else
-        HotfixManager.Instance.Update();
+        GameMain.Update(); 
 #endif
     }
 }
