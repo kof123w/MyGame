@@ -1,8 +1,6 @@
-﻿using NotImplementedException = System.NotImplementedException;
-
-namespace MyGame
+﻿namespace MyGame
 {
-    public class PlayerMoveComponentSystem : ISystem,IUpdate,IStart
+    public struct PlayerMoveComponentSystem : ISystem,IUpdate,IStart
     {
         public long EntityId { get; set; }
         public long ComponentId { get; set; }

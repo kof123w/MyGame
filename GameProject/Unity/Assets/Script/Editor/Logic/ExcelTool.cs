@@ -5,7 +5,7 @@ using OfficeOpenXml;
 using Debug = UnityEngine.Debug;
 
 public static class ExcelTool
-{ 
+{
     private const string OutPutPathGlo = "Assets\\StreamingAssets\\Config";
     private const string ExcelIndexGlo = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private const string VoPathGlo = "Assets\\Script\\GameScript\\Excel\\ConfigVO";
@@ -21,8 +21,8 @@ public static class ExcelTool
     {
         if (!Directory.Exists(OutPutPathGlo))
         {
-            var stream = Directory.CreateDirectory(OutPutPathGlo); 
-        } 
+            var stream = Directory.CreateDirectory(OutPutPathGlo);
+        }
 
         //保持vo文件夹的干净
         ClearVoFile();
@@ -35,6 +35,11 @@ public static class ExcelTool
             {
                 string file = files[i];
                 string fileName = Path.GetFileName(file);
+                if (fileName.Contains('$'))
+                {
+                    continue;
+                }
+
                 string excelName = $"{excelPathGlo}\\{fileName}";
                 var fileInfo = new FileInfo(excelName);
                 using (ExcelPackage pack = new ExcelPackage(fileInfo))
@@ -62,7 +67,7 @@ public static class ExcelTool
                     string fileMgrPath = $"Assets\\\\StreamingAssets\\\\Config\\\\{outPutFileName}.bin";
                     //生成配置VO模板 
                     GenVoClass(currentWorksheet, maxRow, outPutFileName);
- 
+
                     //生成配置单例模板
                     GenVoClassMgr(currentWorksheet, maxRow, outPutFileName, fileMgrPath);
                     //创建出来这个文件
@@ -138,7 +143,7 @@ public static class ExcelTool
         Debug.Log(fileName);
         if (!File.Exists(fileName))
         {
-            var fileStream =  File.Create(fileName);
+            var fileStream = File.Create(fileName);
             fileStream.Close();
             Debug.Log("创建文件:" + fileName);
         }
@@ -196,7 +201,7 @@ public static class ExcelTool
             sw.WriteLine("                              while (sr.Peek() >= 0)");
             sw.WriteLine("                              {");
             sw.WriteLine("                                      string line = sr.ReadLine();");
-            sw.WriteLine("                                      string[] splitArr = line.Split('\\t');");
+            sw.WriteLine("                                      string[] splitArr = line.Split('|');");
             sw.WriteLine($"                                     {tableName} data = new {tableName}();");
             for (int i = 1; i <= maxRow; i++)
             {
@@ -238,183 +243,121 @@ public static class ExcelTool
 
     //生成config文件
     private static void GenConfigBind(ExcelWorksheet worksheet, string filePath, int maxRow)
-    {  
-        using (StreamWriter sw = new StreamWriter(filePath))
+    {
+        if (!File.Exists(filePath))
         {
-            int curCulomn = 7;
-            while (true)
-            {  
-                string val;
-                uint uintval;
-                ulong ulongval;
-                int intval;
-                long longval;
-                float floatval;
-                double doubleval; 
-                string dataType = worksheet.Cells[$"{GetRowStrByIndex(1)}4"].Value as string;
+            var tmpFileStream = File.Create(filePath);
+            tmpFileStream.Close();
+            Debug.Log($"创建Bin文件{filePath}");
+        }
+        FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Write);
+        BinaryWriter bw = new BinaryWriter(fileStream);
+        int curCulomn = 7;
+        string writeTxt = "";
+        while (true)
+        {
+            string val;  
+            string dataType = worksheet.Cells[$"{GetRowStrByIndex(1)}4"].Value as string;
 
-                if (dataType == null)
-                {
-                    Debug.Log($"配置表{filePath}异常，无配置主ID");
-                }
-                else if (dataType.Contains("string"))
-                {
-                    val = worksheet.Cells[$"{GetRowStrByIndex(1)}{curCulomn}"].Value as string;
-                    if (string.IsNullOrEmpty(val))
-                    {
-                        break;
-                    }
-                }
-                else if (dataType.Contains("uint"))
-                {
-                    uintval = worksheet.Cells[$"{GetRowStrByIndex(1)}{curCulomn}"].GetValue<uint>();
-                    if (uintval == 0)
-                    {
-                        break;
-                    }
-                }
-                else if (dataType.Contains("ulong"))
-                {
-                    ulongval = worksheet.Cells[$"{GetRowStrByIndex(1)}{curCulomn}"].GetValue<uint>();
-                    if (ulongval == 0)
-                    {
-                        break;
-                    }
-                }
-                else if (dataType.Contains("int"))
-                {
-                    intval = worksheet.Cells[$"{GetRowStrByIndex(1)}{curCulomn}"].GetValue<int>();
-                    if (intval == 0)
-                    {
-                        break;
-                    }
-                }
-                else if (dataType.Contains("long"))
-                {
-                    longval = worksheet.Cells[$"{GetRowStrByIndex(1)}{curCulomn}"].GetValue<long>();
-                    if (longval == 0)
-                    {
-                        break;
-                    }
-                }
-                else if (dataType.Contains("float"))
-                {
-                    floatval = worksheet.Cells[$"{GetRowStrByIndex(1)}{curCulomn}"].GetValue<float>();
-                    if (floatval == 0)
-                    {
-                        break;
-                    }
-                }
-                else if (dataType.Contains("double"))
-                {
-                    doubleval = worksheet.Cells[$"{GetRowStrByIndex(1)}{curCulomn}"].GetValue<uint>();
-                    if (doubleval == 0)
-                    {
-                        break;
-                    }
-                }
-                
-                //判断是否被注释
-                val = worksheet.Cells[$"{GetRowStrByIndex(0)}{curCulomn}"].Value as string;  
-                if (string.IsNullOrEmpty(val) || !val.Contains("#"))
-                {
-                    string writeTxt = "";
-                    for (int i = 1; i <= maxRow; i++)
-                    {
-                        dataType = worksheet.Cells[$"{GetRowStrByIndex(i)}4"].Value as string; 
-                        //判断是否被注释了
-                        val = worksheet.Cells[$"{GetRowStrByIndex(i)}{2}"].Value as string; 
-                        if (!string.IsNullOrEmpty(val) && val.Contains("#"))
-                        { 
-                            continue;
-                        }
-                        
-                        //是否包含客户端
-                        val = worksheet.Cells[$"{GetRowStrByIndex(i)}{3}"].Value as string; 
-                        if (!string.IsNullOrEmpty(val) && !val.Contains("C"))
-                        { 
-                            continue;
-                        }
+            if (dataType == null)
+            {
+                Debug.Log($"配置表{filePath}异常，无配置主ID");
+            } 
 
-                        if (dataType == null)
-                        {
-                            Debug.Log($"配置表{filePath}异常，无配置主ID");
-                            continue;
-                        }   
-                        else if (dataType.Contains("string"))
-                        {
-                            val = worksheet.Cells[$"{GetRowStrByIndex(i)}{curCulomn}"].Value as string; 
-                            if (string.IsNullOrEmpty(val))
-                            {
-                                break;
-                            }
-
-                            writeTxt += val;
-                        }
-                        else if (dataType.Contains("uint"))
-                        {
-                            uintval = worksheet.Cells[$"{GetRowStrByIndex(i)}{curCulomn}"].GetValue<uint>();
-                            if (uintval == 0)
-                            {
-                                break;
-                            }
-                        }
-                        else if (dataType.Contains("ulong"))
-                        {
-                            ulongval = worksheet.Cells[$"{GetRowStrByIndex(i)}{curCulomn}"].GetValue<uint>();
-                            if (ulongval == 0)
-                            {
-                                break;
-                            }
-
-                            writeTxt += ulongval;
-                        }
-                        else if (dataType.Contains("int"))
-                        { 
-                            intval = worksheet.Cells[$"{GetRowStrByIndex(i)}{curCulomn}"].GetValue<int>();
-                            if (intval == 0)
-                            {
-                                break;
-                            }
-                            writeTxt += intval;
-                        }
-                        else if (dataType.Contains("long"))
-                        {
-                            longval = worksheet.Cells[$"{GetRowStrByIndex(i)}{curCulomn}"].GetValue<long>();
-                            if (longval == 0)
-                            {
-                                break;
-                            }
-                            writeTxt += longval;
-                        }
-                        else if (dataType.Contains("float"))
-                        {
-                            floatval = worksheet.Cells[$"{GetRowStrByIndex(i)}{curCulomn}"].GetValue<float>();
-                            if (floatval == 0)
-                            {
-                                break;
-                            }
-                            writeTxt += floatval;
-                        }
-                        else if (dataType.Contains("double"))
-                        {
-                            doubleval = worksheet.Cells[$"{GetRowStrByIndex(i)}{curCulomn}"].GetValue<uint>();
-                            if (doubleval == 0)
-                            {
-                                break;
-                            }
-                            writeTxt += doubleval;
-                        } 
-                        writeTxt += i >= maxRow ? "\n" : "\t"; 
-                    }
-
-                    sw.WriteLine(writeTxt);
-                    Debug.Log("写入" + writeTxt);
-                }
-                curCulomn++;
+            bool checkIsNoVal = false;
+            GetVal(dataType, worksheet, GetRowStrByIndex(1), curCulomn,ref checkIsNoVal);
+            if (checkIsNoVal)
+            {
+                break;
             }
+
+            //判断是否被注释
+            val = worksheet.Cells[$"{GetRowStrByIndex(0)}{curCulomn}"].Value as string;
+            if (string.IsNullOrEmpty(val) || !val.Contains("#"))
+            {
+                for (int i = 1; i <= maxRow; i++)
+                {
+                    dataType = worksheet.Cells[$"{GetRowStrByIndex(i)}4"].Value as string;
+                    //判断是否被注释了
+                    val = worksheet.Cells[$"{GetRowStrByIndex(i)}{2}"].Value as string;
+                    if (!string.IsNullOrEmpty(val) && val.Contains("#"))
+                    {
+                        continue;
+                    }
+
+                    //是否包含客户端
+                    val = worksheet.Cells[$"{GetRowStrByIndex(i)}{3}"].Value as string;
+                    if (!string.IsNullOrEmpty(val) && !val.Contains("C"))
+                    {
+                        continue;
+                    }
+
+                    if (dataType == null)
+                    {
+                        Debug.Log($"配置表{filePath}异常，无配置主ID");
+                        continue;
+                    }
+
+                    bool isNoVal = false;
+                    string strVal = GetVal(dataType,worksheet,GetRowStrByIndex(i),curCulomn,ref isNoVal);
+                    writeTxt =i != 1 ? $"{writeTxt}|{strVal}" : $"{writeTxt}{strVal}"; 
+                   
+                } 
+                writeTxt += "\n"; 
+            } 
+            curCulomn++;
+        } 
+        bw.Write(writeTxt);
+        bw.Close();
+        fileStream.Close();  
+    }
+
+    private static string GetVal(string dataType,ExcelWorksheet worksheet,string row,int curCulomn,ref bool isNoVal)
+    {
+        if (dataType.Contains("string"))
+        {
+            string str = worksheet.Cells[$"{row}{curCulomn}"].Value as string;
+            isNoVal = string.IsNullOrEmpty(str);
+            return str;
         }
 
-        Debug.Log($"创建Bin文件{filePath}");
+        if (dataType.Contains("uint"))
+        {
+            uint uintval = worksheet.Cells[$"{row}{curCulomn}"].GetValue<uint>();
+            isNoVal = uintval == 0;
+            return uintval.ToString();
+        }
+        else if (dataType.Contains("ulong"))
+        {
+            ulong ulongval = worksheet.Cells[$"{row}{curCulomn}"].GetValue<ulong>();
+            isNoVal = ulongval == 0;
+            return ulongval.ToString();
+        }
+        else if (dataType.Contains("int"))
+        {
+            int intval = worksheet.Cells[$"{row}{curCulomn}"].GetValue<int>();
+            isNoVal = intval == 0;
+            return intval.ToString();
+        }
+        else if (dataType.Contains("long"))
+        {
+            long longval = worksheet.Cells[$"{row}{curCulomn}"].GetValue<long>();
+            isNoVal = longval == 0;
+            return longval.ToString();
+        }
+        else if (dataType.Contains("float"))
+        {
+            float floatval = worksheet.Cells[$"{row}{curCulomn}"].GetValue<float>();
+            isNoVal = floatval == 0;
+            return floatval.ToString();
+        }
+        else if (dataType.Contains("double"))
+        {
+            double doubleval = worksheet.Cells[$"{row}{curCulomn}"].GetValue<uint>();
+            isNoVal = doubleval == 0;
+            return doubleval.ToString();
+        }
+ 
+        return string.Empty;
     }
 }

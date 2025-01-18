@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Reflection;
-using JetBrains.Annotations;
-using UnityEngine.UI;
+using System.Collections.Generic; 
+using System.Reflection;  
 
 namespace MyGame
 {
@@ -43,6 +40,12 @@ namespace MyGame
            this.Subscribe<long,long>(GameWorldConst.GameWorldDisableEventId,Disable);
            this.Subscribe<long,long>(GameWorldConst.GameWorldStartEventId,Start);
            this.Subscribe<long,long>(GameWorldConst.GameWorldDestoryEventId,Destroy);
+           
+           //初始化,测试实体 组件
+           //TestConfigMgr.Instance.GetTestConfigConfig()
+
+           var playerEntity = GameWorld.Instance.Instacing<PlayerEntity>();
+           playerEntity.AddComponent<PlayerMoveComponent>();
         }
 
         //所有实体的生命周期都从这里获取
@@ -219,8 +222,7 @@ namespace MyGame
             }
            
         }
-
-        [CanBeNull]
+ 
         private ISystem CreateSystem<T>() where T : ComponentData
         {
             //创建System
