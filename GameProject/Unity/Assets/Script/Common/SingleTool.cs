@@ -3,7 +3,7 @@ using UnityEngine;
 /// <summary>
 /// 普通单例工具
 /// </summary>
-public abstract class Singleton<T> where T : new (){
+public abstract class Singleton<T> where T :class,new (){
     private static T instance;
     private static System.Object mutex = new System.Object();
       
@@ -18,6 +18,21 @@ public abstract class Singleton<T> where T : new (){
             }
   
             return instance;
+        }
+    }
+
+    public static void ReleaseInstance()
+    {
+        if (instance != null)
+        {
+            lock (mutex)
+            {
+                // ReSharper disable once RedundantCheckBeforeAssignment
+                if (instance != null)
+                {
+                    instance = null;
+                }
+            }
         }
     }
 }

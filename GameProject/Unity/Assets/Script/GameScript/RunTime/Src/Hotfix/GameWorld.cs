@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic; 
 using System.Reflection;  
-
+using Config;
 namespace MyGame
 {
     public sealed class GameWorld : Singleton<GameWorld>,IEcsManager
@@ -42,7 +42,7 @@ namespace MyGame
            this.Subscribe<long,long>(GameWorldConst.GameWorldDestoryEventId,Destroy);
            
            //初始化,测试实体 组件
-           //TestConfigMgr.Instance.GetTestConfigConfig()
+          // TestConfigMgr.Instance.GetTestConfigConfig(0);
 
            var playerEntity = GameWorld.Instance.Instacing<PlayerEntity>();
            playerEntity.AddComponent<PlayerMoveComponent>();

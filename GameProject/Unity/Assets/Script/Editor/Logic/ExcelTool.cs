@@ -67,9 +67,8 @@ public static class ExcelTool
                     string fileMgrPath = $"Assets\\\\StreamingAssets\\\\Config\\\\{outPutFileName}.bin";
                     //生成配置VO模板 
                     GenVoClass(currentWorksheet, maxRow, outPutFileName);
-
-                    //生成配置单例模板
-                    GenVoClassMgr(currentWorksheet, maxRow, outPutFileName, fileMgrPath);
+                    //生成配置cahce
+                    GenVoClassBinCache(currentWorksheet, maxRow, outPutFileName, fileMgrPath);
                     //创建出来这个文件
                     GenConfigBind(currentWorksheet, filePath, maxRow);
                 }
@@ -152,7 +151,7 @@ public static class ExcelTool
         {
             sw.WriteLine("namespace Config");
             sw.WriteLine("{");
-            sw.WriteLine($"  class {tableName}");
+            sw.WriteLine($"  public class {tableName}");
             sw.WriteLine("   {");
 
             for (int i = 1; i <= maxRow; i++)
@@ -176,10 +175,12 @@ public static class ExcelTool
         }
     }
 
+    //生成后缀
+    private static string m_GenSuffix = "BinCache";
     //生成vo mgr class
-    private static void GenVoClassMgr(ExcelWorksheet worksheet, int maxRow, string tableName, string binFile)
+    private static void GenVoClassBinCache(ExcelWorksheet worksheet, int maxRow, string tableName, string binFile)
     {
-        string fileName = $"{VoPathGlo}\\{tableName}Mgr.cs";
+        string fileName = $"{VoPathGlo}\\{tableName}BinCahce.cs";
 
         //主字段名
         string mainDataName = worksheet.Cells["C1"].Value as string;
@@ -190,19 +191,19 @@ public static class ExcelTool
             sw.WriteLine("using System.IO;");
             sw.WriteLine("namespace Config");
             sw.WriteLine("{");
-            sw.WriteLine($"     class {tableName}Mgr : Singleton<{tableName}Mgr>");
-            sw.WriteLine("      {");
-            sw.WriteLine(
-                $"             private  Dictionary<{mainDataType},{tableName}> m_dict = new Dictionary<{mainDataType},{tableName}>();");
-            sw.WriteLine($"             public {tableName}Mgr()");
-            sw.WriteLine("              {");
-            sw.WriteLine($"                      using (StreamReader sr = new StreamReader(\"{binFile}\"))");
-            sw.WriteLine("                      {");
-            sw.WriteLine("                              while (sr.Peek() >= 0)");
-            sw.WriteLine("                              {");
-            sw.WriteLine("                                      string line = sr.ReadLine();");
-            sw.WriteLine("                                      string[] splitArr = line.Split('|');");
-            sw.WriteLine($"                                     {tableName} data = new {tableName}();");
+            sw.WriteLine($"\tclass {tableName}{m_GenSuffix}:CacheObject<{tableName}>");
+            sw.WriteLine("\t{"); 
+            sw.WriteLine($"\t\tpublic {tableName}{m_GenSuffix}()");
+            sw.WriteLine("\t\t{");
+            sw.WriteLine($"\t\t\tFileStream fileStream = new FileStream(\"{binFile}\",FileMode.Open);");
+            sw.WriteLine($"\t\t\tBinaryReader binaryReader = new BinaryReader(fileStream);");
+            sw.WriteLine($"\t\t\tstring[] strArray = binaryReader.ReadString().Split('\\n');");
+            sw.WriteLine($"\t\t\tfor (int i = 0; i < strArray.Length; i++)");
+            sw.WriteLine("\t\t\t{");
+            sw.WriteLine($"\t\t\t\tvar str = strArray[i];");
+            sw.WriteLine($"\t\t\t\tif(string.IsNullOrEmpty(str)) continue;");
+            sw.WriteLine($"\t\t\t\tvar element = str.Split('|');");
+            sw.WriteLine($"\t\t\t\t{tableName} config = new {tableName}();");
             for (int i = 1; i <= maxRow; i++)
             {
                 //看看这一列是否被注释掉了
@@ -216,27 +217,21 @@ public static class ExcelTool
                 string dataName = worksheet.Cells[$"{rowStr}{DataNameColumnGlo}"].Value as string;
                 if (dataType.Contains("string"))
                 {
-                    sw.WriteLine($"                                     data.{dataName}=splitArr[{i - 1}];");
+                    sw.WriteLine($"\t\t\t\tconfig.{dataName}=element[{i - 1}];");
                 }
                 else
                 {
-                    sw.WriteLine(
-                        $"                                     data.{dataName}={dataType}.Parse(splitArr[{i - 1}]);");
+                    sw.WriteLine($"\t\t\t\tconfig.{dataName}={dataType}.Parse(element[{i - 1}]);");
                 }
             }
-
-            sw.WriteLine($"                                     m_dict.Add(data.{mainDataName},data); ");
-            sw.WriteLine("                              }");
-            sw.WriteLine("                      }");
-            sw.WriteLine("              }");
-
-            sw.WriteLine($"             public {tableName} Get{tableName}Config({mainDataType} id)");
-            sw.WriteLine("              {");
-            sw.WriteLine($"                     {tableName} res = null;");
-            sw.WriteLine("                      if(m_dict.TryGetValue(id,out res)) return res;");
-            sw.WriteLine("                      return null;");
-            sw.WriteLine("              }");
-            sw.WriteLine("      }");
+            sw.WriteLine($"\t\t\t\tCacheList.Add(config);");
+            sw.WriteLine("\t\t\t}");
+            sw.WriteLine($"\t\t\tbinaryReader.Close();");
+            sw.WriteLine($"\t\t\tbinaryReader.Dispose();");
+            sw.WriteLine($"\t\t\tfileStream.Close();");
+            sw.WriteLine($"\t\t\tfileStream.Dispose();");
+            sw.WriteLine("\t\t}");
+            sw.WriteLine("\t}");
             sw.WriteLine("}");
         }
     }

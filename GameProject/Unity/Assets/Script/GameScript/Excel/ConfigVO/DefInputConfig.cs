@@ -1,6 +1,6 @@
 namespace Config
 {
-  class DefInputConfig
+  public class DefInputConfig
    {
     public int ID  {get;set;} //ID
     public string Keys  {get;set;} //按键
