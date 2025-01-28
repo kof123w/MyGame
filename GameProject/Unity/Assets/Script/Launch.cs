@@ -9,18 +9,19 @@ enum LogMode
     Error
 }
 
+enum NetMode
+{
+    OffLine,  //离线
+    OnLine,  //在线
+}
+
 class Launch : MonoBehaviour
 {
     [Header("日志模式")] public LogMode logMode;
+    [Header("网络模式")] public NetMode netMode;
 
     void Start()
-    {
-        //初始化框架参数
-        // todo
-
-        //资源管理..版本更新
-        // todo 
-        
+    { 
         //进入游戏 
 #if UNITY_EDITOR
         GameMain.LaunchGame((int)logMode); 

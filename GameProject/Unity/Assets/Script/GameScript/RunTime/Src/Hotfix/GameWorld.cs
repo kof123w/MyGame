@@ -57,7 +57,7 @@ namespace MyGame
                 if (itor.Current.Value is IUpdate updateObj) 
                 {
                     updateObj.Update();
-                }
+                } 
             }
         }
 

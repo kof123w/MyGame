@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Config
 {
-    abstract class CacheObject<T>
+    class CacheObject<T> : Singleton<CacheObject<T>>
     {
         public List<T> CacheList = new List<T>();
 
