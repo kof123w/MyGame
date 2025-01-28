@@ -9,9 +9,9 @@ namespace MyGame
     {
         private Dictionary<T1, List<T2>> m_dictList = new Dictionary<T1,List<T2>>();
         private CacheObject<T2> m_cacheObject = null;
-        public ResDictionaryList()
+        public ResDictionaryList(CacheObject<T2> cache)
         {
-            m_cacheObject = CacheObject<T2>.Instance;
+            m_cacheObject = cache;
         }
 
         public List<T2> GetCacheList

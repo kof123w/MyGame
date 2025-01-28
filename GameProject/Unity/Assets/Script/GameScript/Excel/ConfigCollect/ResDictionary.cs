@@ -13,10 +13,10 @@ namespace Config
         {
             get { return m_cacheObject.CacheList; }
         }
-
-        public ResDictionary()
+ 
+        public ResDictionary(CacheObject<T2> cacheObject)
         {
-            m_cacheObject = CacheObject<T2>.Instance;
+            m_cacheObject = cacheObject;
         }
 
         public void Init(Func<T2,T1> func)

@@ -39,13 +39,10 @@ namespace MyGame
            this.Subscribe<long,long>(GameWorldConst.GameWorldEnableEventId,OnEnable);
            this.Subscribe<long,long>(GameWorldConst.GameWorldDisableEventId,Disable);
            this.Subscribe<long,long>(GameWorldConst.GameWorldStartEventId,Start);
-           this.Subscribe<long,long>(GameWorldConst.GameWorldDestoryEventId,Destroy);
-           
-           //初始化,测试实体 组件
-          // TestConfigMgr.Instance.GetTestConfigConfig(0);
+           this.Subscribe<long,long>(GameWorldConst.GameWorldDestoryEventId,Destroy); 
 
-           var playerEntity = GameWorld.Instance.Instacing<PlayerEntity>();
-           playerEntity.AddComponent<PlayerMoveComponent>();
+           /*var playerEntity = GameWorld.Instance.Instacing<PlayerEntity>();
+           playerEntity.AddComponent<PlayerMoveComponent>();*/
         }
 
         //所有实体的生命周期都从这里获取
@@ -181,7 +178,7 @@ namespace MyGame
                 }
                 else
                 {
-                    componentDict = new Dictionary<long, ComponentData>();
+                    /*componentDict = new Dictionary<long, ComponentData>();
                     ComponentData componentData = new T();
                     componentDict.Add(id,componentData);
                     m_dictComponent.Add(entity.EntityId,componentDict);
@@ -192,7 +189,7 @@ namespace MyGame
                         
                     system.EntityId = entity.EntityId;
                     system.ComponentId = id; 
-                    return componentData as T;
+                    return componentData as T;*/
                 }
             }
 
@@ -233,10 +230,10 @@ namespace MyGame
             {
                 DLogger.Log(sysAttr.GetType()+"=============");
                // sysAttr.GetType().Assembly.CreateInstance(sysAttr.GetType().);
-               ISystem system = Assembly.GetAssembly(sysAttr.GetType()).CreateInstance(sysAttr.GetType().ToString()) as ISystem;
-               system.SystemId = GeneratorSystemId();
-               m_dictSystem.Add(system.SystemId,system);
-               return system;
+              // ISystem system = Assembly.GetAssembly(sysAttr.GetType()).CreateInstance(sysAttr.GetType().ToString()) as ISystem;
+              //  system.SystemId= GeneratorSystemId();
+              // m_dictSystem.Add(system.SystemId,system);
+               //return system;
             }
 
             return null;
