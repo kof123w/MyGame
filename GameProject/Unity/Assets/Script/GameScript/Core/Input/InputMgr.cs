@@ -21,7 +21,7 @@ namespace MyGame
                 for (int i = 0; i < m_defInputConfigs.Count; i++)
                 {
                     foreach (KeyCode keyCode in Enum.GetValues(typeof(KeyCode)))
-                    {
+                    { 
                         if (keyCode.ToString().Equals(m_defInputConfigs[i].Keys))
                         {
                             m_cmdKeyMap.Add(m_defInputConfigs[i].ID,keyCode);
@@ -40,11 +40,16 @@ namespace MyGame
                 {
                     for (int i = 0; i < m_defInputConfigs.Count; i++)
                     {
-                        var keyCode = m_cmdKeyMap[m_defInputConfigs[i].ID];
-                        if (Input.GetKey(keyCode))
+                        if (m_cmdKeyMap.ContainsKey(m_defInputConfigs[i].ID))
                         {
-                            this.Push<InputCmd>(InputEvent.KeyHold,(InputCmd)m_defInputConfigs[i].ID);
+                            var keyCode = m_cmdKeyMap[m_defInputConfigs[i].ID];
+                            if (Input.GetKey(keyCode))
+                            {
+                                this.Push<InputCmd>(InputEvent.KeyHold,(InputCmd)m_defInputConfigs[i].ID);
+                                Debug.Log(keyCode.ToString());
+                            }
                         }
+
                     }
                 } 
                 
@@ -52,10 +57,14 @@ namespace MyGame
                 {
                     for (int i = 0; i < m_defInputConfigs.Count; i++)
                     {
-                        var keyCode = m_cmdKeyMap[m_defInputConfigs[i].ID];
-                        if (Input.GetKeyDown(keyCode))
+                        if (m_cmdKeyMap.ContainsKey(m_defInputConfigs[i].ID))
                         {
-                            this.Push<InputCmd>(InputEvent.KeyDown,(InputCmd)m_defInputConfigs[i].ID);
+                            var keyCode = m_cmdKeyMap[m_defInputConfigs[i].ID];
+                            if (Input.GetKey(keyCode))
+                            {
+                                this.Push<InputCmd>(InputEvent.KeyHold,(InputCmd)m_defInputConfigs[i].ID);
+                                Debug.Log(keyCode.ToString());
+                            }
                         }
                     }
                 }   
