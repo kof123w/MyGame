@@ -19,6 +19,6 @@ namespace MyGame
 
         Object LoadResourceAsset(string path, Type type);
 
-        IEnumerator LoadResourceAssetAsync(string path, Transform parent, Type type, Action<GameObject> onLoaded);
+        IEnumerator LoadResourceAssetAsync(string path, Transform parent, Action<GameObject> onLoaded);
     }
 }

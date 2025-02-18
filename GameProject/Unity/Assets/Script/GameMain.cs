@@ -15,9 +15,10 @@ public class GameMain
         //todo 网络链接
         //NetManager.Instance.ConnectSvr();
          
-        InputMgr.Instance.Init();
+        InputMgr.Instance.Init(); 
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     public static void Update()
     {
         //执行游戏对象的更新函数

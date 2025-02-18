@@ -46,7 +46,9 @@ public class UnitySingleton<T> : MonoBehaviour where T : Component {
     {
         get {
             if (instance==null) {
+#pragma warning disable CS0618 // Type or member is obsolete
                 instance =  FindObjectOfType(typeof(T)) as T;
+#pragma warning restore CS0618 // Type or member is obsolete
                 if (instance == null) {
                     GameObject go = new GameObject();
                     instance = (T)go.AddComponent(typeof(T));

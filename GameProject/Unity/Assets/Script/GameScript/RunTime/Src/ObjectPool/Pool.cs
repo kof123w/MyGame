@@ -10,19 +10,17 @@ namespace MyGame
 
         public IMemoryPool CreateFromPool(Type type)
         {
-            Stack<IMemoryPool> pool;
-            if (m_ObjectPool.TryGetValue(type, out pool))
+            if (m_ObjectPool.TryGetValue(type, out var pool))
             {
                 return pool.Pop();
             } 
-            IMemoryPool obj = Activator.CreateInstance(type) as IMemoryPool;
+            var obj = Activator.CreateInstance(type) as IMemoryPool;
             return obj;
         }
 
         public bool DestroyRecycle(Type type, IMemoryPool entity)
         {
-            Stack<IMemoryPool> pool;
-            if (m_ObjectPool.TryGetValue(type, out pool))
+            if (m_ObjectPool.TryGetValue(type, out var pool))
             {
                 pool.Push(entity); 
             }
@@ -32,7 +30,6 @@ namespace MyGame
                 pool.Push(entity);
                 m_ObjectPool.Add(type, pool);
             }
-
             return true;
         }
     }

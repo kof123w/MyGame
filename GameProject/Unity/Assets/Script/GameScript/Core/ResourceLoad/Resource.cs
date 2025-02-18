@@ -7,7 +7,7 @@ using Object = UnityEngine.Object;
 namespace MyGame
 {
     //Use the basic assets-bundle solution (Async and Sync) 
-    public class MyResource : IResource
+    public class Resource : IResource
     {
         public void UnloadUnusedAssets()
         {
@@ -32,7 +32,7 @@ namespace MyGame
 
         public IEnumerator AllocGameObjectAsync(string resPath, Action<GameObject> onLoaded, Transform parent)
         {
-            yield return LoadResourceAssetAsync(resPath, parent, typeof(GameObject), onLoaded);
+            yield return LoadResourceAssetAsync(resPath, parent, onLoaded);
         }
 
         public Object LoadResourceAsset(string path, Type type)
@@ -45,13 +45,8 @@ namespace MyGame
             return Resources.Load(path, type);
         }
 
-        public IEnumerator LoadResourceAssetAsync(string path, Transform parent, Type type, Action<GameObject> onLoaded)
+        public IEnumerator LoadResourceAssetAsync(string path, Transform parent,  Action<GameObject> onLoaded)
         {
-            if (type == null)
-            {
-                Debug.LogError(string.Format("ERROR: Asset type: {0} not Exist! Async Load faild!",path));
-                yield break;
-            }
             AssetBundleCreateRequest rq = AssetBundle.LoadFromMemoryAsync(UnityEngine.Windows.File.ReadAllBytes(path));
             yield return rq;
 
