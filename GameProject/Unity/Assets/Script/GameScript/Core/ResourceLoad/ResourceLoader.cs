@@ -16,9 +16,13 @@ namespace MyGame
         }
         
         //直接销毁
-        public void DestroyUIResource(Type type, Transform parent, Action<GameObject> callback)
-        {
-            
+        public void DestroyUIResource(GameObject gObj, Action callback = null)
+        { 
+            DestroyImmediate(gObj);
+            if (callback != null)
+            {
+                callback?.Invoke();
+            }
         }
     }
 }

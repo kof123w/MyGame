@@ -12,12 +12,12 @@ namespace MyGame
             {
                 uiRootComponent.UIRoot = GameObject.Find("UIFramework/UIRoot").transform; 
                 //注册下
-                this.Subscribe<Type,ComponentData>(uiRootComponent.EventOpenWindowEventID,OpenWindow);
-                this.Subscribe<Type,ComponentData>(uiRootComponent.EventCloseWindowEventID,CloseWindow);
+                this.Subscribe<Type>(uiRootComponent.EventOpenWindowEventID,OpenWindow);
+                this.Subscribe<Type,WindowComponent>(uiRootComponent.EventCloseWindowEventID,CloseWindow);
             }
         }
 
-        private void OpenWindow(Type windowType,ComponentData data)
+        private void OpenWindow(Type windowType)
         {
             var system = GameWorld.Instance.EntityManager.GetComponentSystem(windowType);
             ILoadCall call = system as ILoadCall;
@@ -32,11 +32,13 @@ namespace MyGame
             ResourceLoader.Instance.LoadUIResource(windowType,uIRoot,callBack,windowType.Name); 
         }
 
-        private void CloseWindow(Type windowType,ComponentData data)
+        private void CloseWindow(Type windowType,WindowComponent component)
         {
             //var system = GameWorld.Instance.EntityManager.GetComponentSystem(windowType);
             var windowEntity = GameWorld.Instance.WindowEntityObject;
             windowEntity.RemoveComponentByType(windowType);
+            
+            ResourceLoader.Instance.DestroyUIResource(component.GetGameObject());
         }
     }
 }

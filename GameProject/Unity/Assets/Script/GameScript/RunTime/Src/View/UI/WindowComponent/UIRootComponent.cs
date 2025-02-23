@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace MyGame
 {
-    public class UIRootComponent : ComponentData
+    public class UIRootComponent : WindowComponent
     {
         public Transform UIRoot { get; set; }
         
