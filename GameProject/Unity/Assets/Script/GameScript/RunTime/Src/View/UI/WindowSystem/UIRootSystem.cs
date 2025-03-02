@@ -19,18 +19,17 @@ namespace MyGame
 
         private void OpenWindow(Type windowType)
         {
-            var system = GameWorld.Instance.EntityManager.GetComponentSystem(windowType);
-            ILoadCall call = system as ILoadCall;
-            Action<GameObject> callBack = null;
-            if (call != null)
-            {
-                callBack = call.LoadCall;
-            }
+            //
             var windowEntity = GameWorld.Instance.WindowEntityObject;
-            windowEntity.AddComponentByType(windowType);
-            var uIRoot = GameWorld.Instance.UIRootComponentObject.UIRoot;
-            ResourceLoader.Instance.LoadUIResource(windowType,uIRoot,callBack,windowType.Name); 
-        }
+            var componentData = windowEntity.AddComponentByType(windowType);
+            if (componentData != null)
+            { 
+                Action<GameObject> callBack = null;
+                
+                var uIRoot = GameWorld.Instance.UIRootComponentObject.UIRoot;
+                ResourceLoader.Instance.LoadUIResource(windowType,uIRoot,callBack,windowType.Name); 
+            } 
+        } 
 
         private void CloseWindow(Type windowType,WindowComponent component)
         {
