@@ -1,6 +1,5 @@
-using System.Collections.Generic;
-using UnityEngine;
-
+using System.Collections.Generic; 
+using MyGame;
 namespace Config
 {
     public class DefInputConfigMgr : Singleton<DefInputConfigMgr>
