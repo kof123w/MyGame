@@ -1,17 +1,27 @@
-﻿namespace MyGame
-{
+﻿using UnityEngine;
+
+namespace MyGame
+{ 
     public class UIWindow : WindowBase
     {
-        protected int MWindowSort = 0;
-
-        public void SetWindowSort(ref int sort)
+        protected int MSort;
+        protected Canvas MCanvas;
+        
+        public void SetWindowSortingOrder(ref int sort)
         {
-            MWindowSort = sort;
+            MSort = sort;
         }
 
-        public void GetWindowSort(out int sort)
+        public void GetWindowSortingOrder(out int sort)
         {
-            sort = MWindowSort;
+            sort = MSort;
         }
+
+        public void LoadUIResource()
+        {
+            //ResourceLoader.Instance.LoadUIResource(UIManager.GetUIRoot(),callback);
+        }
+        
+        
     }
 }

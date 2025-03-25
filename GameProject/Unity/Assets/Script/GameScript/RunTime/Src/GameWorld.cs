@@ -12,6 +12,11 @@ namespace MyGame
             
         }
 
+        public void LateUpdate()
+        {
+            
+        }
+
         public void Init()
         {
             

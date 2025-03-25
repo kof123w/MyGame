@@ -1,0 +1,16 @@
+{
+    "name": "GameScript_GameData",
+    "rootNamespace": "",
+    "references": [
+        "GUID:01e97303b65385446a040a6d70e9a509"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

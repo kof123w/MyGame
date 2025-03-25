@@ -33,6 +33,27 @@ Unity/Assets/StreamingAssets.meta
 Unity/Assets/Scripts/**/Ignore.asmdef
 Unity/Assets/Scripts/**/Ignore.asmdef.meta
 
+#UnityRelease相关目录
+UnityRelease/.gradle
+UnityRelease/Bundles
+UnityRelease/Library
+UnityRelease/Logs
+UnityRelease/UserSettings
+UnityRelease/*.csproj
+UnityRelease/*.vsconfig
+UnityRelease/ProjectSettings/RiderScriptEditorPersistedState.asset
+UnityRelease/HybridCLRData
+
+#Unity/Assets
+UnityRelease/Assets/Bundles/Code/*
+UnityRelease/Assets/Bundles/AotDlls/*
+UnityRelease/Assets/StreamingAssets/
+UnityRelease/Assets/StreamingAssets.meta
+
+#Unity中的IgnoreAssembly定义文件
+UnityRelease/Assets/Scripts/**/Ignore.asmdef
+UnityRelease/Assets/Scripts/**/Ignore.asmdef.meta
+
 #WebGL
 WebGL
 

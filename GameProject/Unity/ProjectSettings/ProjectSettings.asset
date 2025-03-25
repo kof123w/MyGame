@@ -817,7 +817,7 @@ PlayerSettings:
   webGLCloseOnQuit: 0
   webWasm2023: 0
   scriptingDefineSymbols:
-    Standalone: ALLOWUNSAFE
+    Standalone: ALLOWUNSAFE;UNITY_LOCAL_SCRIPT
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

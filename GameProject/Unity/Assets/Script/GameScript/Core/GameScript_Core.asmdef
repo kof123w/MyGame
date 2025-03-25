@@ -2,7 +2,8 @@
     "name": "GameScript_Core",
     "rootNamespace": "",
     "references": [
-        "GUID:484926273ce8f1f469ec0d3f0d2b4ba1"
+        "GUID:484926273ce8f1f469ec0d3f0d2b4ba1",
+        "GUID:01e97303b65385446a040a6d70e9a509"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

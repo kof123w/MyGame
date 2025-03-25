@@ -2,40 +2,72 @@
 
 namespace MyGame
 {
-    public abstract class WindowBase : IUIWindow
+    public class WindowBase
     {
         protected bool m_IsShow = false;
         protected bool m_IsLoaded = false;
         protected GameObject m_GameObject = null;
-        
-        void IUIWindow.Show()
-        {
-            throw new System.NotImplementedException();
+        protected Transform m_Transform = null; 
+        public bool IsShow
+        { 
+            get
+            {
+                return m_IsShow;
+            }
+            set
+            {
+                m_IsShow = value;
+                if (m_IsShow)
+                {
+                    m_Transform.localScale = Vector3.one;
+                    Show();
+                }
+                else
+                {
+                    m_Transform.localScale = Vector3.zero;
+                    Hide();
+                }
+            }
         }
 
-        void IUIWindow.Hide()
+        protected virtual void Show()
         {
-            throw new System.NotImplementedException();
+             //base show ..
         }
 
-        void IUIWindow.OnUpdate(float deltaTime)
+        protected virtual void Hide()
         {
-            throw new System.NotImplementedException();
+            //base hide ..
         }
 
-        void IUIWindow.OnAwake()
+        public virtual void OnUpdate()
         {
-            throw new System.NotImplementedException();
+            //base OnUpdate ..
         }
 
-        void IUIWindow.OnDestroy()
+        public virtual void OnAwake()
         {
-            throw new System.NotImplementedException();
+            //base OnAwake ..
         }
 
-        void IUIWindow.OnStart()
+        public virtual void OnDestroy()
         {
-            throw new System.NotImplementedException();
+            //base OnDestroy ..
+        }
+
+        public virtual void OnStart()
+        {
+            //base OnStart ..
+        }
+
+        public virtual bool IsDestroy()
+        {
+            return true;
+        }
+
+        public virtual bool IsTopSortingOrder()
+        {
+            return false;
         }
     }
 }

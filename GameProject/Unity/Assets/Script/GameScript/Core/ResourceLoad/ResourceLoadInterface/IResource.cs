@@ -15,10 +15,10 @@ namespace MyGame
         
         GameObject AllocGameObject(string resPath, Transform parent);
         
-        IEnumerator AllocGameObjectAsync(string resPath, Action<GameObject> onLoaded, Transform parent);
+        IEnumerator AllocGameObjectAsync(string resPath, Action<GameObject> onLoaded, Transform parent,AsyncTiming asyncTiming);
 
         Object LoadResourceAsset(string path, Type type);
 
-        IEnumerator LoadResourceAssetAsync(string path, Transform parent, Action<GameObject> onLoaded);
+        IEnumerator LoadResourceAssetAsync(string path, Transform parent, Action<GameObject> onLoaded,AsyncTiming asyncTiming);
     }
 }
