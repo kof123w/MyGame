@@ -14,36 +14,35 @@ namespace MyGame
 
     public class NetManager : Singleton<NetManager>
     {
-        private ConnectType _mConnectType = ConnectType.OffLine;
+        private ConnectType connectType = ConnectType.OffLine;
+        private Socket socket;
+        Queue<byte[]> que = new ();
 
-        public void SetConnectType(int connectType)
+        public void SetConnectType(int connectTy)
         {
-            _mConnectType = (ConnectType)connectType;
+            this.connectType = (ConnectType) connectTy;
         }
 
         public ConnectType GetConnectType()
         {
-            return _mConnectType;
-        }
-
-
-        private Socket m_socket;
-        Queue<byte[]> que = new ();
+            return connectType;
+        } 
+       
         public void ConnectSvr()
         {
-            m_socket = new Socket(AddressFamily.InterNetwork,SocketType.Stream,ProtocolType.Tcp);
-            m_socket.Connect("127.0.0.1",7000); 
+            socket = new Socket(AddressFamily.InterNetwork,SocketType.Stream,ProtocolType.Tcp);
+            socket.Connect("127.0.0.1",7000); 
             ThreadPool.QueueUserWorkItem(Receive);
         }
     
         private void Receive(object state)
         {
             byte[] buffer=new byte[1024];
-            int len=m_socket.Receive(buffer,SocketFlags.None);
+            int len=socket.Receive(buffer,SocketFlags.None);
             if (len <= 0)
             {
-                m_socket.Shutdown(SocketShutdown.Both);
-                m_socket.Close();
+                socket.Shutdown(SocketShutdown.Both);
+                socket.Close();
                 return;
             }
             byte[] data=buffer.Take(len).ToArray();
@@ -54,9 +53,9 @@ namespace MyGame
 
         public void SendTxt()
         {
-            if (m_socket.Connected)
+            if (socket.Connected)
             {
-                m_socket.Send(Encoding.UTF8.GetBytes("你好服务器，我是客户端，我链接进来了!!!"));
+                socket.Send(Encoding.UTF8.GetBytes("你好服务器，我是客户端，我链接进来了!!!"));
             }
         }
     }

@@ -176,7 +176,7 @@ public static class ExcelTool
     }
 
     //生成后缀
-    private static string m_GenSuffix = "BinCache";
+    private static string genSuffix = "BinCache";
     //生成vo mgr class
     private static void GenVoClassBinCache(ExcelWorksheet worksheet, int maxRow, string tableName, string binFile)
     {
@@ -191,9 +191,9 @@ public static class ExcelTool
             sw.WriteLine("using System.IO;");
             sw.WriteLine("namespace Config");
             sw.WriteLine("{");
-            sw.WriteLine($"\tclass {tableName}{m_GenSuffix}:CacheObject<{tableName}>");
+            sw.WriteLine($"\tclass {tableName}{genSuffix}:CacheObject<{tableName}>");
             sw.WriteLine("\t{"); 
-            sw.WriteLine($"\t\tpublic {tableName}{m_GenSuffix}()");
+            sw.WriteLine($"\t\tpublic {tableName}{genSuffix}()");
             sw.WriteLine("\t\t{");
             sw.WriteLine($"\t\t\tFileStream fileStream = new FileStream(\"{binFile}\",FileMode.Open);");
             sw.WriteLine($"\t\t\tBinaryReader binaryReader = new BinaryReader(fileStream);");

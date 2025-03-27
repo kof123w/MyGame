@@ -8,7 +8,7 @@ namespace Config
     {  
         public static void PreRead()
         {
-            DLogger.Log("==============PreRead Config============");
+            DLogger.Log("==============>PreRead Config");
             Init(DefInputConfigManager.Instance);
         }
 

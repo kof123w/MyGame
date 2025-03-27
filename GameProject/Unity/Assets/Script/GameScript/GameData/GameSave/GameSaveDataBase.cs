@@ -18,16 +18,16 @@ namespace MyGame
     {
         public long Id { get;  set; }
         //通过元数据进行序列化
-        private Dictionary<PlayerDataType, IMetaData> m_metaDatas = new Dictionary<PlayerDataType, IMetaData>();
+        private Dictionary<PlayerDataType, IMetaData> metaDatas = new Dictionary<PlayerDataType, IMetaData>();
 
-        private bool m_isInited = false;
+        private bool isInited = false;
         
         //初始化 序列化结构
         public void Init()
         {
             PlayerState playerState = new PlayerState(); 
-            m_metaDatas.Add(PlayerDataType.PlayerState,playerState);
-            m_isInited = true;
+            metaDatas.Add(PlayerDataType.PlayerState,playerState);
+            isInited = true;
         }
 
         //保存下
@@ -43,9 +43,9 @@ namespace MyGame
             }
 
             for (int i = begin;i < end;i++) {
-                if (m_metaDatas.ContainsKey((PlayerDataType)i))
+                if (metaDatas.ContainsKey((PlayerDataType)i))
                 {
-                    IMetaData metaData = m_metaDatas[(PlayerDataType)i];
+                    IMetaData metaData = metaDatas[(PlayerDataType)i];
                     BinaryFormatter bf = new BinaryFormatter();
                     FileStream fileStream = File.Create($"{GameSaveConst.SavePath}//{Id}//{i}.sav");
                     bf.Serialize(fileStream,metaData);
@@ -65,13 +65,13 @@ namespace MyGame
                 return;
             }
 
-            if (!m_isInited)
+            if (!isInited)
             {
                 Init();
             }
 
             for (int i = begin;i < end;i++) {
-                if (m_metaDatas.ContainsKey((PlayerDataType)i))
+                if (metaDatas.ContainsKey((PlayerDataType)i))
                 {
                     string fileName = $"{GameSaveConst.SavePath}//{Id}//{i}.sav";
                     BinaryFormatter bf = new BinaryFormatter();//创建一个二进制格式化程序
@@ -79,7 +79,7 @@ namespace MyGame
                     {
                         FileStream fileStream = File.Open(fileName, FileMode.Open);//打开数据流
                         IMetaData data = (IMetaData)bf.Deserialize(fileStream);//调用二进制格式化程序中的反序列化方法，将数据流反序列化为save对象并进行保存
-                        m_metaDatas[(PlayerDataType)i].Update(data);
+                        metaDatas[(PlayerDataType)i].Update(data);
                         fileStream.Close();//关闭文件流
                     }
                 } 

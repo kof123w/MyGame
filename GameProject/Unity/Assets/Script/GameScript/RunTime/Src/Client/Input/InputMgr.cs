@@ -7,23 +7,23 @@ namespace MyGame
 {
     public class InputMgr : Singleton<InputMgr>
     {
-        private List<DefInputConfig> m_defInputConfigs;
+        private List<DefInputConfig> defInputConfigs;
 
-        private Dictionary<int, KeyCode> m_cmdKeyMap = new();
+        private Dictionary<int, KeyCode> cmdKeyMap = new();
         //初始化
         public void Init()
         {
-            DLogger.Log("===========Init Input Module==========");
-            m_defInputConfigs = DefInputConfigManager.Instance.GetInputConfigs();
-            if (m_defInputConfigs != null)
+            DLogger.Log("==============>Init Input Module");
+            defInputConfigs = DefInputConfigManager.Instance.GetInputConfigs();
+            if (defInputConfigs != null)
             {
-                for (int i = 0; i < m_defInputConfigs.Count; i++)
+                for (int i = 0; i < defInputConfigs.Count; i++)
                 {
                     foreach (KeyCode keyCode in Enum.GetValues(typeof(KeyCode)))
                     { 
-                        if (keyCode.ToString().Equals(m_defInputConfigs[i].Keys))
+                        if (keyCode.ToString().Equals(defInputConfigs[i].Keys))
                         {
-                            m_cmdKeyMap.Add(m_defInputConfigs[i].ID,keyCode);
+                            cmdKeyMap.Add(defInputConfigs[i].ID,keyCode);
                         }
                     } 
                 }
@@ -33,18 +33,18 @@ namespace MyGame
         //接收输入
         public void RevInput()
         {
-            if (m_defInputConfigs != null)
+            if (defInputConfigs != null)
             {
                 if (Input.anyKey)
                 {
-                    for (int i = 0; i < m_defInputConfigs.Count; i++)
+                    for (int i = 0; i < defInputConfigs.Count; i++)
                     {
-                        if (m_cmdKeyMap.ContainsKey(m_defInputConfigs[i].ID))
+                        if (cmdKeyMap.ContainsKey(defInputConfigs[i].ID))
                         {
-                            var keyCode = m_cmdKeyMap[m_defInputConfigs[i].ID];
+                            var keyCode = cmdKeyMap[defInputConfigs[i].ID];
                             if (Input.GetKey(keyCode))
                             {
-                                this.Push<InputCmd>(InputEvent.KeyHold,(InputCmd)m_defInputConfigs[i].ID);
+                                GameEvent.Push(InputEvent.KeyHold,(InputCmd)defInputConfigs[i].ID);
                                 Debug.Log(keyCode.ToString());
                             }
                         }
@@ -54,14 +54,14 @@ namespace MyGame
                 
                 if (Input.anyKeyDown)
                 {
-                    for (int i = 0; i < m_defInputConfigs.Count; i++)
+                    for (int i = 0; i < defInputConfigs.Count; i++)
                     {
-                        if (m_cmdKeyMap.ContainsKey(m_defInputConfigs[i].ID))
+                        if (cmdKeyMap.ContainsKey(defInputConfigs[i].ID))
                         {
-                            var keyCode = m_cmdKeyMap[m_defInputConfigs[i].ID];
+                            var keyCode = cmdKeyMap[defInputConfigs[i].ID];
                             if (Input.GetKey(keyCode))
                             {
-                                this.Push<InputCmd>(InputEvent.KeyHold,(InputCmd)m_defInputConfigs[i].ID);
+                                GameEvent.Push(InputEvent.KeyHold,(InputCmd)defInputConfigs[i].ID);
                                 Debug.Log(keyCode.ToString());
                             }
                         }

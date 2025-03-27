@@ -5,13 +5,17 @@ namespace MyGame
 {
     public class UIManager : Singleton<UIManager>
     { 
-        private int m_AddWindowSortNormal = 100;
-        private List<UIWindow> m_WindowList = new List<UIWindow>();
-        
-        private Transform _mRoot;
+        private int addWindowSortNormal = 100;
+        private List<UIWindow> windowList = new List<UIWindow>();
+        private readonly List<IUIController> uIControllerList = new List<IUIController>();
+        private Transform root;
         public void InitUIManager()
         {
-            _mRoot = GameObject.Find("UIRoot").transform; 
+            DLogger.Log("==============>InitUIManager");
+            root = GameObject.Find("UIRoot").transform; 
+            uIControllerList.Clear();
+            
+            this.Subscribe<IUIController>(UIEvent.UIManagerEvent_AddUIController,AddController);
         }
        
         public static Transform GetUIRoot()
@@ -21,21 +25,21 @@ namespace MyGame
                 return null;
             }
 
-            return Instance._mRoot;
+            return Instance.root;
         }
 
         public static void ShowWindow<T>() where T : UIWindow, new()
         {
             if (Instance is not null)
             { 
-                var list = Instance.m_WindowList;
+                var list = Instance.windowList;
                 int index = list.FindIndex(w => w.GetType() == typeof(T)); 
                 var hasWindow = index!=-1;
                 T t = hasWindow ? (T)list[index] : Pool.Malloc<T>(); 
                 if (t != null)
                 {
                     int maxSort = t.IsTopSortingOrder() ? short.MaxValue : Instance.GetMaxSort(); 
-                    maxSort += Instance.m_AddWindowSortNormal;
+                    maxSort += Instance.addWindowSortNormal;
                     t.SetWindowSortingOrder(ref maxSort);
                     t.IsShow = true;
                     t.SetWindowType(typeof(T));
@@ -48,7 +52,7 @@ namespace MyGame
         {
             if (Instance is not null)
             { 
-                var list = Instance.m_WindowList;
+                var list = Instance.windowList;
                 int index = list.FindIndex(w => w.GetType() == typeof(T)); 
                 
                 var hasWindow = index!=-1;
@@ -64,7 +68,7 @@ namespace MyGame
         {
             if (Instance is not null)
             { 
-                var list = Instance.m_WindowList;
+                var list = Instance.windowList;
                 int index = list.FindIndex(w => w.GetType() == typeof(T)); 
                 
                 var hasWindow = index!=-1;
@@ -80,7 +84,7 @@ namespace MyGame
         {
             if (Instance is not null)
             { 
-                var list = Instance.m_WindowList;
+                var list = Instance.windowList;
                 int index = list.FindIndex(w => w.GetType() == typeof(T)); 
                 
                 var hasWindow = index!=-1;
@@ -97,8 +101,8 @@ namespace MyGame
 
         public void Update()
         {
-            for (int i = 0; i < m_WindowList.Count; i++) {
-                var window = m_WindowList[i];
+            for (int i = 0; i < windowList.Count; i++) {
+                var window = windowList[i];
                 if (window.IsDestroy() || !window.IsLoaded())
                 {
                     continue;
@@ -110,9 +114,9 @@ namespace MyGame
         private int GetMaxSort()
         {
             int max = 0;
-            for (int i = 0; i < m_WindowList.Count; i++)
+            for (int i = 0; i < windowList.Count; i++)
             {
-                var uiWindow = m_WindowList[i];
+                var uiWindow = windowList[i];
                 uiWindow.GetWindowSortingOrder(out var tmp);
                 if (tmp > max)
                 {
@@ -120,6 +124,12 @@ namespace MyGame
                 } 
             } 
             return max;
+        }
+
+        private void AddController(IUIController controller)
+        {
+            controller.RegisterEvent();
+            uIControllerList.Add(controller);
         }
     }
 }

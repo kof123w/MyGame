@@ -5,88 +5,90 @@ namespace MyGame
 {
     public class EventListenManager : Singleton<EventListenManager>,IEventManger
     { 
-        public Dictionary<long,Dictionary<object,Delegate>> m_eventRegisterDic = new ();  
+        public Dictionary<long,Dictionary<object,Delegate>> eventRegisterDict;  
         
         public void Init()
         {
-            DLogger.Log("===Start to init EventSysManager!===");
+            DLogger.Log("==============>Start to init EventSysManager!");
+            eventRegisterDict = new Dictionary<long,Dictionary<object,Delegate>>();
+            eventRegisterDict.Clear();
         }
         
 
         #region AddListener for wrap call back
 
-        public void AddListener(object obj,long eventId, Action act)
+        public void AddListener(Object obj,long eventId, Action act)
         {
-            Dictionary<object,Delegate> tmpDel;
-            if (m_eventRegisterDic.TryGetValue(eventId, out tmpDel))
+            Dictionary<Object,Delegate> tmpDel;
+            if (eventRegisterDict.TryGetValue(eventId, out tmpDel))
             {
                 tmpDel.Add(obj,act);
             }
             else
             {
-                tmpDel = new Dictionary<object,Delegate>();
+                tmpDel = new Dictionary<Object,Delegate>();
                 tmpDel.Add(obj,act);
-                m_eventRegisterDic.Add(eventId,tmpDel);
+                eventRegisterDict.Add(eventId,tmpDel);
             }
         }
 
-        public void AddListener<T>(object obj,long eventId, Action<T> act)
+        public void AddListener<T>(Object obj,long eventId, Action<T> act)
         {
-            Dictionary<object,Delegate> tmpDel;
-            if (m_eventRegisterDic.TryGetValue(eventId, out tmpDel))
+            Dictionary<Object,Delegate> tmpDel;
+            if (eventRegisterDict.TryGetValue(eventId, out tmpDel))
             {
                 tmpDel.Add(obj,act);
             }
             else
             {
-                tmpDel = new Dictionary<object,Delegate>();
+                tmpDel = new Dictionary<Object,Delegate>();
                 tmpDel.Add(obj,act);
-                m_eventRegisterDic.Add(eventId,tmpDel);
+                eventRegisterDict.Add(eventId,tmpDel);
             }
         }
 
-        public void AddListener<T1,T2>(object obj,long eventId, Action<T1,T2> act)
+        public void AddListener<T1,T2>(Object obj,long eventId, Action<T1,T2> act)
         {
-            Dictionary<object,Delegate> tmpDel;
-            if (m_eventRegisterDic.TryGetValue(eventId, out tmpDel))
+            Dictionary<Object,Delegate> tmpDel;
+            if (eventRegisterDict.TryGetValue(eventId, out tmpDel))
             {
                 tmpDel.Add(obj,act);
             }
             else
             {
-                tmpDel = new Dictionary<object,Delegate>();
+                tmpDel = new Dictionary<Object,Delegate>();
                 tmpDel.Add(obj,act);
-                m_eventRegisterDic.Add(eventId,tmpDel);
+                eventRegisterDict.Add(eventId,tmpDel);
             }
         }
 
-        public void AddListener<T1, T2, T3>(object obj,long eventId, Action<T1, T2, T3> act)
+        public void AddListener<T1, T2, T3>(Object obj,long eventId, Action<T1, T2, T3> act)
         {
-            Dictionary<object,Delegate> tmpDel;
-            if (m_eventRegisterDic.TryGetValue(eventId, out tmpDel))
+            Dictionary<Object,Delegate> tmpDel;
+            if (eventRegisterDict.TryGetValue(eventId, out tmpDel))
             {
                 tmpDel.Add(obj,act);
             }
             else
             {
-                tmpDel = new Dictionary<object,Delegate>();
+                tmpDel = new Dictionary<Object,Delegate>();
                 tmpDel.Add(obj,act);
-                m_eventRegisterDic.Add(eventId,tmpDel);
+                eventRegisterDict.Add(eventId,tmpDel);
             }
         }
 
-        public void AddListener<T1, T2, T3, T4>(object obj,long eventId, Action<T1, T2, T3, T4> act)
+        public void AddListener<T1, T2, T3, T4>(Object obj,long eventId, Action<T1, T2, T3, T4> act)
         {
-            Dictionary<object,Delegate> tmpDel;
-            if (m_eventRegisterDic.TryGetValue(eventId, out tmpDel))
+            Dictionary<Object,Delegate> tmpDel;
+            if (eventRegisterDict.TryGetValue(eventId, out tmpDel))
             {
                 tmpDel.Add(obj,act);
             }
             else
             {
-                tmpDel = new Dictionary<object,Delegate>();
+                tmpDel = new Dictionary<Object,Delegate>();
                 tmpDel.Add(obj,act);
-                m_eventRegisterDic.Add(eventId,tmpDel);
+                eventRegisterDict.Add(eventId,tmpDel);
             }
         }
 
@@ -94,13 +96,21 @@ namespace MyGame
 
         #region clear event
 
-        public void Unsubscribe(object obj,long eventId)
+        public void Unsubscribe(Object obj,long eventId)
         {
+            Dictionary<Object,Delegate> tmpDel;
+            if (eventRegisterDict.TryGetValue(eventId, out tmpDel))
+            {
+                if (tmpDel.ContainsKey(obj))
+                {
+                    tmpDel.Remove(obj);
+                }
+            }
         }
 
         public void ClearAllEventRegister()
         {
-            m_eventRegisterDic.Clear();
+            eventRegisterDict.Clear();
         }
 
         #endregion
@@ -110,7 +120,7 @@ namespace MyGame
         public void Push(long eventId)
         {
             Dictionary<object,Delegate> tmpDel;
-            if (m_eventRegisterDic.TryGetValue(eventId, out tmpDel))
+            if (eventRegisterDict.TryGetValue(eventId, out tmpDel))
             {
                 var itor = tmpDel.GetEnumerator();
                 while (itor.MoveNext())
@@ -128,7 +138,7 @@ namespace MyGame
         public void Push<T>(long eventId,T t)
         {
             Dictionary<object,Delegate> tmpDel;
-            if (m_eventRegisterDic.TryGetValue(eventId, out tmpDel))
+            if (eventRegisterDict.TryGetValue(eventId, out tmpDel))
             {
                 var itor = tmpDel.GetEnumerator();
                 while (itor.MoveNext())
@@ -146,7 +156,7 @@ namespace MyGame
         public void Push<T1,T2>(long eventId,T1 t1,T2 t2)
         {
             Dictionary<object,Delegate> tmpDel;
-            if (m_eventRegisterDic.TryGetValue(eventId, out tmpDel))
+            if (eventRegisterDict.TryGetValue(eventId, out tmpDel))
             {
                 var itor = tmpDel.GetEnumerator();
                 while (itor.MoveNext())
@@ -164,7 +174,7 @@ namespace MyGame
         public void Push<T1,T2,T3>(long eventId,T1 t1,T2 t2,T3 t3)
         {
             Dictionary<object,Delegate> tmpDel;
-            if (m_eventRegisterDic.TryGetValue(eventId, out tmpDel))
+            if (eventRegisterDict.TryGetValue(eventId, out tmpDel))
             {
                 var itor = tmpDel.GetEnumerator();
                 while (itor.MoveNext())
@@ -182,7 +192,7 @@ namespace MyGame
         public void Push<T1,T2,T3,T4>(long eventId,T1 t1,T2 t2,T3 t3,T4 t4)
         {
             Dictionary<object,Delegate> tmpDel;
-            if (m_eventRegisterDic.TryGetValue(eventId, out tmpDel))
+            if (eventRegisterDict.TryGetValue(eventId, out tmpDel))
             {
                 var itor = tmpDel.GetEnumerator();
                 while (itor.MoveNext())

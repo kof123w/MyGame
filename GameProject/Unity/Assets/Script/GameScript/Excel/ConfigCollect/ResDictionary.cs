@@ -6,17 +6,17 @@ namespace Config
 {
     class ResDictionary<T1,T2> where T2 : new ()
     {
-        private Dictionary<T1, T2> m_dict = new Dictionary<T1, T2>();
-        private CacheObject<T2> m_cacheObject = null;
+        private Dictionary<T1, T2> dict = new Dictionary<T1, T2>();
+        private CacheObject<T2> cacheObject = null;
         
         public List<T2> GetCacheList
         {
-            get { return m_cacheObject.CacheList; }
+            get { return cacheObject.CacheList; }
         }
  
         public ResDictionary(CacheObject<T2> cacheObject)
         {
-            m_cacheObject = cacheObject;
+            this.cacheObject = cacheObject;
         }
 
         public void Init(Func<T2,T1> func)
@@ -27,11 +27,11 @@ namespace Config
                 return;
             }
 
-            if (m_cacheObject != null)
+            if (cacheObject != null)
             {
-                for (int i = 0; i < m_cacheObject.CacheList.Count; i++)
+                for (int i = 0; i < cacheObject.CacheList.Count; i++)
                 {
-                    T2 t2 = m_cacheObject.CacheList[i];
+                    T2 t2 = cacheObject.CacheList[i];
                     T1 t1 = func(t2);
                     AddVal(t1, t2);
                 }
@@ -40,7 +40,7 @@ namespace Config
 
         private void AddVal(T1 key,T2 val)
         {
-            bool res = m_dict.TryAdd(key, val);
+            bool res = dict.TryAdd(key, val);
             if (!res)
             {
                 DLogger.Error($"add config key failed.key {key} !");
@@ -49,7 +49,7 @@ namespace Config
 
         public T2 TryGetVal(T1 key)
         {
-            if (m_dict.TryGetValue(key,out var t2))
+            if (dict.TryGetValue(key,out var t2))
             {
                 return t2;
             }

@@ -5,7 +5,7 @@ namespace MyGame
 {
     public class GameSaveMgr : Singleton<GameSaveMgr>,ISaveDataMgr
     { 
-        private Dictionary<long, ISaveDataBase> m_dict = new Dictionary<long, ISaveDataBase>(); 
+        private Dictionary<long, ISaveDataBase> dict = new Dictionary<long, ISaveDataBase>(); 
         
         public void SaveBin()
         {
@@ -15,7 +15,7 @@ namespace MyGame
                 Directory.CreateDirectory(GameSaveConst.SavePath);
             }
 
-            foreach (var pair in m_dict)
+            foreach (var pair in dict)
             {
                 pair.Value.Save();
             }
@@ -38,7 +38,7 @@ namespace MyGame
                     string directoryName = Path.GetFileName(directory);
                     long id = long.Parse(directoryName);
                     ISaveDataBase dataBase;
-                    if (m_dict.TryGetValue(id, out dataBase))
+                    if (dict.TryGetValue(id, out dataBase))
                     {
                         dataBase.Load();
                     }
@@ -47,7 +47,7 @@ namespace MyGame
                         dataBase = new GameSaveDataBase();
                         dataBase.Id = id;
                         dataBase.Load();
-                        m_dict.Add(id,dataBase);
+                        dict.Add(id,dataBase);
                     }
                 }
             }
@@ -59,7 +59,7 @@ namespace MyGame
             ISaveDataBase dataBase = new GameSaveDataBase();
             dataBase.Id = TimeTool.GetTimeStamp(); 
             dataBase.Init();
-            m_dict.Add(dataBase.Id,dataBase);
+            dict.Add(dataBase.Id,dataBase);
         }
 
         public void DeleteBin()

@@ -7,7 +7,7 @@ namespace MyGame
 {
     public class Pool : Singleton<Pool>
     {
-        private Dictionary<Type,List<IMemoryPool>> m_ObjectPool = new Dictionary<Type, List<IMemoryPool>>();
+        private Dictionary<Type,List<IMemoryPool>> objectPool = new Dictionary<Type, List<IMemoryPool>>();
 
         public static T Malloc<T>() where T : class, IMemoryPool, new()
         {
@@ -40,9 +40,9 @@ namespace MyGame
                 return;
             }
 
-            if (Instance.m_ObjectPool.ContainsKey(typeof(T)))
+            if (Instance.objectPool.ContainsKey(typeof(T)))
             {
-                Instance.m_ObjectPool.Remove(typeof(T));
+                Instance.objectPool.Remove(typeof(T));
             }
         }
 
@@ -56,16 +56,16 @@ namespace MyGame
                 return;
             }
 
-            if (Instance.m_ObjectPool!=null)
+            if (Instance.objectPool!=null)
             {
-                Instance.m_ObjectPool.Clear();
+                Instance.objectPool.Clear();
             }
         }
 
         public IMemoryPool CreateFromPool(Type type)
         {
             IMemoryPool obj;
-            if (m_ObjectPool.TryGetValue(type, out var pool))
+            if (objectPool.TryGetValue(type, out var pool))
             {
                 if (pool.Count > 0)
                 {
@@ -81,7 +81,7 @@ namespace MyGame
 
         public bool DestroyRecycle(Type type, IMemoryPool entity)
         {
-            if (m_ObjectPool.TryGetValue(type, out var pool))
+            if (objectPool.TryGetValue(type, out var pool))
             {
                 pool.Add(entity); 
             }
@@ -89,7 +89,7 @@ namespace MyGame
             {
                 pool = new List<IMemoryPool>(20);
                 pool.Add(entity);
-                m_ObjectPool.Add(type, pool);
+                objectPool.Add(type, pool);
             }
             return true;
         }

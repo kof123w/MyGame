@@ -4,40 +4,40 @@ namespace MyGame
 {
     public class AsyncTiming : IMemoryPool
     {
-        private bool _mIsDisposed = false;
-        private bool _mIsLoaded = false;  
-        private Coroutine _mCoroutine;
+        private bool mIsDisposed = false;
+        private bool mIsLoaded = false;  
+        private Coroutine mCoroutine;
 
         public bool IsLoaded
         {
-            get { return _mIsLoaded; }
+            get { return mIsLoaded; }
         }
 
         public void CancelLoading()
         {
-            if (_mIsDisposed || _mIsLoaded)
+            if (mIsDisposed || mIsLoaded)
             {
                 return;
             } 
  
-            _mIsDisposed = true; 
-            _mCoroutine = null;
+            mIsDisposed = true; 
+            mCoroutine = null;
             System.GC.Collect();
         }
 
         public void SetCoroutine(Coroutine coroutine)
         {
-            _mCoroutine = coroutine;
+            mCoroutine = coroutine;
         }
 
         public Coroutine GetCoroutine()
         {
-            return _mCoroutine;
+            return mCoroutine;
         } 
        
         public void LoadFinish()
         {
-            _mIsLoaded = true; 
+            mIsLoaded = true; 
         }
     }
 }

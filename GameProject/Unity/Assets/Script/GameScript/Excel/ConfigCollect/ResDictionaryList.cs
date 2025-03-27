@@ -7,16 +7,16 @@ namespace MyGame
 {
     class ResDictionaryList<T1,T2>
     {
-        private Dictionary<T1, List<T2>> m_dictList = new Dictionary<T1,List<T2>>();
-        private CacheObject<T2> m_cacheObject = null;
+        private Dictionary<T1, List<T2>> dictList = new Dictionary<T1,List<T2>>();
+        private CacheObject<T2> cacheObject = null;
         public ResDictionaryList(CacheObject<T2> cache)
         {
-            m_cacheObject = cache;
+            cacheObject = cache;
         }
 
         public List<T2> GetCacheList
         {
-            get { return m_cacheObject.CacheList; }
+            get { return cacheObject.CacheList; }
         }
 
         public void Init(Func<T2,T1> func)
@@ -27,17 +27,17 @@ namespace MyGame
                 return;
             }
 
-            if (m_cacheObject != null)
+            if (cacheObject != null)
             {
-                for (int i = 0; i < m_cacheObject.CacheList.Count; i++)
+                for (int i = 0; i < cacheObject.CacheList.Count; i++)
                 {
-                    T2 t2 = m_cacheObject.CacheList[i];
+                    T2 t2 = cacheObject.CacheList[i];
                     T1 t1 = func(t2);
                     List<T2> t2List = TryGetVal(t1);
                     if (t2List == null)
                     {
                         t2List = new List<T2>();
-                        m_dictList.Add(t1,t2List);
+                        dictList.Add(t1,t2List);
                     }
                     
                     t2List.Add(t2);
@@ -47,7 +47,7 @@ namespace MyGame
 
         public List<T2> TryGetVal(T1 key)
         {
-            if (m_dictList.TryGetValue(key,out var t2List))
+            if (dictList.TryGetValue(key,out var t2List))
             {
                 return t2List;
             }
