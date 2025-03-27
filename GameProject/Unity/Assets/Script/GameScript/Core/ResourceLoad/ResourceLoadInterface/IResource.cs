@@ -8,17 +8,7 @@ namespace MyGame
     public interface IResource
     {
         void UnloadUnusedAssets();
-        
-        void DestroyObject(Object go);
-        
-        void DestroyObject(Object go, float delayTime);
-        
-        GameObject AllocGameObject(string resPath, Transform parent);
-        
-        IEnumerator AllocGameObjectAsync(string resPath, Action<GameObject> onLoaded, Transform parent,AsyncTiming asyncTiming);
 
-        Object LoadResourceAsset(string path, Type type);
-
-        IEnumerator LoadResourceAssetAsync(string path, Transform parent, Action<GameObject> onLoaded,AsyncTiming asyncTiming);
+        IEnumerator LoadResourceGameObjectAsync(string path, Transform parent, Action<GameObject> onLoaded,AsyncTiming asyncTiming);
     }
 }

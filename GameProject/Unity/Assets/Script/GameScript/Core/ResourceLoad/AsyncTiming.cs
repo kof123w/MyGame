@@ -5,25 +5,24 @@ namespace MyGame
     public class AsyncTiming : IMemoryPool
     {
         private bool _mIsDisposed = false;
-        private bool _mIsLoaded = false; 
-        private AssetBundleCreateRequest _mAssetBundleCreateRequest; 
+        private bool _mIsLoaded = false;  
         private Coroutine _mCoroutine;
+
+        public bool IsLoaded
+        {
+            get { return _mIsLoaded; }
+        }
+
         public void CancelLoading()
         {
             if (_mIsDisposed || _mIsLoaded)
             {
                 return;
             } 
-
-            if (_mAssetBundleCreateRequest != null && _mAssetBundleCreateRequest.assetBundle != null)
-            {
-                _mAssetBundleCreateRequest.assetBundle.Unload(true);
-                _mAssetBundleCreateRequest = null;
-                System.GC.Collect();
-            } 
-            _mIsDisposed = true;
-            _mAssetBundleCreateRequest = null;
+ 
+            _mIsDisposed = true; 
             _mCoroutine = null;
+            System.GC.Collect();
         }
 
         public void SetCoroutine(Coroutine coroutine)
@@ -34,17 +33,11 @@ namespace MyGame
         public Coroutine GetCoroutine()
         {
             return _mCoroutine;
-        }
-
-        public void SetAssetBundleCreateRequest(AssetBundleCreateRequest abr)
-        {
-            _mAssetBundleCreateRequest = abr;
-        }
-
+        } 
+       
         public void LoadFinish()
         {
-            _mIsLoaded = true;
-            _mAssetBundleCreateRequest = null;
+            _mIsLoaded = true; 
         }
     }
 }

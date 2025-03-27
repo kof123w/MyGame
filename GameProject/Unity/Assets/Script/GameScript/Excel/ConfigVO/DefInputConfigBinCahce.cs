@@ -6,7 +6,7 @@ namespace Config
 	{
 		public DefInputConfigBinCache()
 		{
-			FileStream fileStream = new FileStream("Assets\\StreamingAssets\\Config\\DefInputConfig.bin",FileMode.Open);
+			FileStream fileStream = new FileStream("Assets\\Resources\\Config\\DefInputConfig.bin",FileMode.Open);
 			BinaryReader binaryReader = new BinaryReader(fileStream);
 			string[] strArray = binaryReader.ReadString().Split('\n');
 			for (int i = 0; i < strArray.Length; i++)

@@ -6,7 +6,7 @@ namespace Config
 	{
 		public TestConfigBinCache()
 		{
-			FileStream fileStream = new FileStream("Assets\\StreamingAssets\\Config\\TestConfig.bin",FileMode.Open);
+			FileStream fileStream = new FileStream("Assets\\Resources\\Config\\TestConfig.bin",FileMode.Open);
 			BinaryReader binaryReader = new BinaryReader(fileStream);
 			string[] strArray = binaryReader.ReadString().Split('\n');
 			for (int i = 0; i < strArray.Length; i++)

@@ -14,7 +14,7 @@ namespace MyGame
         public void Init()
         {
             DLogger.Log("===========Init Input Module==========");
-            m_defInputConfigs = DefInputConfigMgr.Instance.GetInputConfigs();
+            m_defInputConfigs = DefInputConfigManager.Instance.GetInputConfigs();
             if (m_defInputConfigs != null)
             {
                 for (int i = 0; i < m_defInputConfigs.Count; i++)

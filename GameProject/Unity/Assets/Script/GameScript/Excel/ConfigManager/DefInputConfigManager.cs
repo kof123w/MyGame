@@ -2,11 +2,11 @@ using System.Collections.Generic;
 using MyGame;
 namespace Config
 {
-    public class DefInputConfigMgr : Singleton<DefInputConfigMgr>
+    public class DefInputConfigManager : Singleton<DefInputConfigManager>
     {
         private ResDictionary<int, DefInputConfig> m_defInputConfigDict = new(new DefInputConfigBinCache());
 
-        public DefInputConfigMgr()
+        public DefInputConfigManager()
         {
             m_defInputConfigDict.Init(t=>t.ID);
         }

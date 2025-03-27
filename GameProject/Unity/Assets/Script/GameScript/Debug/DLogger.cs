@@ -1,4 +1,5 @@
  
+using System;
 using MyGame;
 using UnityEngine; 
 namespace MyGame
@@ -24,6 +25,14 @@ namespace MyGame
         }
         
         public static void Error(string log)
+        {
+            if (LogType == DebugMode.AllLog || LogType == DebugMode.Error || LogType == DebugMode.WarringOrError)
+            {
+                Debug.LogError(log);
+            }
+        }
+        
+        public static void Error(Exception log)
         {
             if (LogType == DebugMode.AllLog || LogType == DebugMode.Error || LogType == DebugMode.WarringOrError)
             {

@@ -29,36 +29,27 @@ namespace MyGameEditor
                 StringBuilder sb = new StringBuilder();
                 GameObject go = activeObject as GameObject;
                 Transform tf = go.transform;
-                sb.Append($"    public string m_uiName = \"{go.name}\";\n");
-                WriteField(tf, sb);
-                GUIUtility.systemCopyBuffer = sb.ToString();
-            }
-        }
-
-        [MenuItem("GameObject/UI/AutoMethodGenerator")]
-        private static void GenerateUIMethod()
-        {
-            Object activeObject = Selection.activeObject;
-            if (activeObject is GameObject)
-            {
                 m_indexType.Clear();
                 m_objectList.Clear();
                 m_nameList.Clear();
-                StringBuilder sb = new StringBuilder();
-                GameObject go = activeObject as GameObject;
-                Transform tf = go.transform;
+                if (go.GetComponent<RefRoot>()!=null)
+                {
+                    Object.DestroyImmediate(go.GetComponent<RefRoot>());
+                }
+                sb.Append("    #region 自动生成\n"); 
+                WriteField(tf, sb);
+                
                 CalcTypeList(tf);
-                sb.Append("    public void Awake(ref ComponentData data)\n");
+                sb.Append("    public override void OnAwake()\n");
                 sb.Append("    {\n"); 
-                sb.Append($"    if(data is {go.name} window)\n"); 
-                sb.Append("     {\n");
-                sb.Append("      RefRoot refRoot = window.GetGameObject().GetComponent<RefRoot>();\n");
-                WriteMethod(go, sb);
-                sb.Append("     }\n");
+                sb.Append($"    base.OnAwake();\n");  
+                sb.Append("     RefRoot refRoot = MGameObject.GetComponent<RefRoot>();\n");
+                WriteMethod(go, sb); 
                 sb.Append("    }\n");
+                sb.Append("    #endregion\n");
                 GUIUtility.systemCopyBuffer = sb.ToString();
             }
-        }
+        } 
 
         private static void WriteField(Transform tf, StringBuilder sb)
         {
@@ -71,6 +62,11 @@ namespace MyGameEditor
             {
                 var childTrans = tf.GetChild(i);
                 WriteField(childTrans, sb);
+                if (childTrans.name.Contains(" "))
+                {
+                    continue;
+                }
+
                 if (childTrans.name.Contains(m_TextName))
                 {
                     sb.Append($"    public Text {childTrans.name};\n");
@@ -121,6 +117,11 @@ namespace MyGameEditor
             {
                 var childTrans = tf.GetChild(i);
                 CalcTypeListStack(childTrans);
+                if (childTrans.name.Contains(" "))
+                {
+                    continue;
+                }
+
                 if (childTrans.name.Contains(m_TextName))
                 {
                     m_indexType.Add(m_TextName);
@@ -177,34 +178,38 @@ namespace MyGameEditor
             RefRoot refRoot = gameObject.AddComponent<RefRoot>();
             for (int i = 0; i < m_indexType.Count; i++)
             {
+                if (m_indexType[i].Contains(" "))
+                {
+                    continue;
+                }
                 refRoot.AddRef(m_objectList[i]);
                 if (m_indexType[i].Contains(m_TextName))
                 {
-                    sb.Append($"          window.{m_nameList[i]} = refRoot.GetText({i});\n"); 
+                    sb.Append($"          {m_nameList[i]} = refRoot.GetText({i});\n"); 
                 }
                 else if (m_indexType[i].Contains(m_ImageName))
                 {
-                    sb.Append($"          window.{m_nameList[i]} = refRoot.GetImage({i});\n"); 
+                    sb.Append($"          {m_nameList[i]} = refRoot.GetImage({i});\n"); 
                 }
                 else if (m_indexType[i].Contains(m_GoName))
                 {
-                    sb.Append($"          window.{m_nameList[i]} = refRoot.GetGameObject({i});\n"); 
+                    sb.Append($"          {m_nameList[i]} = refRoot.GetGameObject({i});\n"); 
                 }
                 else if (m_indexType[i].Contains(m_tfName))
                 {
-                    sb.Append($"          window.{m_nameList[i]} = refRoot.GetTransform({i});\n"); 
+                    sb.Append($"         {m_nameList[i]} = refRoot.GetTransform({i});\n"); 
                 }
                 else if (m_indexType[i].Contains(m_BtnName))
                 {
-                    sb.Append($"          window.{m_nameList[i]} = refRoot.GetButton({i});\n"); 
+                    sb.Append($"          {m_nameList[i]} = refRoot.GetButton({i});\n"); 
                 }
                 else if (m_indexType[i].Contains(m_InputText))
                 {
-                    sb.Append($"          window.{m_nameList[i]} = refRoot.GetInputField({i});\n"); 
+                    sb.Append($"          {m_nameList[i]} = refRoot.GetInputField({i});\n"); 
                 }
                 else if (m_indexType[i].Contains(m_rectName))
                 {
-                    sb.Append($"          window.{m_nameList[i]} = refRoot.GetRectTransform({i});\n"); 
+                    sb.Append($"          {m_nameList[i]} = refRoot.GetRectTransform({i});\n"); 
                 }
             }
         }

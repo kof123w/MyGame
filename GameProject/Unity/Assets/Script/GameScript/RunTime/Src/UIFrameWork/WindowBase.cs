@@ -2,32 +2,55 @@
 
 namespace MyGame
 {
-    public class WindowBase
+    public class WindowBase:IMemoryPool
     {
-        protected bool m_IsShow = false;
-        protected bool m_IsLoaded = false;
-        protected GameObject m_GameObject = null;
-        protected Transform m_Transform = null; 
+        protected bool MIsShow = false;
+        protected bool MIsLoaded = false;
+        protected GameObject MGameObject = null;
+        protected Transform MTransform = null;
+        protected bool MIsShowed = false;
+        protected bool MIsHidded = false; 
+        protected bool MIsDestroyed = false;
+
         public bool IsShow
         { 
             get
             {
-                return m_IsShow;
+                return MIsShow;
             }
             set
             {
-                m_IsShow = value;
-                if (m_IsShow)
+                MIsShow = value;
+                if (MIsShow)
                 {
-                    m_Transform.localScale = Vector3.one;
-                    Show();
+                    if (MGameObject != null)
+                    {
+                        MGameObject.SetActive(true);
+                    }
+
+                    if (MIsLoaded)
+                    {
+                        Show();
+                    } 
                 }
                 else
                 {
-                    m_Transform.localScale = Vector3.zero;
-                    Hide();
+                    if (MGameObject != null)
+                    {
+                        MGameObject.SetActive(false);
+                    }
+
+                    if (MIsLoaded)
+                    {
+                        Hide();
+                    } 
                 }
             }
+        }
+
+        public bool IsLoaded()
+        {
+            return MIsLoaded;
         }
 
         protected virtual void Show()
@@ -58,11 +81,11 @@ namespace MyGame
         public virtual void OnStart()
         {
             //base OnStart ..
-        }
+        } 
 
         public virtual bool IsDestroy()
         {
-            return true;
+            return MIsDestroyed;
         }
 
         public virtual bool IsTopSortingOrder()

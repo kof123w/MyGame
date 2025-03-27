@@ -4,78 +4,134 @@ using System.Collections.Generic;
 namespace MyGame
 {
     public class TimerManger : UnitySingleton<TimerManger>
-{
-    private List<TimerAct> m_onceSecondList = new ();
-    private List<TimerAct> m_onceFrameList = new();
-    private Dictionary<long,TimerAct> m_frameList = new();
-    private Dictionary<long,TimerAct> m_secondList = new();
-
-    //计时器环境初始化
-    public void Init()
     {
-    }
+        private Dictionary<long,TimerAct> m_timerDict; 
 
-    private void Update()
-    {
-        float t = UnityEngine.Time.deltaTime;
-        for (int i = m_onceSecondList.Count-1;i >= 0;i--)
+        //计时器环境初始化
+        public void Init()
         {
-            var actObj = m_onceSecondList[i];
-            actObj.CurProgress += t;
-            if (actObj.CurProgress >= actObj.TotalProgress)
+            m_timerDict = new Dictionary<long, TimerAct>();
+        } 
+        
+        private List<long> m_needDelete = new();
+        private void Update()
+        {
+            float t = UnityEngine.Time.deltaTime;
+            m_needDelete.Clear();
+            foreach (KeyValuePair<long,TimerAct> actObjPair in m_timerDict) 
             {
-                actObj.Action();
-                m_onceSecondList.RemoveAt(i);
+                var actObj = actObjPair.Value;
+                actObj.CurProgress += t;
+                if (actObj.CurProgress >= actObj.TotalProgress)
+                {
+                    actObj.CurrentCnt += 1;
+                    actObj.Action();
+                    if (actObj.TotalCnt!=-1 && actObj.CurrentCnt >= actObj.TotalCnt)
+                    {
+                        m_needDelete.Add(actObjPair.Key);
+                    }
+                }
+            }
+
+            foreach (long deleteKey in m_needDelete)
+            {
+                if (m_timerDict.ContainsKey(deleteKey))
+                {
+                    var timerAct = m_timerDict[deleteKey]; 
+                    m_timerDict.Remove(deleteKey);
+                    Pool.Free(timerAct);
+                }
             }
         }
-         
-        for (int i = m_onceFrameList.Count-1;i >= 0;i--)
+
+        private void DelaySecondRun(string source,float second, Action action,int runCount = 1)
         {
-            var actObj = m_onceFrameList[i];
-            actObj.CurProgress += 1;
-            if (actObj.CurProgress >= actObj.TotalProgress)
+            TimerAct timerAct = Pool.Malloc<TimerAct>();
+            timerAct.Action = action;
+            timerAct.TotalProgress = second;
+            timerAct.TotalCnt = runCount;
+            timerAct.IsFrameTime = false;
+            if (!m_timerDict.TryAdd(source.StringToHash(), timerAct))
             {
-                actObj.Action();
-                m_onceFrameList.RemoveAt(i);
+                DLogger.Error($"Create Timer Error,{source} key already exists!"); 
+            }
+        }
+
+        private void DelayFrameRun(string source,float frame, Action action,int runCount = 1)
+        {
+            TimerAct timerAct = Pool.Malloc<TimerAct>();
+            timerAct.Action = action;
+            timerAct.TotalProgress = frame;
+            timerAct.TotalCnt = runCount;
+            timerAct.IsFrameTime = false;
+            if (!m_timerDict.TryAdd(source.StringToHash(), timerAct))
+            {
+                DLogger.Error($"Create Timer Error,{source} key already exists!"); 
+            }
+        }
+
+        private void FreeTimer(string source)
+        {
+            var deleteKey = source.StringToHash();
+            if (m_timerDict.ContainsKey(deleteKey))
+            {
+                var timerAct = m_timerDict[deleteKey]; 
+                m_timerDict.Remove(deleteKey);
+                Pool.Free(timerAct);
+            }
+        }
+
+        private bool TimerIsFree(string source)
+        {
+            return m_timerDict.ContainsKey(source.StringToHash());
+        }
+
+        public static void CreateLoopSecondTimer(string source,float second, Action action)
+        {
+            if (Instance != null)
+            {
+                Instance.DelaySecondRun(source,second, action,-1);
             }
         }
         
-        for (int i = m_secondList.Count-1;i >= 0;i--)
+        public static void CreateSecondTimer(string source,float second, Action action, int runCount = 1)
         {
-            var actObj = m_secondList[i];
-            actObj.CurProgress += t;
-            if (actObj.CurProgress >= actObj.TotalProgress)
+            if (Instance != null)
             {
-                actObj.Action();
-                actObj.CurProgress = 0;
+                Instance.DelaySecondRun(source,second, action,runCount);
             }
-            
         }
         
-        for (int i = m_frameList.Count-1;i >= 0;i--)
+        public static void CreateLoopFrameTimer(string source,float frame, Action action)
         {
-            var actObj = m_frameList[i];
-            actObj.CurProgress += 1;
-            if (actObj.CurProgress >= actObj.TotalProgress)
+            if (Instance != null)
             {
-                actObj.Action();
-                actObj.CurProgress = 0;
+                Instance.DelayFrameRun(source,frame, action,  -1);
+            }
+        }
+        
+        public static void CreateFrameTimer(string source,float second, Action action, int runCount=1)
+        {
+            if (Instance != null)
+            {
+                Instance.DelayFrameRun(source,second, action,runCount);
+            }
+        }
+
+        public static void ReleaseTimer(string source)
+        {
+            if (Instance != null)
+            {
+                Instance.FreeTimer(source);
+            }
+        }
+
+        public static void IsFreeTimer(string source)
+        {
+            if (Instance != null)
+            {
+                Instance.TimerIsFree(source);
             }
         }
     }
-
-    public void DelaySecondExec(float second,Action action)
-    {
-        TimerAct timerAct = new TimerAct(second,action);
-        m_onceSecondList.Add(timerAct);
-    }
-
-    public void DelayFrameExec(float frame,Action action)
-    {
-        TimerAct timerAct = new TimerAct(frame,action);
-        m_onceSecondList.Add(timerAct);
-    }
 }
-}
-
-

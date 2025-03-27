@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic; 
 namespace MyGame
 {
-    public class EventListenMgr : Singleton<EventListenMgr>,IEventManger
+    public class EventListenManager : Singleton<EventListenManager>,IEventManger
     { 
         public Dictionary<long,Dictionary<object,Delegate>> m_eventRegisterDic = new ();  
         

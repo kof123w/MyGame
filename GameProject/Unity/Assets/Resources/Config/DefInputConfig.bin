@@ -1,0 +1,7 @@
+k1|W|move_forward
+2|S|move_backward
+3|A|move_left
+4|D|move_right
+5||move
+6|Shift|run
+7|BackQuote|controller

@@ -12,10 +12,5 @@
         BackQuote,  //'`'按键
     }
 
-    public class InputEvent
-    {
-        public static long KeyHold = "InputMgr_KeyHold".StringToHash();
-        public static long KeyDown = "InputMgr_KeyDown".StringToHash();
-        public static long KeyUp = "InputMgr_KeyUp".StringToHash();
-    }
+   
 }

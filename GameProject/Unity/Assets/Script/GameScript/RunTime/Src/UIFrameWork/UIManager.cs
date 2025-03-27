@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace MyGame
@@ -12,14 +9,11 @@ namespace MyGame
         private List<UIWindow> m_WindowList = new List<UIWindow>();
         
         private Transform _mRoot;
-        public static void InitUIManager()
+        public void InitUIManager()
         {
-            if (Instance is not null)
-            {
-                Instance._mRoot = GameObject.Find("UIRoot").transform;
-            }
+            _mRoot = GameObject.Find("UIRoot").transform; 
         }
-
+       
         public static Transform GetUIRoot()
         {
             if (Instance is null)
@@ -37,12 +31,15 @@ namespace MyGame
                 var list = Instance.m_WindowList;
                 int index = list.FindIndex(w => w.GetType() == typeof(T)); 
                 var hasWindow = index!=-1;
-                T t = hasWindow ? (T)list[index] : new T(); 
+                T t = hasWindow ? (T)list[index] : Pool.Malloc<T>(); 
                 if (t != null)
                 {
                     int maxSort = t.IsTopSortingOrder() ? short.MaxValue : Instance.GetMaxSort(); 
+                    maxSort += Instance.m_AddWindowSortNormal;
                     t.SetWindowSortingOrder(ref maxSort);
                     t.IsShow = true;
+                    t.SetWindowType(typeof(T));
+                    t.LoadResource();
                 }
             }
         }
@@ -62,9 +59,7 @@ namespace MyGame
             }
             
             return null;
-        }
-
-
+        } 
         public static void HideWindow<T>()where T : UIWindow, new()
         {
             if (Instance is not null)
@@ -78,6 +73,37 @@ namespace MyGame
                    T t = list[index] as T;  
                    t.IsShow = false;
                 } 
+            }
+        }
+
+        public static void Close<T>() where T : UIWindow, new()
+        {
+            if (Instance is not null)
+            { 
+                var list = Instance.m_WindowList;
+                int index = list.FindIndex(w => w.GetType() == typeof(T)); 
+                
+                var hasWindow = index!=-1;
+                if (hasWindow)
+                {
+                    T t = list[index] as T;
+                    if (t != null)
+                    {
+                        Pool.Free(t);
+                    } 
+                } 
+            }
+        }
+
+        public void Update()
+        {
+            for (int i = 0; i < m_WindowList.Count; i++) {
+                var window = m_WindowList[i];
+                if (window.IsDestroy() || !window.IsLoaded())
+                {
+                    continue;
+                }
+                window.OnUpdate();
             }
         }
 

@@ -6,7 +6,7 @@ using Debug = UnityEngine.Debug;
 
 public static class ExcelTool
 {
-    private const string OutPutPathGlo = "Assets\\StreamingAssets\\Config";
+    private const string OutPutPathGlo = "Assets\\Resources\\Config";
     private const string ExcelIndexGlo = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private const string VoPathGlo = "Assets\\Script\\GameScript\\Excel\\ConfigVO";
     private const int ExploreRowGlo = 2; //注释掉的列索引
@@ -64,7 +64,7 @@ public static class ExcelTool
                     //A2是表名
                     string outPutFileName = currentWorksheet.Cells["B1"].Value as string;
                     string filePath = $"{OutPutPathGlo}\\{outPutFileName}.bin";
-                    string fileMgrPath = $"Assets\\\\StreamingAssets\\\\Config\\\\{outPutFileName}.bin";
+                    string fileMgrPath = $"Assets\\\\Resources\\\\Config\\\\{outPutFileName}.bin";
                     //生成配置VO模板 
                     GenVoClass(currentWorksheet, maxRow, outPutFileName);
                     //生成配置cahce

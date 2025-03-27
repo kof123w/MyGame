@@ -35,14 +35,14 @@ namespace MyGame
 
         public AsyncTiming LoadUIResource(Transform parent, Action<GameObject> callback, string resourceName)
         {
+#if UNITY_LOCAL_SCRIPT
             AsyncTiming asyncTiming = Pool.Malloc<AsyncTiming>();
-            asyncTiming.SetAssetBundleCreateRequest(null);
-            string loadPath = _mLoaderResourceType == ResourceLoadMethod.Local
-                ? $"Assets/Res/UIPrefabs/{resourceName}"
-                : $"Assets/StreamingAssets/UIAb/{resourceName}"; 
-            
-            StartCoroutine(Resourcer.LoadResourceAssetAsync(loadPath, parent, callback,asyncTiming));
+            string loadPath = $"UIPrefabs/{resourceName}"; 
+            StartCoroutine(Resourcer.LoadResourceGameObjectAsync(loadPath,parent, callback,asyncTiming));
             return asyncTiming;
+#else
+          return null;
+#endif 
         }
 
         public void CancelLoading(AsyncTiming asyncTiming)
@@ -55,12 +55,15 @@ namespace MyGame
             var cte = asyncTiming.GetCoroutine();
             if (cte != null)
             {
-                StopCoroutine(cte);
-            } 
+                StopCoroutine(cte); 
+            }
+
+            if (!asyncTiming.IsLoaded)
+            {
+                asyncTiming.CancelLoading();
+            }
         }
-
-
-
+        
         //直接销毁
         public void DestroyUIResource(GameObject gObj, Action callback = null)
         { 
