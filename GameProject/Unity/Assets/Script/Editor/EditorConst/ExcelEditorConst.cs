@@ -6,5 +6,7 @@ namespace MyGame.Editor
     {
         public static string excelOutputKey = "ExcelPathGlo"; //导入到config路径
         public static string excelInputKey = "ExcelOutputGlo";  //编辑器导出的config路径
+        
+        public static string protocPath = "ProtocPathGlo";  //protoc.exe路劲
     }
 }

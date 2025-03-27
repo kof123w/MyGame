@@ -1,0 +1,13 @@
+syntax = "proto3";
+message DefInputConfig
+{
+    int32 ID = 1;
+    string Keys = 2;
+    string Cmd = 3;
+}
+
+
+message DefInputConfigList
+{
+    repeated DefInputConfig dataList = 1;
+}

@@ -1,4 +1,4 @@
-using System;
+
 using UnityEngine.UI;
 namespace MyGame
 {

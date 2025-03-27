@@ -1,0 +1,12 @@
+syntax = "proto3";
+message TestConfig
+{
+    int32 ID = 1;
+    string Name = 2;
+}
+
+
+message TestConfigList
+{
+    repeated TestConfig dataList = 1;
+}

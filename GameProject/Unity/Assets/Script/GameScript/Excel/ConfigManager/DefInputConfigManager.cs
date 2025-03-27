@@ -14,6 +14,6 @@ namespace Config
         public List<DefInputConfig> GetInputConfigs()
         {
             return m_defInputConfigDict.GetCacheList;
-        } 
+        }  
     }
 }

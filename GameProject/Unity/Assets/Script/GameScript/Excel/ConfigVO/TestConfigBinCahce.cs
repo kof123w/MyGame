@@ -1,28 +1,20 @@
 using System.Collections.Generic;
 using System.IO;
+using Google.Protobuf;
 namespace Config
 {
-	class TestConfigBinCache:CacheObject<TestConfig>
-	{
-		public TestConfigBinCache()
-		{
-			FileStream fileStream = new FileStream("Assets\\Resources\\Config\\TestConfig.bin",FileMode.Open);
-			BinaryReader binaryReader = new BinaryReader(fileStream);
-			string[] strArray = binaryReader.ReadString().Split('\n');
-			for (int i = 0; i < strArray.Length; i++)
-			{
-				var str = strArray[i];
-				if(string.IsNullOrEmpty(str)) continue;
-				var element = str.Split('|');
-				TestConfig config = new TestConfig();
-				config.ID=int.Parse(element[0]);
-				config.Name=element[1];
-				CacheList.Add(config);
-			}
-			binaryReader.Close();
-			binaryReader.Dispose();
-			fileStream.Close();
-			fileStream.Dispose();
-		}
-	}
+  class TestConfigBinCache:CacheObject<TestConfig>
+  {
+    public TestConfigBinCache()
+    {
+      byte[] data = File.ReadAllBytes("Assets\\Resources\\Config\\TestConfig.bin");
+      var list = TestConfigList.Parser.ParseFrom(data);
+      var enumerator = list.DataList.GetEnumerator();
+      while (enumerator.MoveNext())
+      {
+         CacheList.Add(enumerator.Current);
+       }
+       enumerator.Dispose();
+    }
+  }
 }

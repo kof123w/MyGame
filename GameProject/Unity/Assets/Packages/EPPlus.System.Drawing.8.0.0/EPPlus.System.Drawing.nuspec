@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>EPPlus.System.Drawing</id>
+    <version>8.0.0</version>
+    <authors>EPPlus.System.Drawing</authors>
+    <license type="file">license.md</license>
+    <licenseUrl>https://aka.ms/deprecateLicenseUrl</licenseUrl>
+    <icon>EPPlusLogo.png</icon>
+    <readme>readme.md</readme>
+    <description>Package Description</description>
+    <repository type="git" commit="8e980d305c2b30989459aece2f1315f19078ceb5" />
+    <dependencies>
+      <group targetFramework=".NETFramework3.5">
+        <dependency id="EPPlus.Interfaces" version="8.0.0" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETFramework4.6.2">
+        <dependency id="EPPlus.Interfaces" version="8.0.0" exclude="Build,Analyzers" />
+        <dependency id="System.Drawing.Common" version="9.0.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net8.0">
+        <dependency id="EPPlus.Interfaces" version="8.0.0" exclude="Build,Analyzers" />
+        <dependency id="System.Drawing.Common" version="9.0.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net9.0">
+        <dependency id="EPPlus.Interfaces" version="8.0.0" exclude="Build,Analyzers" />
+        <dependency id="System.Drawing.Common" version="9.0.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="EPPlus.Interfaces" version="8.0.0" exclude="Build,Analyzers" />
+        <dependency id="System.Drawing.Common" version="9.0.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.1">
+        <dependency id="EPPlus.Interfaces" version="8.0.0" exclude="Build,Analyzers" />
+        <dependency id="System.Drawing.Common" version="9.0.1" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>
