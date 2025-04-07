@@ -10,6 +10,7 @@ namespace Config
         {
             DLogger.Log("==============>PreRead Config");
             Init(DefInputConfigManager.Instance);
+            Init(ResourceConfigManager.Instance);
         }
 
         private static void Init(Object obj)

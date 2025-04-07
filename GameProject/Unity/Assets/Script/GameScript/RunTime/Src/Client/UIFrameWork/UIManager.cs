@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace MyGame
 {
@@ -7,111 +11,46 @@ namespace MyGame
     { 
         private int addWindowSortNormal = 100;
         private List<UIWindow> windowList = new List<UIWindow>();
-        private readonly List<IUIController> uIControllerList = new List<IUIController>();
+        private readonly List<UIController> uIControllerList = new List<UIController>();
+        private readonly List<UIModel> uiModelList = new List<UIModel>();
         private Transform root;
-        public void InitUIManager()
-        {
-            DLogger.Log("==============>InitUIManager");
-            root = GameObject.Find("UIRoot").transform; 
-            uIControllerList.Clear();
-            
-            this.Subscribe<IUIController>(UIEvent.UIManagerEvent_AddUIController,AddController);
-        }
-       
-        public static Transform GetUIRoot()
-        {
-            if (Instance is null)
-            {
-                return null;
-            }
 
+        public int GetAddWindowSortNormal()
+        {
+            return addWindowSortNormal;
+        }
+
+        public static Transform GetRoot()
+        {
             return Instance.root;
         }
 
-        public static void ShowWindow<T>() where T : UIWindow, new()
+        public void Init()
         {
-            if (Instance is not null)
-            { 
-                var list = Instance.windowList;
-                int index = list.FindIndex(w => w.GetType() == typeof(T)); 
-                var hasWindow = index!=-1;
-                T t = hasWindow ? (T)list[index] : Pool.Malloc<T>(); 
-                if (t != null)
-                {
-                    int maxSort = t.IsTopSortingOrder() ? short.MaxValue : Instance.GetMaxSort(); 
-                    maxSort += Instance.addWindowSortNormal;
-                    t.SetWindowSortingOrder(ref maxSort);
-                    t.IsShow = true;
-                    t.SetWindowType(typeof(T));
-                    t.LoadResource();
-                }
-            }
+            DLogger.Log("==============>InitUIManager");
+            root = GameObject.Find("UIRoot").transform; 
+            uIControllerList.Clear(); 
         }
 
-        public static T GetWindow<T>() where T : UIWindow, new()
+        public List<UIWindow> GetUIWindowList()
         {
-            if (Instance is not null)
-            { 
-                var list = Instance.windowList;
-                int index = list.FindIndex(w => w.GetType() == typeof(T)); 
-                
-                var hasWindow = index!=-1;
-                if (hasWindow)
-                {
-                    return list[index] as T;  
-                } 
-            }
-            
-            return null;
-        } 
-        public static void HideWindow<T>()where T : UIWindow, new()
-        {
-            if (Instance is not null)
-            { 
-                var list = Instance.windowList;
-                int index = list.FindIndex(w => w.GetType() == typeof(T)); 
-                
-                var hasWindow = index!=-1;
-                if (hasWindow)
-                {
-                   T t = list[index] as T;  
-                   t.IsShow = false;
-                } 
-            }
+            return windowList;
         }
 
-        public static void Close<T>() where T : UIWindow, new()
+        public void Tick()
         {
-            if (Instance is not null)
-            { 
-                var list = Instance.windowList;
-                int index = list.FindIndex(w => w.GetType() == typeof(T)); 
-                
-                var hasWindow = index!=-1;
-                if (hasWindow)
-                {
-                    T t = list[index] as T;
-                    if (t != null)
-                    {
-                        Pool.Free(t);
-                    } 
-                } 
-            }
-        }
-
-        public void Update()
-        {
-            for (int i = 0; i < windowList.Count; i++) {
-                var window = windowList[i];
-                if (window.IsDestroy() || !window.IsLoaded())
-                {
-                    continue;
-                }
+            foreach (var window in windowList.Where(window => !window.IsDestroy() && window.IsLoaded() && window.IsShow))
+            {
                 window.OnUpdate();
             }
         }
 
-        private int GetMaxSort()
+        public Transform GetUIRoot()
+        {
+            return root;
+        } 
+
+        public int GetMaxSort()
         {
             int max = 0;
             for (int i = 0; i < windowList.Count; i++)
@@ -126,10 +65,88 @@ namespace MyGame
             return max;
         }
 
-        private void AddController(IUIController controller)
+        public void AddController(UIController controller,UIModel uiModel)
         {
-            controller.RegisterEvent();
-            uIControllerList.Add(controller);
+            controller.InitController();
+            uIControllerList.Add(controller); 
         }
+
+        public void AddModel(UIModel uiModel)
+        {
+            uiModelList.Add(uiModel);
+        } 
+        
+        public static async UniTask Show<T>() where T : UIWindow, new()
+        {
+            var list = Instance.GetUIWindowList();
+            int index = list.FindIndex(w => w.GetType() == typeof(T)); 
+            var hasWindow = index!=-1;
+            T t = hasWindow ? (T)list[index] : Pool.Malloc<T>(); 
+            if (t != null)
+            {
+                var maxSort = t.IsTopSortingOrder() ? short.MaxValue : Instance.GetMaxSort(); 
+                maxSort += Instance.GetAddWindowSortNormal();
+                t.SetWindowSortingOrder(ref maxSort);
+                t.IsShow = true;
+                t.SetWindowType(typeof(T));
+                var obj = await t.LoadResource();
+                t.OnLoadComplete((GameObject)Object.Instantiate(obj));
+                list.Add(t);
+            }
+        }
+
+        public static async UniTask<T> GetWindow<T>() where T : UIWindow, new()
+        {
+            var list = Instance.GetUIWindowList();
+            int index = list.FindIndex(w => w.GetType() == typeof(T)); 
+                
+            var hasWindow = index!=-1;
+            if (hasWindow)
+            {
+                if (list[index] is T t)
+                {
+                    await UniTask.WaitUntil(t.IsLoaded);
+                    return t;
+                }
+            }
+
+            return null;
+        } 
+        public static void Hide<T>()where T : UIWindow, new()
+        {
+            var list = Instance.GetUIWindowList();
+            int index = list.FindIndex(w => w.GetType() == typeof(T)); 
+                
+            var hasWindow = index!=-1;
+            if (hasWindow)
+            {
+                if (list[index] is T t) t.IsShow = false;
+            }
+        }
+
+        public static void Close<T>() where T : UIWindow, new()
+        {
+            var list = Instance.GetUIWindowList();
+            int index = list.FindIndex(w => w.GetType() == typeof(T)); 
+                
+            var hasWindow = index!=-1;
+            if (hasWindow)
+            {
+                if (list[index] is T t)
+                {
+                    if (t.OnDestroyIsDestroy())
+                    {
+                        t.Destroy();
+                        Pool.Free(t);
+                        list.RemoveAt(index);
+                    }
+                    else
+                    {
+                        t.OnDestroy();
+                        t.IsShow = false;
+                    }
+                } 
+            } 
+        } 
     }
 }

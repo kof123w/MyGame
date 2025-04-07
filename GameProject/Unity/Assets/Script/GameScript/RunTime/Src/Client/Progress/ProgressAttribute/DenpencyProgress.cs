@@ -6,11 +6,11 @@ namespace MyGame
     [AttributeUsage(AttributeTargets.Class)]
     public class DependencyProgress : Attribute
     {
-        private Type[] _dependencies;
+        public Type[] Dependencies;
 
         public DependencyProgress(params Type[] dependencies)
         {
-            _dependencies = dependencies;
+            Dependencies = dependencies;
         }
     }
 }

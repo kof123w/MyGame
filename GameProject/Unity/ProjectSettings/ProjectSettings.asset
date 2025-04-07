@@ -141,7 +141,8 @@ PlayerSettings:
   visionOSBundleVersion: 1.0
   tvOSBundleVersion: 1.0
   bundleVersion: 0.1.0
-  preloadedAssets: []
+  preloadedAssets:
+  - {fileID: 11400000, guid: 2502475adab9723448999f9be4c26074, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -817,7 +818,7 @@ PlayerSettings:
   webGLCloseOnQuit: 0
   webWasm2023: 0
   scriptingDefineSymbols:
-    Standalone: ALLOWUNSAFE;UNITY_LOCAL_SCRIPT
+    Standalone: ALLOWUNSAFE;UNITY_LOCAL_SCRIPT;DEBUG_LOG
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

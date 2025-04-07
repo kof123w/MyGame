@@ -13,33 +13,27 @@ namespace MyGame
             {
                 #region 参数设置和前置设置
                 DLogger.LogType = (DebugMode)logMode;
-                ResourceLoader.Instance.SetLoaderResourceType(resourceType);
+                ResourcerDecorator.Instance.SetLoaderResourceType(resourceType);
                 NetManager.Instance.SetConnectType(netMode);
                 PreProcess();
                 //预加载一下配置
                 ConfigPreRead.PreRead();
                 #endregion
-
-                #region 前置系统初始化 
-                //初始化事件系统
+                #region 前置系统初始化   
                 EventListenManager.Instance.Init();
-                //计时器环境初始化
-                TimerManger.Instance.Init(); 
-                //UI系统
-                UIManager.Instance.InitUIManager(); 
-                //流程
-                ProgressManager.Instance.Init();
-                #endregion  
-
-                //处理一下程序集合
-                AssemblyProcess();
-                
-                //初始化游戏世界
+                GameTimerManager.Instance.Init();
+                ResourcerDecorator.Instance.Init();
+                UIManager.Instance.Init();
+                TaskManager.Instance.Init();
+                PlayerInputSystem.Instance.Init(); 
                 GameWorld.Instance.Init();
-                InputMgr.Instance.Init();
+                #endregion
+                
+                //处理一下程序集合
+                AssemblyProcess();  
 
                 //最后启动流程 
-                GameEvent.Push(ProgressEvent.ProgressLunch);
+                GameEvent.Push(TaskEvent.TaskLunch);
             }
             catch (Exception e)
             {
@@ -48,27 +42,30 @@ namespace MyGame
             }
         }
 
-        // ReSharper disable Unity.PerformanceAnalysis
         public static void Update()
         {
             try
             {
-                //执行游戏对象的更新函数
-                GameWorld.Instance.Update();
-                InputMgr.Instance.RevInput();
-                UIManager.Instance.Update();
-                ProgressManager.Instance.Update();
+                GameTimerManager.Instance.Tick();
+                UIManager.Instance.Tick();
+                PlayerInputSystem.Instance.Tick();
+                GameWorld.Instance.Tick();
             }
-            catch (Exception e)
+            catch(Exception e)
             {
-                Debug.LogError(e);
+                DLogger.Error(e);
+                throw;
             }
         }
 
-        public static void LateUpdate()
+        public static void FixedUpdate()
         {
-            //todo ..
-            GameWorld.Instance.LateUpdate();
+            GameWorld.Instance.FixedTick();
+        }
+
+        public static void LateUpdate()
+        { 
+            GameWorld.Instance.LateTick();
         }
         
         //前置处理
@@ -79,15 +76,14 @@ namespace MyGame
             UnityEngine.Object.DontDestroyOnLoad(GameObject.Find("DirectionalLight"));
             UnityEngine.Object.DontDestroyOnLoad(GameObject.Find("UIFramework"));
             UnityEngine.Object.DontDestroyOnLoad(GameObject.Find("StartGame"));
-            UnityEngine.Object.DontDestroyOnLoad(GameObject.Find("GlobalVolume")); 
+            UnityEngine.Object.DontDestroyOnLoad(GameObject.Find("GlobalVolume"));  
         }
 
         //这里统一进行程序集里面的程序进行初步初始化和分类避免后面其他模块多次进行程序扫描浪费性能
         private static void AssemblyProcess()
         {
             var types = Assembly.GetExecutingAssembly().GetTypes();
-            var progressInterface = typeof(IProgress);
-            var uiControllerInterface = typeof(IUIController);
+            var progressInterface = typeof(ITask); 
             for (int i = 0; i < types.Length; i++)
             {
                 var type = types[i];
@@ -98,14 +94,18 @@ namespace MyGame
                     {
                         ProgressAssembly(type);
                         break;
-                    }
-
-                    if (interfaces[j].Name.Equals(uiControllerInterface.Name))
-                    {
-                        UIControllerAssembly(type);
-                        break;
-                    }
+                    } 
                 } 
+                var baseType = type.BaseType;
+                if (baseType == typeof(BaseSubScene))
+                {
+                    SceneAssembly(type);
+                }
+
+                if (baseType == typeof(UIController))
+                {
+                    UIModelControllerAssembly(type);
+                }
             }
         }
 
@@ -114,24 +114,51 @@ namespace MyGame
             System.Object classAttribute = type.GetCustomAttribute(typeof(RootProgress), false);
             if (classAttribute is RootProgress)
             {
-                GameEvent.Push(ProgressEvent.ProgressSetCurProgress, type);
+                GameEvent.Push(TaskEvent.TaskSetCurProgress, type);
             }
             
-            var progress = Activator.CreateInstance(type) as IProgress;
-            GameEvent.Push(ProgressEvent.ProgressAddProgress, type, progress);
+            var progress = Activator.CreateInstance(type) as ITask;
+            GameEvent.Push(TaskEvent.TaskAddProgress, type, progress);
 
             classAttribute = type.GetCustomAttribute(typeof(ProgressLoopCheck), false);
             if (classAttribute is ProgressLoopCheck { MIsLoopCheck: true })
             {
-                GameEvent.Push(ProgressEvent.ProgressAddNeeCheckProgress, progress);
+                //GameEvent.Push(ProgressEvent.ProgressAddNeeCheckProgress, progress);
+                GameEvent.Push(TaskEvent.TaskAddNeeCheckProgress, type);
             }
         }
 
-        private static void UIControllerAssembly(Type type)
+        private static void UIModelControllerAssembly(Type type)
         {
-            if (Activator.CreateInstance(type) is IUIController uiController)
+            if (Activator.CreateInstance(type) is UIController uiController)
             { 
-                GameEvent.Push(UIEvent.UIManagerEvent_AddUIController, uiController);
+                System.Object classAttribute = type.GetCustomAttribute(typeof(ControllerOf), false);
+                UIModel paramModel = null;
+                if (classAttribute is ControllerOf controllerOf)
+                {
+                    var modelType = controllerOf.ModelType; 
+                    if (Activator.CreateInstance(modelType) is UIModel uiModel)
+                    { 
+                        paramModel = uiModel;
+                        UIManager.Instance.AddModel(uiModel);
+                    }
+                } 
+                UIManager.Instance.AddController(uiController, paramModel);
+            }
+        }
+
+        private static void SceneAssembly(Type type)
+        {
+            System.Object classAttribute = type.GetCustomAttribute(typeof(SceneAttribute), false);
+            if (classAttribute is SceneAttribute sceneAttribute)
+            {
+                var st = sceneAttribute.SceneType;
+                var sceneId = sceneAttribute.SceneId;
+                if (Activator.CreateInstance(type) is BaseSubScene scene)
+                {
+                    scene.SetScene(sceneId, st); 
+                    GameWorld.Instance.AddSubScene(scene);
+                }
             }
         }
     }

@@ -56,15 +56,17 @@ namespace MyGame.Editor
 
                     var fileInfo = new FileInfo($"{excelPathGlo}\\{fileName}");
                     using (ExcelPackage pack = new ExcelPackage(fileInfo))
-                    { 
-                        string filePath = null,className = null;
-                        int maxRow = 0;
-                        ExcelWorksheet currentWorksheet = GetExcelMsg(pack.Workbook,ref filePath,ref className,ref maxRow);
-                        //生成配置proto VO模板文件 
-                        GenProtoVoProtoFile(currentWorksheet, maxRow, className);
-                        
-                        //生成cache bin
-                        GenVoClassBinCache(currentWorksheet,className);
+                    {  
+                        foreach (ExcelWorksheet currentWorksheet in pack.Workbook.Worksheets)
+                        {
+                            string filePath = null,className = null;
+                            int maxRow = 0;
+                            GetExcelMsg(currentWorksheet,ref filePath,ref className,ref maxRow);
+                            //生成配置proto VO模板文件 
+                            GenProtoVoProtoFile(currentWorksheet,pack.File.Name, maxRow, className); 
+                            //生成cache bin
+                            GenVoClassBinCache(currentWorksheet,className);
+                        } 
                     }
                 }
             }
@@ -101,21 +103,24 @@ namespace MyGame.Editor
 
                     var fileInfo = new FileInfo($"{excelPathGlo}\\{fileName}");
                     using (ExcelPackage pack = new ExcelPackage(fileInfo))
-                    { 
-                        string filePath = null,className = null;
-                        int maxRow = 0;
-                        ExcelWorksheet currentWorksheet = GetExcelMsg(pack.Workbook, ref filePath,ref className,ref maxRow);
-                        //生成配置proto配置文件 
-                        GenProtoVoConfigBin(currentWorksheet, filePath, className, maxRow);
+                    {
+                        foreach (ExcelWorksheet currentWorksheet in pack.Workbook.Worksheets)
+                        {
+                            string filePath = null,className = null;
+                            int maxRow = 0; 
+                            GetExcelMsg(currentWorksheet, ref filePath,ref className,ref maxRow);
+                            //生成配置proto配置文件 
+                            GenProtoVoConfigBin(currentWorksheet, filePath, className, maxRow);
+                        } 
                     }
                 }
             }
         }
 
 
-        private static ExcelWorksheet GetExcelMsg(ExcelWorkbook workBook,  ref string filePath,ref string className,ref int maxRow)
+        private static void GetExcelMsg(ExcelWorksheet currentWorksheet,  ref string filePath,ref string className,ref int maxRow)
         { 
-            var currentWorksheet = workBook.Worksheets.First();
+            //var currentWorksheet = workBook.Worksheets.First();
             currentWorksheet.Workbook.CalcMode = ExcelCalcMode.Automatic;
             //获取这张表最大的列索引 
             int row = 1;
@@ -130,8 +135,7 @@ namespace MyGame.Editor
 
             className = currentWorksheet.Cells["B1"].Value as string;
             filePath = $"{OutPutPathGlo}/{className}.bin";
-            maxRow = row - 1;
-            return currentWorksheet;
+            maxRow = row - 1; 
         }
 
         private static string GetRowStrByIndex(int n)
@@ -185,7 +189,7 @@ namespace MyGame.Editor
         }
 
         //生成 proto vo 文件
-        private static void GenProtoVoProtoFile(ExcelWorksheet worksheet, int maxRow, string tableName)
+        private static void GenProtoVoProtoFile(ExcelWorksheet worksheet,string excelName, int maxRow, string tableName)
         {
             string fileName = $"{ProtoVoPathGlo}\\{tableName}.proto";
             Debug.Log(fileName);
@@ -197,7 +201,8 @@ namespace MyGame.Editor
             }
 
             using (StreamWriter sw = new StreamWriter(fileName))
-            {
+            { 
+                sw.WriteLine($"//Gen by {excelName}\\{worksheet.Name}");
                 sw.WriteLine("syntax = \"proto3\";");
                 sw.WriteLine($"message {tableName}");
                 sw.WriteLine("{");
@@ -347,8 +352,7 @@ namespace MyGame.Editor
             //列表类型
             var listObject = Activator.CreateInstance(listType);
             
-            int curCulomn = 7;
-            string writeTxt = "";
+            int curCulomn = 7; 
             while (true)
             {
                 string val;
@@ -394,8 +398,7 @@ namespace MyGame.Editor
                             Debug.Log($"配置表{filePath}异常，无配置主ID");
                             continue;
                         }
-                        
-                        bool isNoVal = false;
+                         
                         SetVal(dataType, worksheet, GetRowStrByIndex(i), curCulomn,proptyName,itemObject,itemType);
                     }
                 }

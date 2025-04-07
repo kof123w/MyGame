@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -8,8 +11,8 @@ namespace MyGame
     {
         protected int MSort;
         protected Canvas MCanvas;
-        protected Type MWindowType;
-        private AsyncTiming MAsyncTiming;
+        protected Type MWindowType; 
+        protected CancellationTokenSource cancellationTokenSource;
         
         public void SetWindowSortingOrder(ref int sort)
         {
@@ -26,26 +29,30 @@ namespace MyGame
             sort = MSort;
         }
 
-        public void LoadResource()
+        public async UniTask<Object> LoadResource()
         {
-            MAsyncTiming = ResourceLoader.Instance.LoadUIResource(UIManager.GetUIRoot(),OnLoadComplete,MWindowType.Name);
+            if (cancellationTokenSource == null)
+            {
+                cancellationTokenSource = new CancellationTokenSource();
+            }
+            else
+            {
+                cancellationTokenSource.Cancel();
+                cancellationTokenSource.Dispose();
+                cancellationTokenSource = new CancellationTokenSource();
+            }
+
+            return await ResourcerDecorator.Instance.LoadUIResourceAsync(MWindowType.Name,cancellationTokenSource.Token); 
         }
 
         public void Destroy()
         {
-            OnDestroy();
-            if (MAsyncTiming != null)
-            {
-                if (!MAsyncTiming.IsLoaded)
-                {
-                    ResourceLoader.Instance.CancelLoading(MAsyncTiming);
-                }
-            }
+            OnDestroy(); 
 
             MTransform = null;
             Object.DestroyImmediate(MGameObject);
             MIsDestroyed = true;
-        }
+        } 
 
         public void OnLoadComplete(GameObject go)
         {
@@ -54,6 +61,7 @@ namespace MyGame
             {
                 MCanvas.sortingOrder = MSort;
             }
+            
             MIsLoaded = true;
             if (IsShow)
             {
@@ -65,8 +73,9 @@ namespace MyGame
 
             MGameObject = go;
             MTransform = go.transform; 
+            MTransform.SetParent(UIManager.GetRoot(),false);
             OnAwake();
-            OnStart();
-        }
+            OnStart(); 
+        } 
     }
 }

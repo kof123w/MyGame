@@ -10,6 +10,11 @@ public class RefRoot : MonoBehaviour
         RefList.Add(obj);
     }
 
+    public void ClearRef()
+    {
+        RefList.Clear();
+    }
+
     public Text GetText(int index)
     {
         return RefList[index] as Text;
@@ -38,6 +43,11 @@ public class RefRoot : MonoBehaviour
     public Transform GetTransform(int index)
     {
         return RefList[index] as Transform;
+    }
+
+    public Slider GetSlider(int index)
+    {
+        return RefList[index] as Slider;
     }
 
     public GameObject GetGameObject(int index)

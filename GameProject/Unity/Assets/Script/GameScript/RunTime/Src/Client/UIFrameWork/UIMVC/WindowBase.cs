@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
+using UnityEngine;
 
 namespace MyGame
 {
@@ -10,7 +12,7 @@ namespace MyGame
         protected Transform MTransform = null;
         protected bool MIsShowed = false;
         protected bool MIsHidded = false; 
-        protected bool MIsDestroyed = false;
+        protected bool MIsDestroyed = false; 
 
         public bool IsShow
         { 
@@ -56,7 +58,7 @@ namespace MyGame
         protected virtual void Show()
         {
              //base show ..
-        }
+        } 
 
         protected virtual void Hide()
         {
@@ -86,6 +88,11 @@ namespace MyGame
         public virtual bool IsDestroy()
         {
             return MIsDestroyed;
+        }
+
+        public virtual bool OnDestroyIsDestroy()
+        {
+            return true;
         }
 
         public virtual bool IsTopSortingOrder()

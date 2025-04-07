@@ -1,0 +1,15 @@
+﻿using System;
+using System.Threading;
+using Cysharp.Threading.Tasks;
+using UnityEngine;
+using Object = UnityEngine.Object;
+
+namespace MyGame
+{
+    public interface IResourcer
+    {
+        public void UnloadUnusedAssets();
+        UniTask<Object> LoadAsync(string path,CancellationToken token,IProgress<float> progress = null);
+        UniTask Track(ResourceRequest request,CancellationToken token,IProgress<float> progress = null);
+    }
+}

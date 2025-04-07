@@ -1,3 +1,4 @@
+//Gen by 默认输入配置.xlsx\Sheet1
 syntax = "proto3";
 message DefInputConfig
 {

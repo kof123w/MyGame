@@ -33,10 +33,16 @@ namespace MyGameEditor
                 m_indexType.Clear();
                 m_objectList.Clear();
                 m_nameList.Clear();
-                if (go.GetComponent<RefRoot>()!=null)
+                var refRoot = go.GetComponent<RefRoot>();
+                if (refRoot != null)
                 {
-                    Object.DestroyImmediate(go.GetComponent<RefRoot>());
+                    refRoot.ClearRef();
                 }
+                else
+                {
+                    refRoot = go.AddComponent<RefRoot>();
+                }
+
                 sb.Append("    #region 自动生成\n"); 
                 WriteField(tf, sb);
                 
@@ -45,10 +51,13 @@ namespace MyGameEditor
                 sb.Append("    {\n"); 
                 sb.Append($"    base.OnAwake();\n");  
                 sb.Append("     RefRoot refRoot = MGameObject.GetComponent<RefRoot>();\n");
-                WriteMethod(go, sb); 
+                WriteMethod(go,refRoot, sb);  
                 sb.Append("    }\n");
                 sb.Append("    #endregion\n");
                 GUIUtility.systemCopyBuffer = sb.ToString();
+                
+                // 保存修改
+                PrefabUtility.SavePrefabAsset(go);
             }
         } 
 
@@ -185,14 +194,12 @@ namespace MyGameEditor
             }
         }
 
-        private static void WriteMethod(GameObject gameObject, StringBuilder sb)
+        private static void WriteMethod(GameObject gameObject, RefRoot refRoot, StringBuilder sb)
         {
             if (gameObject.GetComponent<RefRoot>() != null)
             {
                 Object.Destroy(gameObject.GetComponent<RefRoot>());
-            }
-
-            RefRoot refRoot = gameObject.AddComponent<RefRoot>();
+            } 
             for (int i = 0; i < m_indexType.Count; i++)
             {
                 if (m_indexType[i].Contains(" "))

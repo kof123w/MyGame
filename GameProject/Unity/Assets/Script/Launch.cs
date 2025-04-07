@@ -39,11 +39,17 @@ class Launch : MonoBehaviour
 
     private void Update()
     {
-#if UNITY_LOCAL_SCRIPT
-        //进入游戏 
-        GameMain.Update(); 
+#if UNITY_LOCAL_SCRIPT 
+        GameMain.Update();
 #endif
         
+    }
+
+    void FixedUpdate()
+    {
+#if UNITY_LOCAL_SCRIPT 
+        GameMain.Update();
+#endif
     }
 
     void LateUpdate()

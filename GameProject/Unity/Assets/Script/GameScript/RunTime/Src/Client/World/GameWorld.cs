@@ -1,0 +1,135 @@
+using System.Collections.Generic;
+using BEPUphysics;
+using FixedMath;
+using UnityEngine;
+
+namespace MyGame
+{
+    public sealed class GameWorld : Singleton<GameWorld>
+    { 
+        //物理坐标系
+        private BEPUphysicsSpace bEpUPhysicsSpace;
+        private Transform gameWorldTrans;
+        
+        //场景相关
+        private SceneType currentScene = SceneType.None;
+        private SceneType previousScene = SceneType.None;
+        private readonly List<BaseSubScene> scenes = new();
+        private BaseSubScene currentSubScene;
+        private BaseSubScene previousSubScene;
+        
+        //场景角色
+        private List<BasePerformer> performers = new();
+        private PlayerCharacter playerCharacter;
+        
+        private Camera mainCamera;   //场景射线机
+         
+        public void Init()
+        {
+            DLogger.Log("==============>Init world physics system!");
+            //关掉物理系统
+            Physics.autoSyncTransforms = false;  //射线检测关闭
+            Physics.simulationMode = SimulationMode.Script;
+            
+            //创建物理世界，设置重力加速度
+            bEpUPhysicsSpace = new BEPUphysicsSpace
+            {
+                ForceUpdater =
+                {
+                    Gravity = new FPVector3(0, -9.81m, 0)
+                },
+                TimeStepSettings =
+                {
+                    TimeStepDuration = 1 / 60m
+                }
+            }; 
+            
+            DLogger.Log("==============>Init scene Object");
+            mainCamera = GameObject.Find("MainCamera").GetComponent<Camera>();
+        }
+        
+        public void Tick()
+        { 
+           // todo ..
+        }
+
+        public void LateTick()
+        {
+            // todo ..
+        }
+
+        public void FixedTick()
+        {
+            if (bEpUPhysicsSpace != null)
+            {
+                bEpUPhysicsSpace.Update();
+            }
+        }
+
+        public static Transform GetGameWorldTransform()
+        {
+            return null;
+        }
+
+        public static void SetObjectToGameWorld(Transform trans,Vector3 position)
+        { 
+            trans.position = position;
+        }  
+
+        public void AddSubScene(BaseSubScene scene)
+        {
+            scenes.Add(scene);
+        }
+
+        public void ChangeScene(SceneType sceneType,out BaseSubScene previous,out BaseSubScene current)
+        {
+            previousScene = currentScene;
+            currentScene = sceneType;
+            previous = null;
+            current = null;
+            if (previousScene != currentScene)
+            {
+                DLogger.Log($"==============>Change SceneManager to {currentScene}");  
+                for (int i = 0; i < scenes.Count; i++) {
+                    var scene = scenes[i];
+                    if (scene.GetSceneType() == currentScene)
+                    { 
+                        currentSubScene = scene; 
+                        current = currentSubScene;
+                    }
+
+                    if (scene.GetSceneType() == previousScene)
+                    { 
+                        previousSubScene = scene;
+                        previous = previousSubScene;
+                    } 
+                }
+            }  
+        } 
+
+        //创建玩家角色
+        public void CreatePlayerRole(int id)
+        {
+            if (playerCharacter != null)
+            {
+                if (playerCharacter.IsLoaded)
+                {
+                    playerCharacter.UnLoadResources().Forget(); 
+                }
+            }
+            else
+            {
+                playerCharacter = Pool.Malloc<PlayerCharacter>();
+            }
+
+            playerCharacter.SetConfigID(id); 
+            playerCharacter.SetGameObjectName("PlayerRole");
+            playerCharacter.SetWorldPos(Vector3.zero);
+        }
+
+        public PlayerCharacter GetPlayerCharacter()
+        {
+            return playerCharacter;
+        }
+    }  
+}
