@@ -7,7 +7,10 @@ namespace Config
   {
     public TestConfigBinCache()
     {
+#if UNITY_LOCAL_SCRIPT
       byte[] data = File.ReadAllBytes("Assets\\Resources\\Config\\TestConfig.bin");
+#else
+#endif
       var list = TestConfigList.Parser.ParseFrom(data);
       var enumerator = list.DataList.GetEnumerator();
       while (enumerator.MoveNext())

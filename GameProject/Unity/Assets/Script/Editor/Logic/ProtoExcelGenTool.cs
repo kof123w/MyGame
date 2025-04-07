@@ -281,8 +281,12 @@ namespace MyGame.Editor
                 sw.WriteLine($"  class {tableName}BinCache:CacheObject<{tableName}>");
                 sw.WriteLine("  {");
                 sw.WriteLine($"    public {tableName}BinCache()");
-                sw.WriteLine("    {");
+                sw.WriteLine("    {"); 
+                sw.WriteLine("#if UNITY_LOCAL_SCRIPT");
                 sw.WriteLine($"      byte[] data = File.ReadAllBytes(\"{fileMgrPath}\");");
+                sw.WriteLine("#else");
+                // todo ..
+                sw.WriteLine("#endif"); 
                 sw.WriteLine($"      var list = {tableName}List.Parser.ParseFrom(data);");
                 sw.WriteLine($"      var enumerator = list.DataList.GetEnumerator();"); 
                 sw.WriteLine($"      while (enumerator.MoveNext())"); 
