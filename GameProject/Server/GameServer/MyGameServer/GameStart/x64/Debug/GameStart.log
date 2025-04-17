@@ -1,4 +1,0 @@
-﻿  GameStart.cpp
-F:\GitHubProject\MyGame\GameProject\Server\GameServer\MyGameServer\GameStart\GameStart.cpp(17,63): warning C4267: “参数”: 从“size_t”转换到“unsigned int”，可能丢失数据
-F:\GitHubProject\MyGame\GameProject\Server\GameServer\MyGameServer\GameStart\GameStart.cpp(24,62): warning C4244: “参数”: 从“ssize_t”转换到“int”，可能丢失数据
-  GameStart.vcxproj -> F:\GitHubProject\MyGame\GameProject\Server\GameServer\MyGameServer\x64\Debug\GameStart.exe

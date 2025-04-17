@@ -1,0 +1,13 @@
+//Gen by 角色基础属性.xlsx\角色基础属性表
+syntax = "proto3";
+message RoleBaseAttributeConfig
+{
+    int32 ID = 1;
+    float MoveSpeed = 2;
+}
+
+
+message RoleBaseAttributeConfigList
+{
+    repeated RoleBaseAttributeConfig dataList = 1;
+}

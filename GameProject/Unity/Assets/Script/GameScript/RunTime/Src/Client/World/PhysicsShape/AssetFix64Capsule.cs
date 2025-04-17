@@ -11,18 +11,20 @@ namespace MyGame
     public class AssetFix64Capsule : AssetShape
     { 
         private CapsuleCollider unityCapsule;   
+        protected float Height;
+        protected float Radius;
 
         protected override Entity CreateEntityShape()
         {
             unityCapsule = trans.GetComponent<CapsuleCollider>();
             //获取 Unity CapsuleCollider参数
-            float radius = unityCapsule.radius;
-            float height = unityCapsule.height;
+            Radius = unityCapsule.radius;
+            Height = unityCapsule.height;
             Vector3 center = unityCapsule.center;
             int dir = unityCapsule.direction;
 
             //计算圆柱部分长度
-            float cyLinerLength = Mathf.Max(height - 2 * radius, 0);
+            float cyLinerLength = Mathf.Max(Height - 2 * Radius, 0);
 
             //确定方向轴
             Vector3 axis = dir switch
@@ -44,7 +46,7 @@ namespace MyGame
             //装换成BEPphics的坐标
             var bePuStart = MathConvertor.Vector3ConvertToFpVector3(ref worldStart);
             var bePuEnd = MathConvertor.Vector3ConvertToFpVector3(ref worldEnd);
-            var eCapsule = new BEPUphysics.Entities.Prefabs.Capsule(bePuStart, bePuEnd, radius, mass);
+            var eCapsule = new BEPUphysics.Entities.Prefabs.Capsule(bePuStart, bePuEnd, Radius, mass);
 
             var physicsSpace = GameWorld.GetPhysicsSpace();
             physicsSpace.Add(eCapsule); 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.CompilerServices;
+using FixedMath;
 
 namespace FixMath.NET
 {
@@ -855,6 +856,11 @@ namespace FixMath.NET
                 }
             }
             return atan;
+        }
+
+        public static Fix64 Deg2Rad(Fix64 degress)
+        {
+	        return degress * Pi / F64.C180;
         }
 
 		/// <summary>

@@ -17,7 +17,7 @@ namespace BEPUphysics.Character
     /// <summary>
     /// Gives a physical object FPS-like control, including stepping and jumping.
     /// </summary>
-    public class CharacterController : Updateable, IBeforeSolverUpdateable
+    public class CharacterController : Updateable
     {
         /// <summary>
         /// Gets the physical body of the character.  Do not use this reference to modify the character's height and radius.  Instead, use the BodyRadius property and the StanceManager's StandingHeight and CrouchingHeight properties.
@@ -561,7 +561,7 @@ namespace BEPUphysics.Character
         }
 
 
-        void IBeforeSolverUpdateable.Update(Fix64 dt)
+        public void Update(Fix64 dt)
         {
             //Someone may want to use the Body.CollisionInformation.Tag for their own purposes.
             //That could screw up the locking mechanism above and would be tricky to track down.

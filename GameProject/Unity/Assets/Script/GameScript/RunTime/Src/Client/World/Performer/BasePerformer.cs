@@ -11,7 +11,7 @@ using UnityEngine;
 namespace MyGame
 {
     
-    public class BasePerformer : AssetFix64Capsule,IFsm,IAction
+    public class BasePerformer : AssetFix64Cylinder,IFsm,IAction
     {
         private readonly Dictionary<int, Tuple<Action<int>, Action<int>, Action<float>>> actions = new();
         private readonly List<ValueTuple<int, int, int>> transitions = new();

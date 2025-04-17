@@ -1,0 +1,13 @@
+//Gen by 场景资源配置.xlsx\场景资源配置
+syntax = "proto3";
+message SceneLoadResourceConfig
+{
+    int32 ID = 1;
+    string AssetPath = 3;
+}
+
+
+message SceneLoadResourceConfigList
+{
+    repeated SceneLoadResourceConfig dataList = 1;
+}

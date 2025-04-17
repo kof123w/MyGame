@@ -13,7 +13,7 @@ namespace MyGame
         public void SetData(Vector3 origin, Vector3 direction)
         {
             this.origin = origin;
-            this.direction = direction;
+            this.direction = direction.normalized;
         }
 
         public void SetTrans(Transform drawTrans)
