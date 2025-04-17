@@ -4,7 +4,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace MyGame
+namespace AssetsLoad
 {
     public interface IResourcer
     {

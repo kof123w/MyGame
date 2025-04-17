@@ -142,16 +142,16 @@ namespace FixedMath
             {
                 return new FPVector3()
                 {
-                    X = M41,
-                    Y = M42,
-                    Z = M43
+                    x = M41,
+                    y = M42,
+                    z = M43
                 };
             }
             set
             {
-                M41 = value.X;
-                M42 = value.Y;
-                M43 = value.Z;
+                M41 = value.x;
+                M42 = value.y;
+                M43 = value.z;
             }
         }
 
@@ -167,16 +167,16 @@ namespace FixedMath
 #else
                 Vector3 vector;
 #endif
-                vector.X = M31;
-                vector.Y = M32;
-                vector.Z = M33;
+                vector.x = M31;
+                vector.y = M32;
+                vector.z = M33;
                 return vector;
             }
             set
             {
-                M31 = value.X;
-                M32 = value.Y;
-                M33 = value.Z;
+                M31 = value.x;
+                M32 = value.y;
+                M33 = value.z;
             }
         }
 
@@ -192,16 +192,16 @@ namespace FixedMath
 #else
                 Vector3 vector;
 #endif
-                vector.X = -M21;
-                vector.Y = -M22;
-                vector.Z = -M23;
+                vector.x = -M21;
+                vector.y = -M22;
+                vector.z = -M23;
                 return vector;
             }
             set
             {
-                M21 = -value.X;
-                M22 = -value.Y;
-                M23 = -value.Z;
+                M21 = -value.x;
+                M22 = -value.y;
+                M23 = -value.z;
             }
         }
 
@@ -217,16 +217,16 @@ namespace FixedMath
 #else
                 Vector3 vector;
 #endif
-                vector.X = -M31;
-                vector.Y = -M32;
-                vector.Z = -M33;
+                vector.x = -M31;
+                vector.y = -M32;
+                vector.z = -M33;
                 return vector;
             }
             set
             {
-                M31 = -value.X;
-                M32 = -value.Y;
-                M33 = -value.Z;
+                M31 = -value.x;
+                M32 = -value.y;
+                M33 = -value.z;
             }
         }
 
@@ -242,16 +242,16 @@ namespace FixedMath
 #else
                 Vector3 vector;
 #endif
-                vector.X = -M11;
-                vector.Y = -M12;
-                vector.Z = -M13;
+                vector.x = -M11;
+                vector.y = -M12;
+                vector.z = -M13;
                 return vector;
             }
             set
             {
-                M11 = -value.X;
-                M12 = -value.Y;
-                M13 = -value.Z;
+                M11 = -value.x;
+                M12 = -value.y;
+                M13 = -value.z;
             }
         }
 
@@ -267,16 +267,16 @@ namespace FixedMath
 #else
                 Vector3 vector;
 #endif
-                vector.X = M11;
-                vector.Y = M12;
-                vector.Z = M13;
+                vector.x = M11;
+                vector.y = M12;
+                vector.z = M13;
                 return vector;
             }
             set
             {
-                M11 = value.X;
-                M12 = value.Y;
-                M13 = value.Z;
+                M11 = value.x;
+                M12 = value.y;
+                M13 = value.z;
             }
         }
 
@@ -292,16 +292,16 @@ namespace FixedMath
 #else
                 Vector3 vector;
 #endif
-                vector.X = M21;
-                vector.Y = M22;
-                vector.Z = M23;
+                vector.x = M21;
+                vector.y = M22;
+                vector.z = M23;
                 return vector;
             }
             set
             {
-                M21 = value.X;
-                M22 = value.Y;
-                M23 = value.Z;
+                M21 = value.x;
+                M22 = value.y;
+                M23 = value.z;
             }
         }
 
@@ -377,28 +377,28 @@ namespace FixedMath
         /// <param name="result">Matrix created from the axis and angle.</param>
         public static void CreateFromAxisAngle(ref FPVector3 axis, Fix64 angle, out FPMatrix result)
         {
-            Fix64 xx = axis.X * axis.X;
-            Fix64 yy = axis.Y * axis.Y;
-            Fix64 zz = axis.Z * axis.Z;
-            Fix64 xy = axis.X * axis.Y;
-            Fix64 xz = axis.X * axis.Z;
-            Fix64 yz = axis.Y * axis.Z;
+            Fix64 xx = axis.x * axis.x;
+            Fix64 yy = axis.y * axis.y;
+            Fix64 zz = axis.z * axis.z;
+            Fix64 xy = axis.x * axis.y;
+            Fix64 xz = axis.x * axis.z;
+            Fix64 yz = axis.y * axis.z;
 
             Fix64 sinAngle = Fix64.Sin(angle);
             Fix64 oneMinusCosAngle = F64.C1 - Fix64.Cos(angle);
 
             result.M11 = F64.C1 + oneMinusCosAngle * (xx - F64.C1);
-            result.M21 = -axis.Z * sinAngle + oneMinusCosAngle * xy;
-            result.M31 = axis.Y * sinAngle + oneMinusCosAngle * xz;
+            result.M21 = -axis.z * sinAngle + oneMinusCosAngle * xy;
+            result.M31 = axis.y * sinAngle + oneMinusCosAngle * xz;
             result.M41 = F64.C0;
 
-            result.M12 = axis.Z * sinAngle + oneMinusCosAngle * xy;
+            result.M12 = axis.z * sinAngle + oneMinusCosAngle * xy;
             result.M22 = F64.C1 + oneMinusCosAngle * (yy - F64.C1);
-            result.M32 = -axis.X * sinAngle + oneMinusCosAngle * yz;
+            result.M32 = -axis.x * sinAngle + oneMinusCosAngle * yz;
             result.M42 = F64.C0;
 
-            result.M13 = -axis.Y * sinAngle + oneMinusCosAngle * xz;
-            result.M23 = axis.X * sinAngle + oneMinusCosAngle * yz;
+            result.M13 = -axis.y * sinAngle + oneMinusCosAngle * xz;
+            result.M23 = axis.x * sinAngle + oneMinusCosAngle * yz;
             result.M33 = F64.C1 + oneMinusCosAngle * (zz - F64.C1);
             result.M43 = F64.C0;
 
@@ -415,18 +415,18 @@ namespace FixedMath
         /// <param name="result">Rotation matrix created from the quaternion.</param>
         public static void CreateFromQuaternion(ref FPQuaternion fpQuaternion, out FPMatrix result)
         {
-            Fix64 qX2 = fpQuaternion.X + fpQuaternion.X;
-            Fix64 qY2 = fpQuaternion.Y + fpQuaternion.Y;
-            Fix64 qZ2 = fpQuaternion.Z + fpQuaternion.Z;
-            Fix64 XX = qX2 * fpQuaternion.X;
-            Fix64 YY = qY2 * fpQuaternion.Y;
-            Fix64 ZZ = qZ2 * fpQuaternion.Z;
-            Fix64 XY = qX2 * fpQuaternion.Y;
-            Fix64 XZ = qX2 * fpQuaternion.Z;
-            Fix64 XW = qX2 * fpQuaternion.W;
-            Fix64 YZ = qY2 * fpQuaternion.Z;
-            Fix64 YW = qY2 * fpQuaternion.W;
-            Fix64 ZW = qZ2 * fpQuaternion.W;
+            Fix64 qX2 = fpQuaternion.x + fpQuaternion.x;
+            Fix64 qY2 = fpQuaternion.y + fpQuaternion.y;
+            Fix64 qZ2 = fpQuaternion.z + fpQuaternion.z;
+            Fix64 XX = qX2 * fpQuaternion.x;
+            Fix64 YY = qY2 * fpQuaternion.y;
+            Fix64 ZZ = qZ2 * fpQuaternion.z;
+            Fix64 XY = qX2 * fpQuaternion.y;
+            Fix64 XZ = qX2 * fpQuaternion.z;
+            Fix64 XW = qX2 * fpQuaternion.w;
+            Fix64 YZ = qY2 * fpQuaternion.z;
+            Fix64 YW = qY2 * fpQuaternion.w;
+            Fix64 ZW = qZ2 * fpQuaternion.w;
 
             result.M11 = F64.C1 - YY - ZZ;
             result.M21 = XY - ZW;
@@ -601,14 +601,14 @@ namespace FixedMath
         /// <param name="result">Transformed vector.</param>
         public static void Transform(ref FPVector4 v, ref FPMatrix fpMatrix, out FPVector4 result)
         {
-            Fix64 vX = v.X;
-            Fix64 vY = v.Y;
-            Fix64 vZ = v.Z;
-            Fix64 vW = v.W;
-            result.X = vX * fpMatrix.M11 + vY * fpMatrix.M21 + vZ * fpMatrix.M31 + vW * fpMatrix.M41;
-            result.Y = vX * fpMatrix.M12 + vY * fpMatrix.M22 + vZ * fpMatrix.M32 + vW * fpMatrix.M42;
-            result.Z = vX * fpMatrix.M13 + vY * fpMatrix.M23 + vZ * fpMatrix.M33 + vW * fpMatrix.M43;
-            result.W = vX * fpMatrix.M14 + vY * fpMatrix.M24 + vZ * fpMatrix.M34 + vW * fpMatrix.M44;
+            Fix64 vX = v.x;
+            Fix64 vY = v.y;
+            Fix64 vZ = v.z;
+            Fix64 vW = v.w;
+            result.x = vX * fpMatrix.M11 + vY * fpMatrix.M21 + vZ * fpMatrix.M31 + vW * fpMatrix.M41;
+            result.y = vX * fpMatrix.M12 + vY * fpMatrix.M22 + vZ * fpMatrix.M32 + vW * fpMatrix.M42;
+            result.z = vX * fpMatrix.M13 + vY * fpMatrix.M23 + vZ * fpMatrix.M33 + vW * fpMatrix.M43;
+            result.w = vX * fpMatrix.M14 + vY * fpMatrix.M24 + vZ * fpMatrix.M34 + vW * fpMatrix.M44;
         }
 
         /// <summary>
@@ -632,14 +632,14 @@ namespace FixedMath
         /// <param name="result">Transformed vector.</param>
         public static void TransformTranspose(ref FPVector4 v, ref FPMatrix fpMatrix, out FPVector4 result)
         {
-            Fix64 vX = v.X;
-            Fix64 vY = v.Y;
-            Fix64 vZ = v.Z;
-            Fix64 vW = v.W;
-            result.X = vX * fpMatrix.M11 + vY * fpMatrix.M12 + vZ * fpMatrix.M13 + vW * fpMatrix.M14;
-            result.Y = vX * fpMatrix.M21 + vY * fpMatrix.M22 + vZ * fpMatrix.M23 + vW * fpMatrix.M24;
-            result.Z = vX * fpMatrix.M31 + vY * fpMatrix.M32 + vZ * fpMatrix.M33 + vW * fpMatrix.M34;
-            result.W = vX * fpMatrix.M41 + vY * fpMatrix.M42 + vZ * fpMatrix.M43 + vW * fpMatrix.M44;
+            Fix64 vX = v.x;
+            Fix64 vY = v.y;
+            Fix64 vZ = v.z;
+            Fix64 vW = v.w;
+            result.x = vX * fpMatrix.M11 + vY * fpMatrix.M12 + vZ * fpMatrix.M13 + vW * fpMatrix.M14;
+            result.y = vX * fpMatrix.M21 + vY * fpMatrix.M22 + vZ * fpMatrix.M23 + vW * fpMatrix.M24;
+            result.z = vX * fpMatrix.M31 + vY * fpMatrix.M32 + vZ * fpMatrix.M33 + vW * fpMatrix.M34;
+            result.w = vX * fpMatrix.M41 + vY * fpMatrix.M42 + vZ * fpMatrix.M43 + vW * fpMatrix.M44;
         }
 
         /// <summary>
@@ -663,10 +663,10 @@ namespace FixedMath
         /// <param name="result">Transformed vector.</param>
         public static void Transform(ref FPVector3 v, ref FPMatrix fpMatrix, out FPVector4 result)
         {
-            result.X = v.X * fpMatrix.M11 + v.Y * fpMatrix.M21 + v.Z * fpMatrix.M31 + fpMatrix.M41;
-            result.Y = v.X * fpMatrix.M12 + v.Y * fpMatrix.M22 + v.Z * fpMatrix.M32 + fpMatrix.M42;
-            result.Z = v.X * fpMatrix.M13 + v.Y * fpMatrix.M23 + v.Z * fpMatrix.M33 + fpMatrix.M43;
-            result.W = v.X * fpMatrix.M14 + v.Y * fpMatrix.M24 + v.Z * fpMatrix.M34 + fpMatrix.M44;
+            result.x = v.x * fpMatrix.M11 + v.y * fpMatrix.M21 + v.z * fpMatrix.M31 + fpMatrix.M41;
+            result.y = v.x * fpMatrix.M12 + v.y * fpMatrix.M22 + v.z * fpMatrix.M32 + fpMatrix.M42;
+            result.z = v.x * fpMatrix.M13 + v.y * fpMatrix.M23 + v.z * fpMatrix.M33 + fpMatrix.M43;
+            result.w = v.x * fpMatrix.M14 + v.y * fpMatrix.M24 + v.z * fpMatrix.M34 + fpMatrix.M44;
         }
 
         /// <summary>
@@ -690,10 +690,10 @@ namespace FixedMath
         /// <param name="result">Transformed vector.</param>
         public static void TransformTranspose(ref FPVector3 v, ref FPMatrix fpMatrix, out FPVector4 result)
         {
-            result.X = v.X * fpMatrix.M11 + v.Y * fpMatrix.M12 + v.Z * fpMatrix.M13 + fpMatrix.M14;
-            result.Y = v.X * fpMatrix.M21 + v.Y * fpMatrix.M22 + v.Z * fpMatrix.M23 + fpMatrix.M24;
-            result.Z = v.X * fpMatrix.M31 + v.Y * fpMatrix.M32 + v.Z * fpMatrix.M33 + fpMatrix.M34;
-            result.W = v.X * fpMatrix.M41 + v.Y * fpMatrix.M42 + v.Z * fpMatrix.M43 + fpMatrix.M44;
+            result.x = v.x * fpMatrix.M11 + v.y * fpMatrix.M12 + v.z * fpMatrix.M13 + fpMatrix.M14;
+            result.y = v.x * fpMatrix.M21 + v.y * fpMatrix.M22 + v.z * fpMatrix.M23 + fpMatrix.M24;
+            result.z = v.x * fpMatrix.M31 + v.y * fpMatrix.M32 + v.z * fpMatrix.M33 + fpMatrix.M34;
+            result.w = v.x * fpMatrix.M41 + v.y * fpMatrix.M42 + v.z * fpMatrix.M43 + fpMatrix.M44;
         }
 
         /// <summary>
@@ -717,12 +717,12 @@ namespace FixedMath
         /// <param name="result">Transformed vector.</param>
         public static void Transform(ref FPVector3 v, ref FPMatrix fpMatrix, out FPVector3 result)
         {
-            Fix64 vX = v.X;
-            Fix64 vY = v.Y;
-            Fix64 vZ = v.Z;
-            result.X = vX * fpMatrix.M11 + vY * fpMatrix.M21 + vZ * fpMatrix.M31 + fpMatrix.M41;
-            result.Y = vX * fpMatrix.M12 + vY * fpMatrix.M22 + vZ * fpMatrix.M32 + fpMatrix.M42;
-            result.Z = vX * fpMatrix.M13 + vY * fpMatrix.M23 + vZ * fpMatrix.M33 + fpMatrix.M43;
+            Fix64 vX = v.x;
+            Fix64 vY = v.y;
+            Fix64 vZ = v.z;
+            result.x = vX * fpMatrix.M11 + vY * fpMatrix.M21 + vZ * fpMatrix.M31 + fpMatrix.M41;
+            result.y = vX * fpMatrix.M12 + vY * fpMatrix.M22 + vZ * fpMatrix.M32 + fpMatrix.M42;
+            result.z = vX * fpMatrix.M13 + vY * fpMatrix.M23 + vZ * fpMatrix.M33 + fpMatrix.M43;
         }
 
         /// <summary>
@@ -733,12 +733,12 @@ namespace FixedMath
         /// <param name="result">Transformed vector.</param>
         public static void TransformTranspose(ref FPVector3 v, ref FPMatrix fpMatrix, out FPVector3 result)
         {
-            Fix64 vX = v.X;
-            Fix64 vY = v.Y;
-            Fix64 vZ = v.Z;
-            result.X = vX * fpMatrix.M11 + vY * fpMatrix.M12 + vZ * fpMatrix.M13 + fpMatrix.M14;
-            result.Y = vX * fpMatrix.M21 + vY * fpMatrix.M22 + vZ * fpMatrix.M23 + fpMatrix.M24;
-            result.Z = vX * fpMatrix.M31 + vY * fpMatrix.M32 + vZ * fpMatrix.M33 + fpMatrix.M34;
+            Fix64 vX = v.x;
+            Fix64 vY = v.y;
+            Fix64 vZ = v.z;
+            result.x = vX * fpMatrix.M11 + vY * fpMatrix.M12 + vZ * fpMatrix.M13 + fpMatrix.M14;
+            result.y = vX * fpMatrix.M21 + vY * fpMatrix.M22 + vZ * fpMatrix.M23 + fpMatrix.M24;
+            result.z = vX * fpMatrix.M31 + vY * fpMatrix.M32 + vZ * fpMatrix.M33 + fpMatrix.M34;
         }
 
         /// <summary>
@@ -749,12 +749,12 @@ namespace FixedMath
         /// <param name="result">Transformed vector.</param>
         public static void TransformNormal(ref FPVector3 v, ref FPMatrix fpMatrix, out FPVector3 result)
         {
-            Fix64 vX = v.X;
-            Fix64 vY = v.Y;
-            Fix64 vZ = v.Z;
-            result.X = vX * fpMatrix.M11 + vY * fpMatrix.M21 + vZ * fpMatrix.M31;
-            result.Y = vX * fpMatrix.M12 + vY * fpMatrix.M22 + vZ * fpMatrix.M32;
-            result.Z = vX * fpMatrix.M13 + vY * fpMatrix.M23 + vZ * fpMatrix.M33;
+            Fix64 vX = v.x;
+            Fix64 vY = v.y;
+            Fix64 vZ = v.z;
+            result.x = vX * fpMatrix.M11 + vY * fpMatrix.M21 + vZ * fpMatrix.M31;
+            result.y = vX * fpMatrix.M12 + vY * fpMatrix.M22 + vZ * fpMatrix.M32;
+            result.z = vX * fpMatrix.M13 + vY * fpMatrix.M23 + vZ * fpMatrix.M33;
         }
 
         /// <summary>
@@ -778,12 +778,12 @@ namespace FixedMath
         /// <param name="result">Transformed vector.</param>
         public static void TransformNormalTranspose(ref FPVector3 v, ref FPMatrix fpMatrix, out FPVector3 result)
         {
-            Fix64 vX = v.X;
-            Fix64 vY = v.Y;
-            Fix64 vZ = v.Z;
-            result.X = vX * fpMatrix.M11 + vY * fpMatrix.M12 + vZ * fpMatrix.M13;
-            result.Y = vX * fpMatrix.M21 + vY * fpMatrix.M22 + vZ * fpMatrix.M23;
-            result.Z = vX * fpMatrix.M31 + vY * fpMatrix.M32 + vZ * fpMatrix.M33;
+            Fix64 vX = v.x;
+            Fix64 vY = v.y;
+            Fix64 vZ = v.z;
+            result.x = vX * fpMatrix.M11 + vY * fpMatrix.M12 + vZ * fpMatrix.M13;
+            result.y = vX * fpMatrix.M21 + vY * fpMatrix.M22 + vZ * fpMatrix.M23;
+            result.z = vX * fpMatrix.M31 + vY * fpMatrix.M32 + vZ * fpMatrix.M33;
         }
 
         /// <summary>
@@ -1076,17 +1076,17 @@ namespace FixedMath
             FPVector3 y;
             FPVector3.Cross(ref z, ref x, out y);
 
-            viewFpMatrix.M11 = x.X;
-            viewFpMatrix.M12 = y.X;
-            viewFpMatrix.M13 = z.X;
+            viewFpMatrix.M11 = x.x;
+            viewFpMatrix.M12 = y.x;
+            viewFpMatrix.M13 = z.x;
             viewFpMatrix.M14 = F64.C0;
-            viewFpMatrix.M21 = x.Y;
-            viewFpMatrix.M22 = y.Y;
-            viewFpMatrix.M23 = z.Y;
+            viewFpMatrix.M21 = x.y;
+            viewFpMatrix.M22 = y.y;
+            viewFpMatrix.M23 = z.y;
             viewFpMatrix.M24 = F64.C0;
-            viewFpMatrix.M31 = x.Z;
-            viewFpMatrix.M32 = y.Z;
-            viewFpMatrix.M33 = z.Z;
+            viewFpMatrix.M31 = x.z;
+            viewFpMatrix.M32 = y.z;
+            viewFpMatrix.M33 = z.z;
             viewFpMatrix.M34 = F64.C0;
             FPVector3.Dot(ref x, ref position, out viewFpMatrix.M41);
             FPVector3.Dot(ref y, ref position, out viewFpMatrix.M42);
@@ -1132,22 +1132,22 @@ namespace FixedMath
             FPVector3 y;
             FPVector3.Cross(ref z, ref x, out y);
 
-            worldFpMatrix.M11 = x.X;
-            worldFpMatrix.M12 = x.Y;
-            worldFpMatrix.M13 = x.Z;
+            worldFpMatrix.M11 = x.x;
+            worldFpMatrix.M12 = x.y;
+            worldFpMatrix.M13 = x.z;
             worldFpMatrix.M14 = F64.C0;
-            worldFpMatrix.M21 = y.X;
-            worldFpMatrix.M22 = y.Y;
-            worldFpMatrix.M23 = y.Z;
+            worldFpMatrix.M21 = y.x;
+            worldFpMatrix.M22 = y.y;
+            worldFpMatrix.M23 = y.z;
             worldFpMatrix.M24 = F64.C0;
-            worldFpMatrix.M31 = z.X;
-            worldFpMatrix.M32 = z.Y;
-            worldFpMatrix.M33 = z.Z;
+            worldFpMatrix.M31 = z.x;
+            worldFpMatrix.M32 = z.y;
+            worldFpMatrix.M33 = z.z;
             worldFpMatrix.M34 = F64.C0;
 
-            worldFpMatrix.M41 = position.X;
-            worldFpMatrix.M42 = position.Y;
-            worldFpMatrix.M43 = position.Z;
+            worldFpMatrix.M41 = position.x;
+            worldFpMatrix.M42 = position.y;
+            worldFpMatrix.M43 = position.z;
             worldFpMatrix.M44 = F64.C1;
 
         }
@@ -1182,9 +1182,9 @@ namespace FixedMath
                 M22 = F64.C1,
                 M33 = F64.C1,
                 M44 = F64.C1,
-                M41 = translation.X,
-                M42 = translation.Y,
-                M43 = translation.Z
+                M41 = translation.x,
+                M42 = translation.y,
+                M43 = translation.z
             };
         }
 
@@ -1209,9 +1209,9 @@ namespace FixedMath
         {
             scaleFpMatrix = new FPMatrix
                 {
-                    M11 = scale.X,
-                    M22 = scale.Y,
-                    M33 = scale.Z,
+                    M11 = scale.x,
+                    M22 = scale.y,
+                    M33 = scale.z,
                     M44 = F64.C1
 			};
         }

@@ -1,3 +1,4 @@
+using EventSystem;
 using UnityEngine;
 using UnityEngine.UI;
 namespace MyGame
@@ -12,14 +13,14 @@ namespace MyGame
         public override void OnAwake()
         {
             base.OnAwake();
-            RefRoot refRoot = MGameObject.GetComponent<RefRoot>();
-            m_textStart = refRoot.GetText(0);
-            m_btnStart = refRoot.GetButton(1);
-            m_inputAccount = refRoot.GetInputField(2);
-            m_inputPassword = refRoot.GetInputField(3);
-            Object.DestroyImmediate(refRoot);
+            m_textStart = GameObject.Find("Bg/m_btnStart/m_textStart").GetComponent<Text>();
+            m_btnStart = GameObject.Find("Bg/m_btnStart").GetComponent<Button>();
+            m_inputAccount = GameObject.Find("Bg/m_inputAccount").GetComponent<InputField>();
+            m_inputPassword = GameObject.Find("Bg/m_inputPassword").GetComponent<InputField>();
         }
         #endregion
+
+
 
         public override void OnStart()
         {

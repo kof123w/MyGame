@@ -48,7 +48,7 @@ class Launch : MonoBehaviour
     void FixedUpdate()
     {
 #if UNITY_LOCAL_SCRIPT 
-        GameMain.Update();
+        GameMain.FixedUpdate();
 #endif
     }
 

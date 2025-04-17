@@ -1,54 +1,50 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Config;
-using MyGame;
-using UnityEngine;
 using Cysharp.Threading.Tasks;
+using EventSystem;
+using FixedMath;
+using FixedPhysicsComponent;
+using UnityEngine;
 
 namespace MyGame
 {
-    //场景对象，所有直接继承一个状态机
-    public class BasePerformer : AssetObject,IFsm,IMemoryPool
+    
+    public class BasePerformer : AssetFix64Capsule,IFsm,IAction
     {
-        protected GameObject posGameObj;
-        protected Transform posTrans;
         private readonly Dictionary<int, Tuple<Action<int>, Action<int>, Action<float>>> actions = new();
-        private List<ValueTuple<int, int, int>> transitions = new();
+        private readonly List<ValueTuple<int, int, int>> transitions = new();
         public int CurrentState { get; private set; }
         private Action<float> beforeUpdateCallBack;
         private Action<float> afterUpdateCallBack;
         private RoleResourceConfig roleResourceConfig;
-
-        public BasePerformer()
-        {
-            posGameObj = ObjectPool.MallocEmptyNode();
-            posTrans = posGameObj.transform;
-            posTrans.SetParent(GameWorld.GetGameWorldTransform());
-        }
+        protected RoleBaseAttributeConfig roleBaseAttributeConfig; 
+        
+       
 
         public async UniTaskVoid UnLoadResources()
         {
-            await UnloadResource();
+            OnDestroy();
+            await UnloadResource(); 
         } 
         
         public void SetConfigID(int id)
         {
-            roleResourceConfig = ResourceConfigManager.Instance.GetRoleResourceConfig(id); 
+            roleResourceConfig = ResourceConfigManager.Instance.GetRoleResourceConfig(id);
+            roleBaseAttributeConfig = RoleBaseAttributeConfigManager.Instance.GetRoleBaseAttributeConfig(id);
         } 
         
         public async UniTask LoadActor()
         {
-            await LoadAsset(roleResourceConfig.AssetPath);
+            await LoadAsset(roleResourceConfig.AssetPath); 
+            trans.localPosition = Vector3.zero;
+            roleTransform = trans.Find("RoleModel");
         }
 
         public void SetWorldPos(Vector3 pos)
         {
-            posTrans.position = pos;
-        }
-
-        public void SetGameObjectName(string gameObjectName)
-        {
-            posGameObj.name = gameObjectName;
+            worldTransform.position = pos;
         } 
 
         #region 状态机相关
@@ -150,5 +146,15 @@ namespace MyGame
         }
         
         #endregion 状态机相关
-    }
+
+        public void Forward()
+        {
+             
+        }
+
+        public void Jump()
+        {
+            
+        }
+    } 
 }

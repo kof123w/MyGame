@@ -1,6 +1,7 @@
 using System;
+using MyGame;
 
-namespace MyGame
+namespace GameTimer
 {
     public class GameTimerAct : IMemoryPool
     {

@@ -1,4 +1,5 @@
 ﻿using System;
+using DebugTool;
 using MyGame;
 
 namespace Config
@@ -11,10 +12,12 @@ namespace Config
             DLogger.Log("==============>PreRead Config");
             Init(DefInputConfigManager.Instance);
             Init(ResourceConfigManager.Instance);
+            Init(RoleBaseAttributeConfigManager.Instance);
         }
 
         private static void Init(Object obj)
         {
+            //TODO..
         }
     }
 }

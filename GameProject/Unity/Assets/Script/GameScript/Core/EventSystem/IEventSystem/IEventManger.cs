@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MyGame
+namespace EventSystem
 {
     //事件的观察者
     public interface IEventManger

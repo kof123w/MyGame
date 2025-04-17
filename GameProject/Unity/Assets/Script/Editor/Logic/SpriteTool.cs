@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO; 
 using UnityEditor;
@@ -10,17 +11,17 @@ namespace MyGame.Editor
         [MenuItem("Assets/CustomTool/MergeSprite")]
         public static void MergeSprite()
         {
-            string[] sprteGUIs = Selection.assetGUIDs;
-            if (sprteGUIs == null || sprteGUIs.Length <= 1)
+            string[] spriteGuIs = Selection.assetGUIDs;
+            if (spriteGuIs == null || spriteGuIs.Length <= 1)
             {
                 return;
             }
 
             List<string> spritePathList = new List<string>();
 
-            for (int i = 0; i < sprteGUIs.Length; i++)
+            for (int i = 0; i < spriteGuIs.Length; i++)
             {
-                string assetPath = AssetDatabase.GUIDToAssetPath(sprteGUIs[i]);
+                string assetPath = AssetDatabase.GUIDToAssetPath(spriteGuIs[i]);
                 spritePathList.Add(assetPath);
             }
 
@@ -39,7 +40,7 @@ namespace MyGame.Editor
 
             byte[] bytes = outputTex.EncodeToPNG();
             File.WriteAllBytes(
-                $"{spritePathList[0].Remove(spritePathList[0].LastIndexOf(firstTex.name))}MergeSprite.png", bytes);
+                $"{spritePathList[0].Remove(spritePathList[0].LastIndexOf(firstTex.name, StringComparison.Ordinal))}MergeSprite.png", bytes);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }

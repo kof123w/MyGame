@@ -182,7 +182,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         ///<param name="extremePoint">Extreme point on the shape.</param>
         public override void GetLocalExtremePointWithoutMargin(ref FPVector3 direction, out FPVector3 extremePoint)
         {
-            extremePoint = new FPVector3(Fix64.Sign(direction.X) * (halfWidth - collisionMargin), Fix64.Sign(direction.Y) * (halfHeight - collisionMargin), Fix64.Sign(direction.Z) * (halfLength - collisionMargin));
+            extremePoint = new FPVector3(Fix64.Sign(direction.x) * (halfWidth - collisionMargin), Fix64.Sign(direction.y) * (halfHeight - collisionMargin), Fix64.Sign(direction.z) * (halfLength - collisionMargin));
         }
 
 
@@ -210,12 +210,12 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             FPVector3 normal = Toolbox.ZeroVector;
             Fix64 temp, tmin = F64.C0, tmax = maximumLength;
 
-            if (Fix64.Abs(localDirection.X) < Toolbox.Epsilon && (localOrigin.X < -halfWidth || localOrigin.X > halfWidth))
+            if (Fix64.Abs(localDirection.x) < Toolbox.Epsilon && (localOrigin.x < -halfWidth || localOrigin.x > halfWidth))
                 return false;
-            Fix64 inverseDirection = F64.C1 / localDirection.X;
+            Fix64 inverseDirection = F64.C1 / localDirection.x;
 			// inverseDirection might be Infinity (Fix64.MaxValue), so use SafeMul here to handle overflow
-            Fix64 t1 = Fix64.SafeMul((-halfWidth - localOrigin.X), inverseDirection);
-            Fix64 t2 = Fix64.SafeMul((halfWidth - localOrigin.X), inverseDirection);
+            Fix64 t1 = Fix64.SafeMul((-halfWidth - localOrigin.x), inverseDirection);
+            Fix64 t2 = Fix64.SafeMul((halfWidth - localOrigin.x), inverseDirection);
             var tempNormal = new FPVector3(-1, F64.C0, F64.C0);
             if (t1 > t2)
             {
@@ -231,11 +231,11 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             tmax = MathHelper.Min(tmax, t2);
             if (tmin > tmax)
                 return false;
-            if (Fix64.Abs(localDirection.Y) < Toolbox.Epsilon && (localOrigin.Y < -halfHeight || localOrigin.Y > halfHeight))
+            if (Fix64.Abs(localDirection.y) < Toolbox.Epsilon && (localOrigin.y < -halfHeight || localOrigin.y > halfHeight))
                 return false;
-            inverseDirection = F64.C1 / localDirection.Y;
-            t1 = Fix64.SafeMul((-halfHeight - localOrigin.Y), inverseDirection);
-            t2 = Fix64.SafeMul((halfHeight - localOrigin.Y), inverseDirection);
+            inverseDirection = F64.C1 / localDirection.y;
+            t1 = Fix64.SafeMul((-halfHeight - localOrigin.y), inverseDirection);
+            t2 = Fix64.SafeMul((halfHeight - localOrigin.y), inverseDirection);
             tempNormal = new FPVector3(F64.C0, -1, F64.C0);
             if (t1 > t2)
             {
@@ -251,11 +251,11 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             tmax = MathHelper.Min(tmax, t2);
             if (tmin > tmax)
                 return false;
-            if (Fix64.Abs(localDirection.Z) < Toolbox.Epsilon && (localOrigin.Z < -halfLength || localOrigin.Z > halfLength))
+            if (Fix64.Abs(localDirection.z) < Toolbox.Epsilon && (localOrigin.z < -halfLength || localOrigin.z > halfLength))
                 return false;
-            inverseDirection = F64.C1 / localDirection.Z;
-            t1 = Fix64.SafeMul((-halfLength - localOrigin.Z), inverseDirection);
-            t2 = Fix64.SafeMul((halfLength - localOrigin.Z), inverseDirection);
+            inverseDirection = F64.C1 / localDirection.z;
+            t1 = Fix64.SafeMul((-halfLength - localOrigin.z), inverseDirection);
+            t2 = Fix64.SafeMul((halfLength - localOrigin.z), inverseDirection);
             tempNormal = new FPVector3(F64.C0, F64.C0, -1);
             if (t1 > t2)
             {

@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using SingleTool;
 using UnityEngine;
 
-namespace MyGame
+namespace ObjectPool
 {
-    public class ObjectPool : UnitySingleton<ObjectPool>
+    public class NodePool : UnitySingleton<NodePool>
     {
         //空节点对象池
         private List<GameObject> emptyNodePool = new List<GameObject>();

@@ -1,7 +1,9 @@
-using System;
-using System.Collections;
-using System.Collections.Generic; 
-namespace MyGame
+using System; 
+using System.Collections.Generic;
+using DebugTool; 
+using SingleTool;
+
+namespace EventSystem
 {
     public class EventListenManager : Singleton<EventListenManager>,IEventManger
     { 

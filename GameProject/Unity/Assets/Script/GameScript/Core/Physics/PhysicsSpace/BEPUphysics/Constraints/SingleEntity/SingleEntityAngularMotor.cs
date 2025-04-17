@@ -111,37 +111,37 @@ namespace BEPUphysics.Constraints.SingleEntity
             Vector3 lambda;
 #endif
             FPVector3 aVel = entity.angularVelocity;
-            lambda.X = -aVel.X + biasVelocity.X - usedSoftness * accumulatedImpulse.X;
-            lambda.Y = -aVel.Y + biasVelocity.Y - usedSoftness * accumulatedImpulse.Y;
-            lambda.Z = -aVel.Z + biasVelocity.Z - usedSoftness * accumulatedImpulse.Z;
+            lambda.x = -aVel.x + biasVelocity.x - usedSoftness * accumulatedImpulse.x;
+            lambda.y = -aVel.y + biasVelocity.y - usedSoftness * accumulatedImpulse.y;
+            lambda.z = -aVel.z + biasVelocity.z - usedSoftness * accumulatedImpulse.z;
 
             FPMatrix3x3.Transform(ref lambda, ref effectiveMassMatrix, out lambda);
 
             FPVector3 previousAccumulatedImpulse = accumulatedImpulse;
-            accumulatedImpulse.X += lambda.X;
-            accumulatedImpulse.Y += lambda.Y;
-            accumulatedImpulse.Z += lambda.Z;
+            accumulatedImpulse.x += lambda.x;
+            accumulatedImpulse.y += lambda.y;
+            accumulatedImpulse.z += lambda.z;
             Fix64 sumLengthSquared = accumulatedImpulse.LengthSquared();
 
             if (sumLengthSquared > maxForceDtSquared)
             {
                 //max / impulse gives some value 0 < x < 1.  Basically, normalize the vector (divide by the length) and scale by the maximum.
                 Fix64 multiplier = maxForceDt / Fix64.Sqrt(sumLengthSquared);
-                accumulatedImpulse.X *= multiplier;
-                accumulatedImpulse.Y *= multiplier;
-                accumulatedImpulse.Z *= multiplier;
+                accumulatedImpulse.x *= multiplier;
+                accumulatedImpulse.y *= multiplier;
+                accumulatedImpulse.z *= multiplier;
 
                 //Since the limit was exceeded by this corrective impulse, limit it so that the accumulated impulse remains constrained.
-                lambda.X = accumulatedImpulse.X - previousAccumulatedImpulse.X;
-                lambda.Y = accumulatedImpulse.Y - previousAccumulatedImpulse.Y;
-                lambda.Z = accumulatedImpulse.Z - previousAccumulatedImpulse.Z;
+                lambda.x = accumulatedImpulse.x - previousAccumulatedImpulse.x;
+                lambda.y = accumulatedImpulse.y - previousAccumulatedImpulse.y;
+                lambda.z = accumulatedImpulse.z - previousAccumulatedImpulse.z;
             }
 
 
             entity.ApplyAngularImpulse(ref lambda);
 
 
-            return Fix64.Abs(lambda.X) + Fix64.Abs(lambda.Y) + Fix64.Abs(lambda.Z);
+            return Fix64.Abs(lambda.x) + Fix64.Abs(lambda.y) + Fix64.Abs(lambda.z);
         }
 
         /// <summary>
@@ -178,9 +178,9 @@ namespace BEPUphysics.Constraints.SingleEntity
                 {
                     Fix64 velocity = MathHelper.Min(settings.servo.baseCorrectiveSpeed, angle * updateRate) + angle * errorReduction;
 
-                    biasVelocity.X = axis.X * velocity;
-                    biasVelocity.Y = axis.Y * velocity;
-                    biasVelocity.Z = axis.Z * velocity;
+                    biasVelocity.x = axis.x * velocity;
+                    biasVelocity.y = axis.y * velocity;
+                    biasVelocity.z = axis.z * velocity;
 
 
                     //Ensure that the corrective velocity doesn't exceed the max.
@@ -188,9 +188,9 @@ namespace BEPUphysics.Constraints.SingleEntity
                     if (length > settings.servo.maxCorrectiveVelocitySquared)
                     {
                         Fix64 multiplier = settings.servo.maxCorrectiveVelocity / Fix64.Sqrt(length);
-                        biasVelocity.X *= multiplier;
-                        biasVelocity.Y *= multiplier;
-                        biasVelocity.Z *= multiplier;
+                        biasVelocity.x *= multiplier;
+                        biasVelocity.y *= multiplier;
+                        biasVelocity.z *= multiplier;
                     }
                 }
                 else

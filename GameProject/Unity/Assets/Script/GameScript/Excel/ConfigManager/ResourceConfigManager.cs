@@ -1,4 +1,5 @@
 ﻿using MyGame;
+using SingleTool;
 
 namespace Config
 {

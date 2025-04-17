@@ -112,13 +112,13 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             TransformLocalExtremePoints(ref right, ref up, ref backward, ref o, out positive);
 
             //The positive and negative vectors represent the X, Y and Z coordinates of the extreme points in world space along the world space axes.
-            boundingBox.Max.X = shapeTransform.Position.X + positive.X + collisionMargin;
-            boundingBox.Max.Y = shapeTransform.Position.Y + positive.Y + collisionMargin;
-            boundingBox.Max.Z = shapeTransform.Position.Z + positive.Z + collisionMargin;
+            boundingBox.Max.x = shapeTransform.Position.x + positive.x + collisionMargin;
+            boundingBox.Max.y = shapeTransform.Position.y + positive.y + collisionMargin;
+            boundingBox.Max.z = shapeTransform.Position.z + positive.z + collisionMargin;
 
-            boundingBox.Min.X = shapeTransform.Position.X - positive.X - collisionMargin;
-            boundingBox.Min.Y = shapeTransform.Position.Y - positive.Y - collisionMargin;
-            boundingBox.Min.Z = shapeTransform.Position.Z - positive.Z - collisionMargin;
+            boundingBox.Min.x = shapeTransform.Position.x - positive.x - collisionMargin;
+            boundingBox.Min.y = shapeTransform.Position.y - positive.y - collisionMargin;
+            boundingBox.Min.z = shapeTransform.Position.z - positive.z - collisionMargin;
         }
 
 
@@ -129,15 +129,15 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         ///<param name="extremePoint">Extreme point on the shape.</param>
         public override void GetLocalExtremePointWithoutMargin(ref FPVector3 direction, out FPVector3 extremePoint)
         {
-            Fix64 horizontalLengthSquared = direction.X * direction.X + direction.Z * direction.Z;
+            Fix64 horizontalLengthSquared = direction.x * direction.x + direction.z * direction.z;
             if (horizontalLengthSquared > Toolbox.Epsilon)
             {
                 Fix64 multiplier = (radius - collisionMargin) / Fix64.Sqrt(horizontalLengthSquared);
-                extremePoint = new FPVector3(direction.X * multiplier, Fix64.Sign(direction.Y) * (halfHeight - collisionMargin), direction.Z * multiplier);
+                extremePoint = new FPVector3(direction.x * multiplier, Fix64.Sign(direction.y) * (halfHeight - collisionMargin), direction.z * multiplier);
             }
             else
             {
-                extremePoint = new FPVector3(F64.C0, Fix64.Sign(direction.Y) * (halfHeight - collisionMargin), F64.C0);
+                extremePoint = new FPVector3(F64.C0, Fix64.Sign(direction.y) * (halfHeight - collisionMargin), F64.C0);
             }
 
         }
@@ -171,12 +171,12 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             FPQuaternion.Transform(ref fpRay.direction, ref conjugate, out localFpRay.direction);
 
             //Check for containment.
-            if (localFpRay.origin.Y >= -halfHeight && localFpRay.origin.Y <= halfHeight && localFpRay.origin.X * localFpRay.origin.X + localFpRay.origin.Z * localFpRay.origin.Z <= radius * radius)
+            if (localFpRay.origin.y >= -halfHeight && localFpRay.origin.y <= halfHeight && localFpRay.origin.x * localFpRay.origin.x + localFpRay.origin.z * localFpRay.origin.z <= radius * radius)
             {
                 //It's inside!
                 hit.T = F64.C0;
                 hit.Location = localFpRay.origin;
-                hit.Normal = new FPVector3(hit.Location.X, F64.C0, hit.Location.Z);
+                hit.Normal = new FPVector3(hit.Location.x, F64.C0, hit.Location.z);
                 Fix64 normalLengthSquared = hit.Normal.LengthSquared();
                 if (normalLengthSquared > F64.C1em9)
                     FPVector3.Divide(ref hit.Normal, Fix64.Sqrt(normalLengthSquared), out hit.Normal);
@@ -191,7 +191,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             //Project the ray direction onto the plane where the cylinder is a circle.
             //The projected ray is then tested against the circle to compute the time of impact.
             //That time of impact is used to compute the 3d hit location.
-            FPVector2 planeDirection = new FPVector2(localFpRay.direction.X, localFpRay.direction.Z);
+            FPVector2 planeDirection = new FPVector2(localFpRay.direction.x, localFpRay.direction.z);
             Fix64 planeDirectionLengthSquared = planeDirection.LengthSquared();
 
             if (planeDirectionLengthSquared < Toolbox.Epsilon)
@@ -199,9 +199,9 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
                 //The ray is nearly parallel with the axis.
                 //Skip the cylinder-sides test.  We're either inside the cylinder and won't hit the sides, or we're outside
                 //and won't hit the sides.  
-                if (localFpRay.origin.Y > halfHeight)
+                if (localFpRay.origin.y > halfHeight)
                     goto upperTest;
-                if (localFpRay.origin.Y < -halfHeight)
+                if (localFpRay.origin.y < -halfHeight)
                     goto lowerTest;
 
 
@@ -209,7 +209,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
                 return false;
 
             }
-            FPVector2 planeOrigin = new FPVector2(localFpRay.origin.X, localFpRay.origin.Z);
+            FPVector2 planeOrigin = new FPVector2(localFpRay.origin.x, localFpRay.origin.z);
             Fix64 dot;
             FPVector2.Dot(ref planeDirection, ref planeOrigin, out dot);
             Fix64 closestToCenterT = -dot / planeDirectionLengthSquared;
@@ -239,10 +239,10 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             FPVector3.Add(ref hit.Location, ref localFpRay.origin, out hit.Location);
 
             //Is it intersecting the cylindrical portion of the capsule?
-            if (hit.Location.Y <= halfHeight && hit.Location.Y >= -halfHeight && hit.T < maximumLength)
+            if (hit.Location.y <= halfHeight && hit.Location.y >= -halfHeight && hit.T < maximumLength)
             {
                 //Yup!
-                hit.Normal = new FPVector3(hit.Location.X, F64.C0, hit.Location.Z);
+                hit.Normal = new FPVector3(hit.Location.x, F64.C0, hit.Location.z);
                 Fix64 normalLengthSquared = hit.Normal.LengthSquared();
                 if (normalLengthSquared > F64.C1em9)
                     FPVector3.Divide(ref hit.Normal, Fix64.Sqrt(normalLengthSquared), out hit.Normal);
@@ -254,22 +254,22 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
                 return true;
             }
 
-            if (hit.Location.Y < halfHeight)
+            if (hit.Location.y < halfHeight)
                 goto lowerTest;
         upperTest:
             //Nope! It may be intersecting the ends of the cylinder though.
             //We're above the cylinder, so cast a ray against the upper cap.
-            if (localFpRay.direction.Y > F64.Cm1em9)
+            if (localFpRay.direction.y > F64.Cm1em9)
             {
                 //Can't hit the upper cap if the ray isn't pointing down.
                 hit = new FPRayHit();
                 return false;
             }
-            Fix64 t = (halfHeight - localFpRay.origin.Y) / localFpRay.direction.Y;
+            Fix64 t = (halfHeight - localFpRay.origin.y) / localFpRay.direction.y;
             FPVector3 planeIntersection;
             FPVector3.Multiply(ref localFpRay.direction, t, out planeIntersection);
             FPVector3.Add(ref localFpRay.origin, ref planeIntersection, out planeIntersection);
-            if(planeIntersection.X * planeIntersection.X + planeIntersection.Z * planeIntersection.Z < radius * radius + F64.C1em9 && t < maximumLength)
+            if(planeIntersection.x * planeIntersection.x + planeIntersection.z * planeIntersection.z < radius * radius + F64.C1em9 && t < maximumLength)
             {
                 //Pull the hit into world space.
                 FPQuaternion.Transform(ref Toolbox.UpVector, ref transform.Orientation, out hit.Normal);
@@ -283,16 +283,16 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
 
         lowerTest:
             //Is it intersecting the bottom cap?
-            if (localFpRay.direction.Y < F64.C1em9)
+            if (localFpRay.direction.y < F64.C1em9)
             {
                 //Can't hit the bottom cap if the ray isn't pointing up.
                 hit = new FPRayHit();
                 return false;
             }
-            t = (-halfHeight - localFpRay.origin.Y) / localFpRay.direction.Y;
+            t = (-halfHeight - localFpRay.origin.y) / localFpRay.direction.y;
             FPVector3.Multiply(ref localFpRay.direction, t, out planeIntersection);
             FPVector3.Add(ref localFpRay.origin, ref planeIntersection, out planeIntersection);
-            if (planeIntersection.X * planeIntersection.X + planeIntersection.Z * planeIntersection.Z < radius * radius + F64.C1em9 && t < maximumLength)
+            if (planeIntersection.x * planeIntersection.x + planeIntersection.z * planeIntersection.z < radius * radius + F64.C1em9 && t < maximumLength)
             {
                 //Pull the hit into world space.
                 FPQuaternion.Transform(ref Toolbox.DownVector, ref transform.Orientation, out hit.Normal);

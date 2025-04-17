@@ -119,5 +119,27 @@ namespace FixedMath
         {
             return radians * (F64.C180 / Pi);
         }
+        
+        
+        public static FPQuaternion QuaternionFromToVectors(FPVector3 from, FPVector3 to)
+        {
+            // 归一化输入向量
+            from.Normalize();
+            to.Normalize();
+
+            // 计算旋转轴和角度
+            FPVector3 axis = FPVector3.Cross(from, to);
+            Fix64 angle = Fix64.Acos(FPVector3.Dot(from, to));
+
+            // 如果两向量平行，返回单位四元数
+            if (axis.LengthSquared() < 1e-6f)
+            {
+                return FPQuaternion.Identity;
+            }
+
+            // 返回旋转四元数
+            axis.Normalize();
+            return FPQuaternion.CreateFromAxisAngle(axis, angle);
+        }
     }
 }

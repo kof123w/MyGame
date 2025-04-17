@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Config;
+using DebugTool;
 using UnityEngine;
 
 namespace MyGame

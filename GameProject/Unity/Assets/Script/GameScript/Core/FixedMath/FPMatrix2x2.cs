@@ -299,13 +299,13 @@ namespace FixedMath
         /// <param name="result">Product of the transformation.</param>
         public static void Transform(ref FPVector2 v, ref FPMatrix2x2 matrix, out FPVector2 result)
         {
-            Fix64 vX = v.X;
-            Fix64 vY = v.Y;
+            Fix64 vX = v.x;
+            Fix64 vY = v.y;
 #if !WINDOWS
             result = new FPVector2();
 #endif
-            result.X = vX * matrix.M11 + vY * matrix.M21;
-            result.Y = vX * matrix.M12 + vY * matrix.M22;
+            result.x = vX * matrix.M11 + vY * matrix.M21;
+            result.y = vX * matrix.M12 + vY * matrix.M22;
         }
 
         /// <summary>

@@ -91,9 +91,9 @@ namespace FixedMath
                 var element = points.Elements[i];
                 var cell = new BlockedCell
                 {
-                    X = (int)Fix64.Floor(element.X / cellSize),
-                    Y = (int)Fix64.Floor(element.Y / cellSize),
-                    Z = (int)Fix64.Floor(element.Z / cellSize) 
+                    X = (int)Fix64.Floor(element.x / cellSize),
+                    Y = (int)Fix64.Floor(element.y / cellSize),
+                    Z = (int)Fix64.Floor(element.z / cellSize) 
                 };
                 if (set.Contains(cell))
                 {

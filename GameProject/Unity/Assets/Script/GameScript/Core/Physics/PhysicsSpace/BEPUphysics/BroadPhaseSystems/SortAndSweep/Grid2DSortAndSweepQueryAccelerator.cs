@@ -52,16 +52,16 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
                 Fix64 nextTy; //Distance along ray to next boundary along y axis.
                 Fix64 nextTz; //Distance along ray to next boundary along z axis.
 							  //Find the next cell.
-				if (fpRay.direction.Y > F64.C0)
-					nextTy = ((cellIndex.Y + 1) * cellWidth - currentPosition.Y) / fpRay.direction.Y;
-				else if (fpRay.direction.Y < F64.C0)
-					nextTy = ((cellIndex.Y) * cellWidth - currentPosition.Y) / fpRay.direction.Y;
+				if (fpRay.direction.y > F64.C0)
+					nextTy = ((cellIndex.Y + 1) * cellWidth - currentPosition.y) / fpRay.direction.y;
+				else if (fpRay.direction.y < F64.C0)
+					nextTy = ((cellIndex.Y) * cellWidth - currentPosition.y) / fpRay.direction.y;
 				else
 					nextTy = Fix64.MaxValue;
-                if (fpRay.direction.Z > F64.C0)
-                    nextTz = ((cellIndex.Z + 1) * cellWidth - currentPosition.Z) / fpRay.direction.Z;
-                else if (fpRay.direction.Z < F64.C0)
-                    nextTz = ((cellIndex.Z) * cellWidth - currentPosition.Z) / fpRay.direction.Z;
+                if (fpRay.direction.z > F64.C0)
+                    nextTz = ((cellIndex.Z + 1) * cellWidth - currentPosition.z) / fpRay.direction.z;
+                else if (fpRay.direction.z < F64.C0)
+                    nextTz = ((cellIndex.Z) * cellWidth - currentPosition.z) / fpRay.direction.z;
                 else
                     nextTz = Fix64.MaxValue;
 
@@ -76,16 +76,16 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
                 if (owner.cellSet.TryGetCell(ref cellIndex, out cell))
                 {
                     Fix64 endingX;
-                    if(fpRay.direction.X < F64.C0)
-                        endingX = currentPosition.X;
+                    if(fpRay.direction.x < F64.C0)
+                        endingX = currentPosition.x;
                     else
-                        endingX = currentPosition.X + fpRay.direction.X * nextT;
+                        endingX = currentPosition.x + fpRay.direction.x * nextT;
 
                     //To fully accelerate this, the entries list would need to contain both min and max interval markers.
                     //Since it only contains the sorted min intervals, we can't just start at a point in the middle of the list.
                     //Consider some giant bounding box that spans the entire list. 
                     for (int i = 0; i < cell.entries.Count 
-                        && cell.entries.Elements[i].item.boundingBox.Min.X <= endingX; i++) //TODO: Try additional x axis pruning?
+                        && cell.entries.Elements[i].item.boundingBox.Min.x <= endingX; i++) //TODO: Try additional x axis pruning?
                     {
                         var item = cell.entries.Elements[i].item;
                         Fix64 t;
@@ -104,12 +104,12 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
                 FPVector3.Multiply(ref fpRay.direction, nextT, out offset);
                 FPVector3.Add(ref offset, ref currentPosition, out currentPosition);
                 if (yIsMinimum)
-                    if (fpRay.direction.Y < F64.C0)
+                    if (fpRay.direction.y < F64.C0)
                         cellIndex.Y -= 1;
                     else
                         cellIndex.Y += 1;
                 else
-                    if (fpRay.direction.Z < F64.C0)
+                    if (fpRay.direction.z < F64.C0)
                         cellIndex.Z -= 1;
                     else
                         cellIndex.Z += 1;
@@ -143,7 +143,7 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
                         //Since it only contains the sorted min intervals, we can't just start at a point in the middle of the list.
                         //Consider some giant bounding box that spans the entire list. 
                         for (int k = 0; k < cell.entries.Count
-                            && cell.entries.Elements[k].item.boundingBox.Min.X <= boundingShape.Max.X; k++) //TODO: Try additional x axis pruning? A bit of optimization potential due to overlap with AABB test.
+                            && cell.entries.Elements[k].item.boundingBox.Min.x <= boundingShape.Max.x; k++) //TODO: Try additional x axis pruning? A bit of optimization potential due to overlap with AABB test.
                         {
                             bool intersects;
                             var item = cell.entries.Elements[k].item;
@@ -168,9 +168,9 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
 #else
             Vector3 offset;
 #endif
-            offset.X = boundingShape.Radius;
-            offset.Y = offset.X;
-            offset.Z = offset.Y;
+            offset.x = boundingShape.Radius;
+            offset.y = offset.x;
+            offset.z = offset.y;
             BoundingBox box;
             FPVector3.Add(ref boundingShape.Center, ref offset, out box.Max);
             FPVector3.Subtract(ref boundingShape.Center, ref offset, out box.Min);
@@ -194,7 +194,7 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
                         //Since it only contains the sorted min intervals, we can't just start at a point in the middle of the list.
                         //Consider some giant bounding box that spans the entire list. 
                         for (int k = 0; k < cell.entries.Count
-                            && cell.entries.Elements[k].item.boundingBox.Min.X <= box.Max.X; k++) //TODO: Try additional x axis pruning? A bit of optimization potential due to overlap with AABB test.
+                            && cell.entries.Elements[k].item.boundingBox.Min.x <= box.Max.x; k++) //TODO: Try additional x axis pruning? A bit of optimization potential due to overlap with AABB test.
                         {
                             bool intersects;
                             var item = cell.entries.Elements[k].item;

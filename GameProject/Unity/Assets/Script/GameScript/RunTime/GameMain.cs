@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Reflection;
+using AssetsLoad;
 using Config;
+using DebugTool;
+using EventSystem;
+using GameTimer;
 using UnityEngine;
 
 namespace MyGame
@@ -47,8 +51,7 @@ namespace MyGame
             try
             {
                 GameTimerManager.Instance.Tick();
-                UIManager.Instance.Tick();
-                PlayerInputSystem.Instance.Tick();
+                UIManager.Instance.Tick(); 
                 GameWorld.Instance.Tick();
             }
             catch(Exception e)
@@ -60,12 +63,32 @@ namespace MyGame
 
         public static void FixedUpdate()
         {
-            GameWorld.Instance.FixedTick();
+            try
+            {
+                GameWorld.Instance.FixedTick(); 
+                PlayerInputSystem.Instance.RevInput();
+            }
+            catch(Exception e)
+            {
+                DLogger.Error(e);
+                throw;
+            }
+            
         }
 
         public static void LateUpdate()
         { 
-            GameWorld.Instance.LateTick();
+            
+            try
+            {
+                GameWorld.Instance.LateTick();
+            }
+            catch(Exception e)
+            {
+                DLogger.Error(e);
+                throw;
+            }
+           
         }
         
         //前置处理
@@ -111,21 +134,14 @@ namespace MyGame
 
         private static void ProgressAssembly(Type type)
         { 
-            System.Object classAttribute = type.GetCustomAttribute(typeof(RootProgress), false);
-            if (classAttribute is RootProgress)
+            System.Object classAttribute = type.GetCustomAttribute(typeof(RootTask), false);
+            if (classAttribute is RootTask)
             {
-                GameEvent.Push(TaskEvent.TaskSetCurProgress, type);
+                GameEvent.Push(TaskEvent.TaskSetCurTask, type);
             }
             
             var progress = Activator.CreateInstance(type) as ITask;
-            GameEvent.Push(TaskEvent.TaskAddProgress, type, progress);
-
-            classAttribute = type.GetCustomAttribute(typeof(ProgressLoopCheck), false);
-            if (classAttribute is ProgressLoopCheck { MIsLoopCheck: true })
-            {
-                //GameEvent.Push(ProgressEvent.ProgressAddNeeCheckProgress, progress);
-                GameEvent.Push(TaskEvent.TaskAddNeeCheckProgress, type);
-            }
+            GameEvent.Push(TaskEvent.TaskAddTask, type, progress); 
         }
 
         private static void UIModelControllerAssembly(Type type)

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using SingleTool;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace MyGame
+namespace AssetsLoad
 {
     public enum ResourceLoadMethod
     {

@@ -1,3 +1,4 @@
+using GameTimer;
 using MyGame;
 using UnityEngine;
 using UnityEngine.UI; 
@@ -12,13 +13,15 @@ public class LoadUI : UIWindow
     public override void OnAwake()
     {
         base.OnAwake();
-        RefRoot refRoot = MGameObject.GetComponent<RefRoot>();
-        m_textLoadText = refRoot.GetText(0);
-        m_rectFill = refRoot.GetRectTransform(1);
-        m_rectBackground = refRoot.GetRectTransform(2);
-        m_goProgress = refRoot.GetGameObject(3);
+        m_textLoadText = GameObject.Find("Bg/m_goProgress/m_textLoadText").GetComponent<Text>();
+        m_rectFill = GameObject.Find("Bg/m_goProgress/m_rectBackground/m_rectFill").GetComponent<RectTransform>();
+        m_rectBackground = GameObject.Find("Bg/m_goProgress/m_rectBackground").GetComponent<RectTransform>();
+        m_goProgress  = GameObject.Find("Bg/m_goProgress").gameObject;
     }
-    #endregion 
+    #endregion
+
+
+
     private readonly string timerSource = "LoadUIUpdateDotText";
     public override void OnStart()
     {

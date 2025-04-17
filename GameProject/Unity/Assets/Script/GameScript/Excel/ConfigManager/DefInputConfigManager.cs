@@ -1,5 +1,6 @@
-using System.Collections.Generic; 
-using MyGame;
+using System.Collections.Generic;  
+using SingleTool;
+
 namespace Config
 {
     public class DefInputConfigManager : Singleton<DefInputConfigManager>

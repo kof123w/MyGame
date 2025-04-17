@@ -1,7 +1,13 @@
 using System.Collections.Generic;
+using System.Threading;
 using BEPUphysics;
+using DebugTool;
 using FixedMath;
+using FixedMath.Threading;
+using ObjectPool;
+using SingleTool;
 using UnityEngine;
+using UnityEngine.Pool;
 
 namespace MyGame
 {
@@ -10,6 +16,7 @@ namespace MyGame
         //物理坐标系
         private BEPUphysicsSpace bEpUPhysicsSpace;
         private Transform gameWorldTrans;
+        private GameObject gameWorldGO;
         
         //场景相关
         private SceneType currentScene = SceneType.None;
@@ -29,23 +36,23 @@ namespace MyGame
             DLogger.Log("==============>Init world physics system!");
             //关掉物理系统
             Physics.autoSyncTransforms = false;  //射线检测关闭
-            Physics.simulationMode = SimulationMode.Script;
+            Physics.autoSimulation = false;
             
-            //创建物理世界，设置重力加速度
-            bEpUPhysicsSpace = new BEPUphysicsSpace
-            {
-                ForceUpdater =
-                {
-                    Gravity = new FPVector3(0, -9.81m, 0)
-                },
-                TimeStepSettings =
-                {
-                    TimeStepDuration = 1 / 60m
-                }
-            }; 
+            //创建物理世界，设置重力加速度，多线程工作设置
+            var parallelLooper = new ParallelLooper(); 
+            bEpUPhysicsSpace = new BEPUphysicsSpace(parallelLooper); 
+            bEpUPhysicsSpace.ForceUpdater.Gravity = new FPVector3(0, -9.81m, 0);
+            bEpUPhysicsSpace.TimeStepSettings.TimeStepDuration = Time.fixedDeltaTime;
+            
+            //强制多线程确定性模式
+            bEpUPhysicsSpace.BroadPhase.AllowMultithreading = false;
+            bEpUPhysicsSpace.NarrowPhase.AllowMultithreading = false; 
+            bEpUPhysicsSpace.Solver.AllowMultithreading = false;
             
             DLogger.Log("==============>Init scene Object");
             mainCamera = GameObject.Find("MainCamera").GetComponent<Camera>();
+            gameWorldGO = NodePool.MallocEmptyNode();
+            gameWorldTrans = gameWorldGO.transform;
         }
         
         public void Tick()
@@ -62,13 +69,13 @@ namespace MyGame
         {
             if (bEpUPhysicsSpace != null)
             {
-                bEpUPhysicsSpace.Update();
+                bEpUPhysicsSpace.Update(Time.fixedDeltaTime); 
             }
         }
 
         public static Transform GetGameWorldTransform()
         {
-            return null;
+            return Instance.gameWorldTrans;
         }
 
         public static void SetObjectToGameWorld(Transform trans,Vector3 position)
@@ -123,13 +130,22 @@ namespace MyGame
             }
 
             playerCharacter.SetConfigID(id); 
-            playerCharacter.SetGameObjectName("PlayerRole");
-            playerCharacter.SetWorldPos(Vector3.zero);
+            playerCharacter.SetGameObjectName("PlayerRole"); 
+        }
+
+        public Camera GetMainCamera()
+        {
+            return mainCamera;
         }
 
         public PlayerCharacter GetPlayerCharacter()
         {
             return playerCharacter;
+        }
+
+        public static BEPUphysicsSpace GetPhysicsSpace()
+        {
+            return Instance.bEpUPhysicsSpace;
         }
     }  
 }

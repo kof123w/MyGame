@@ -5,6 +5,6 @@
 D
 move_right
 move
-Shiftrun
+	LeftShiftrun
 	BackQuote
 controller

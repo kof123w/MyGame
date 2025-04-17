@@ -794,6 +794,31 @@ namespace FixMath.NET
             return new Fix64(finalValue);
         }
 
+        public static Fix64 Clamp(Fix64 value,Fix64 min,Fix64 max)
+        {
+	        if (value <= min)
+	        {
+		        return min;
+	        }
+
+	        if (value >= max)
+	        {
+		        return max;
+	        }
+	        return value;
+
+        }
+
+        public static Fix64 Max(Fix64 value, Fix64 max)
+        {
+	        return value >= max ? max : value;
+        }
+
+        public static Fix64 Min(Fix64 value, Fix64 min)
+        {
+	        return value <= min ? min : value;
+        }
+
         public static Fix64 FastAtan2(Fix64 y, Fix64 x) {
             var yl = y.RawValue;
             var xl = x.RawValue;
@@ -927,10 +952,7 @@ namespace FixMath.NET
         }
         public static explicit operator long(Fix64 value) {
             return value.RawValue >> FRACTIONAL_PLACES;
-        }
-        public static explicit operator Fix64(float value) {
-            return new Fix64((long)(value * ONE));
-        }
+        } 
         public static explicit operator float(Fix64 value) {
             return (float)value.RawValue / ONE;
         }
@@ -945,6 +967,10 @@ namespace FixMath.NET
         }
         public static explicit operator decimal(Fix64 value) {
             return (decimal)value.RawValue / ONE;
+        }
+        
+        public static implicit operator Fix64(float value) {
+	        return new Fix64((long)(value * ONE));
         }
 
         public override bool Equals(object obj) {

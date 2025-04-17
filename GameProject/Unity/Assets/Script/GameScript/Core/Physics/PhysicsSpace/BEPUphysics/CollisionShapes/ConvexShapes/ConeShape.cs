@@ -114,17 +114,17 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             //Is it the tip of the cone?
             Fix64 sinThetaSquared = radius * radius / (radius * radius + height * height);
             //If d.Y * d.Y / d.LengthSquared >= sinthetaSquared
-            if (direction.Y > F64.C0 && direction.Y * direction.Y >= direction.LengthSquared() * sinThetaSquared)
+            if (direction.y > F64.C0 && direction.y * direction.y >= direction.LengthSquared() * sinThetaSquared)
             {
                 extremePoint = new FPVector3(F64.C0, F64.C0p75 * height, F64.C0);
                 return;
             }
             //Is it a bottom edge of the cone?
-            Fix64 horizontalLengthSquared = direction.X * direction.X + direction.Z * direction.Z;
+            Fix64 horizontalLengthSquared = direction.x * direction.x + direction.z * direction.z;
             if (horizontalLengthSquared > Toolbox.Epsilon)
             {
                 var radOverSigma = radius / Fix64.Sqrt(horizontalLengthSquared);
-                extremePoint = new FPVector3((Fix64)(radOverSigma * direction.X), F64.Cm0p25 * height, (Fix64)(radOverSigma * direction.Z));
+                extremePoint = new FPVector3((Fix64)(radOverSigma * direction.x), F64.Cm0p25 * height, (Fix64)(radOverSigma * direction.z));
             }
             else // It's pointing almost straight down...
                 extremePoint = new FPVector3(F64.C0, F64.Cm0p25 * height, F64.C0);

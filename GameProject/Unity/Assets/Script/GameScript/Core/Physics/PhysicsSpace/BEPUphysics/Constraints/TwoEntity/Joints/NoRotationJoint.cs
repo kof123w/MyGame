@@ -187,7 +187,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
                 connectionB.ApplyAngularImpulse(ref torqueB);
             }
 
-            return Fix64.Abs(lambda.X) + Fix64.Abs(lambda.Y) + Fix64.Abs(lambda.Z);
+            return Fix64.Abs(lambda.x) + Fix64.Abs(lambda.y) + Fix64.Abs(lambda.z);
         }
 
         /// <summary>
@@ -209,25 +209,25 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             FPVector3 axis;
             FPQuaternion.GetAxisAngleFromQuaternion(ref intermediate, out axis, out angle);
 
-            error.X = axis.X * angle;
-            error.Y = axis.Y * angle;
-            error.Z = axis.Z * angle;
+            error.x = axis.x * angle;
+            error.y = axis.y * angle;
+            error.z = axis.z * angle;
 
             Fix64 errorReduction;
             springSettings.ComputeErrorReductionAndSoftness(dt, F64.C1 / dt, out errorReduction, out softness);
             errorReduction = -errorReduction;
-            biasVelocity.X = errorReduction * error.X;
-            biasVelocity.Y = errorReduction * error.Y;
-            biasVelocity.Z = errorReduction * error.Z;
+            biasVelocity.x = errorReduction * error.x;
+            biasVelocity.y = errorReduction * error.y;
+            biasVelocity.z = errorReduction * error.z;
 
             //Ensure that the corrective velocity doesn't exceed the max.
             Fix64 length = biasVelocity.LengthSquared();
             if (length > maxCorrectiveVelocitySquared)
             {
                 Fix64 multiplier = maxCorrectiveVelocity / Fix64.Sqrt(length);
-                biasVelocity.X *= multiplier;
-                biasVelocity.Y *= multiplier;
-                biasVelocity.Z *= multiplier;
+                biasVelocity.x *= multiplier;
+                biasVelocity.y *= multiplier;
+                biasVelocity.z *= multiplier;
             }
 
             FPMatrix3x3.Add(ref connectionA.inertiaTensorInverse, ref connectionB.inertiaTensorInverse, out effectiveMassMatrix);

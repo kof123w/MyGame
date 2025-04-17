@@ -1,6 +1,6 @@
 ﻿namespace MyGame
 {
-    public enum InputSignal
+    public enum InputKey
     {
         None,  
         MoveForward,//前
@@ -11,6 +11,4 @@
         Run,     //奔跑
         BackQuote,  //'`'按键
     }
-
-   
 }

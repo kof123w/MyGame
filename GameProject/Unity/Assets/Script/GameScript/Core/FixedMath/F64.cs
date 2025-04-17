@@ -18,6 +18,7 @@ namespace FixedMath
 		public static readonly Fix64 C60 = (Fix64)60;
 		public static readonly Fix64 C120 = (Fix64)120;
 		public static readonly Fix64 C0p001 = (Fix64)0.001m;
+		public static readonly Fix64 C0p4 = (Fix64)0.4m;
 		public static readonly Fix64 C0p5 = (Fix64)0.5m;
 		public static readonly Fix64 C0p25 = (Fix64)0.25m;
 		public static readonly Fix64 C1em09 = (Fix64)1e-9m;

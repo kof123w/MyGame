@@ -1,4 +1,4 @@
-﻿namespace MyGame
+﻿namespace EventSystem
 {
     public static class Dispatcher
     {

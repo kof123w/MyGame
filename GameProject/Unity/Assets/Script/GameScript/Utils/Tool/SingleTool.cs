@@ -1,7 +1,7 @@
  
 using UnityEngine;
 
-namespace MyGame
+namespace SingleTool
 {
     /// <summary>
     /// 普通单例工具

@@ -1,7 +1,12 @@
 using System;
-using System.Collections.Generic; 
+using System.Collections.Generic;
+using DebugTool;
+using EventHash;
+using MyGame;
+using ObjectPool;
+using SingleTool;
 
-namespace MyGame
+namespace GameTimer
 {
     public class GameTimerManager : Singleton<GameTimerManager>
     {

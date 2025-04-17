@@ -1,9 +1,13 @@
-﻿namespace MyGame
+﻿using EventHash;
+
+namespace MyGame
 {
     public struct InputEvent
     {
-        public static readonly long KeyHold = "InputEvent_KeyHold".StringToHash();
-        public static readonly long KeyDown = "InputEvent_KeyDown".StringToHash();
-        public static readonly long KeyUp = "InputEvent_KeyUp".StringToHash();
+        //键盘输入
+        public static readonly long KeyboardHold = "InputEvent_KeyboardHold".StringToHash();
+        
+        //鼠标滑动接听
+        public static readonly long MoveMouse = "InputEvent_MoveMouse".StringToHash();
     }
 }

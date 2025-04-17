@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using Config;
-using UnityEngine; 
+using DebugTool;
+using EventSystem;
+using SingleTool;
+using UnityEngine;
 
 namespace MyGame
 {
+    //包含键盘输入手柄输入等等
     public class PlayerInputSystem : Singleton<PlayerInputSystem>
     {
         private List<DefInputConfig> defInputConfigs;
-
         private Dictionary<int, KeyCode> cmdKeyMap = new();
-
+        private Vector3 previousMousePosition;
+        private DefInputConfig runningConfig = null;
+        private KeyCode runningKeyCode = KeyCode.None;
         public void Init()
         {
             DLogger.Log("==============>Init Input Module");
@@ -20,24 +25,40 @@ namespace MyGame
                 for (int i = 0; i < defInputConfigs.Count; i++)
                 {
                     foreach (KeyCode keyCode in Enum.GetValues(typeof(KeyCode)))
-                    { 
+                    {
                         if (keyCode.ToString().Equals(defInputConfigs[i].Keys))
-                        {
-                            cmdKeyMap.Add(defInputConfigs[i].ID,keyCode);
+                        { 
+                            if (defInputConfigs[i].ID == (int)InputKey.Run)
+                            {
+                                runningConfig = defInputConfigs[i];
+                                runningKeyCode = keyCode;
+                                continue;
+                            }
+                            
+                            cmdKeyMap.Add(defInputConfigs[i].ID, keyCode);
                         }
-                    } 
+                    }
                 }
             }
+
+            this.Subscribe<InputKey>(InputEvent.KeyboardHold, RevInput);
         }
 
-        public void Tick()
-        {
-            RevInput();
-        }
+        //讲键盘输入转成signal
+        private float Dup = 0.0f;
+        private float Ddown = 0.0f;
+        private float Dright = 0.0f;
+        private float Dleft = 0.0f;
+        private float UpVelocity = 0.0f;
+        private float RightVelocity = 0.0f; 
+        private bool isRunning = false; 
 
         //接收输入
         public void RevInput()
         {
+            //收集前先清理一下
+            ClearInput();
+            //这里收集这一帧数的输入
             if (defInputConfigs != null)
             {
                 if (Input.anyKey)
@@ -49,29 +70,76 @@ namespace MyGame
                             var keyCode = cmdKeyMap[defInputConfigs[i].ID];
                             if (Input.GetKey(keyCode))
                             {
-                                GameEvent.Push(InputEvent.KeyHold,(InputSignal)defInputConfigs[i].ID);
-                                Debug.Log(keyCode.ToString());
+                                RevInput((InputKey)defInputConfigs[i].ID);
                             }
                         }
-                    }
-                } 
+                    } 
+                }
                 
-                if (Input.anyKeyDown)
-                {
-                    for (int i = 0; i < defInputConfigs.Count; i++)
-                    {
-                        if (cmdKeyMap.ContainsKey(defInputConfigs[i].ID))
-                        {
-                            var keyCode = cmdKeyMap[defInputConfigs[i].ID];
-                            if (Input.GetKeyDown(keyCode))
-                            {
-                                GameEvent.Push(InputEvent.KeyHold,(InputSignal)defInputConfigs[i].ID);
-                                Debug.Log(keyCode.ToString());  
-                            }
-                        }
-                    }
-                }   
+                //奔跑键是按压型的 
+                isRunning = Input.GetKey(runningKeyCode);
             }
-        } 
+
+            float dup = Dup - Ddown;
+            float dright = Dright - Dleft;     
+            
+            UpVelocity = Mathf.SmoothDamp(UpVelocity, dup, ref UpVelocity, 0.05f);
+            RightVelocity = Mathf.SmoothDamp(RightVelocity, dright, ref RightVelocity, 0.05f);
+            
+            GameEvent.Push(SignalEvent.SignalControl_MoveSignal, new Vector2(UpVelocity, -RightVelocity), dup >= 1 || dup<=-1 || dright >= 1 ||  dright <= -1);
+            
+            // 检测鼠标左键按下时的滑动
+            Vector3 currentMousePosition = Input.mousePosition;
+            Vector3 delta = currentMousePosition - previousMousePosition;
+            GameEvent.Push(SignalEvent.SignalControl_CameraMoveSignal, delta);
+            previousMousePosition = Input.mousePosition;
+        }
+
+        private void RevInput(InputKey inputKey)
+        {
+            if (inputKey == InputKey.MoveForward)
+            {
+                Dup = isRunning ? 2.0f :  1.0f;
+            }
+
+            else if (inputKey == InputKey.BackForward)
+            {
+                Ddown = isRunning ? 2.0f :  1.0f;
+            }
+
+            else if (inputKey == InputKey.Right)
+            {
+                Dright = isRunning ? 2.0f :  1.0f;
+            }
+
+            else if (inputKey == InputKey.Left)
+            {
+                Dleft = isRunning ? 2.0f :  1.0f;
+            }
+        }
+
+        private void ClearInput()
+        {
+            Dup = 0.0f;
+            Ddown = 0.0f;
+            Dright = 0.0f;
+            Dleft = 0.0f;
+        }
+        
+        private void SquareToCircle(ref float up,ref float right)
+        {
+            up *= Mathf.Sqrt(1 - (right * right) / 2);
+            right *= Mathf.Sqrt(1 - (up * up) / 2); 
+        }
+
+        private Vector2 SquareToCircle(Vector2 input)
+        {
+            Vector2 output = new Vector2
+            (
+                input.x * Mathf.Sqrt(1 - (input.y * input.y) / 2),
+                input.y * Mathf.Sqrt(1 - (input.x * input.x) / 2)
+            );
+            return output;
+        }
     }
 }

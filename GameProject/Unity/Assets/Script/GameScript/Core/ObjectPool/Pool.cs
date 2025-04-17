@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using NUnit.Framework;
-using UnityEngine;
+using MyGame;
+using SingleTool;
 
-namespace MyGame
+namespace ObjectPool
 {
     public class Pool : Singleton<Pool>
     {

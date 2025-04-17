@@ -1,4 +1,6 @@
-﻿namespace MyGame
+﻿using EventHash;
+
+namespace MyGame
 {
     public partial struct UIEvent
     {

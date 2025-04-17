@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MyGame
+namespace EventSystem
 {
     public static class GameEvent
     { 

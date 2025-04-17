@@ -17,7 +17,7 @@ namespace MyGameEditor
         private static string rectName = "m_rect";
         private static string itemName = "m_item";
 
-        private static List<string> m_indexType = new List<string>();
+        private static List<string> m_pathList = new List<string>();
         private static List<Object> m_objectList = new List<Object>();
         private static List<string> m_nameList = new List<string>();
 
@@ -25,40 +25,44 @@ namespace MyGameEditor
         private static void GenerateUIField()
         {
             Object activeObject = Selection.activeObject;
-            if (activeObject is GameObject)
+            if (activeObject == null)
             {
-                StringBuilder sb = new StringBuilder();
-                GameObject go = activeObject as GameObject;
-                Transform tf = go.transform;
-                m_indexType.Clear();
-                m_objectList.Clear();
-                m_nameList.Clear();
-                var refRoot = go.GetComponent<RefRoot>();
-                if (refRoot != null)
-                {
-                    refRoot.ClearRef();
-                }
-                else
-                {
-                    refRoot = go.AddComponent<RefRoot>();
-                }
-
-                sb.Append("    #region 自动生成\n"); 
-                WriteField(tf, sb);
-                
-                CalcTypeList(tf);
-                sb.Append("    public override void OnAwake()\n");
-                sb.Append("    {\n"); 
-                sb.Append($"    base.OnAwake();\n");  
-                sb.Append("     RefRoot refRoot = MGameObject.GetComponent<RefRoot>();\n");
-                WriteMethod(go,refRoot, sb);  
-                sb.Append("    }\n");
-                sb.Append("    #endregion\n");
-                GUIUtility.systemCopyBuffer = sb.ToString();
-                
-                // 保存修改
-                PrefabUtility.SavePrefabAsset(go);
+                Debug.LogError("No GameObject selected!");
+                return;
             }
+            
+            StringBuilder sb = new StringBuilder(); 
+            // 加载原始 Prefab（可修改并保存）
+            GameObject go = (GameObject)activeObject; 
+            Transform tf = go.transform;
+            m_pathList.Clear();
+            m_objectList.Clear();
+            m_nameList.Clear();
+            /*var refRoot = go.GetComponent<RefRoot>();
+            if (refRoot != null)
+            {
+                refRoot.ClearRef();
+            }
+            else
+            {
+                refRoot = go.AddComponent<RefRoot>();
+            }*/
+
+            sb.Append("    #region 自动生成\n"); 
+            WriteField(tf, sb);
+                
+            CalcTypeList(tf);
+            sb.Append("    public override void OnAwake()\n");
+            sb.Append("    {\n"); 
+            sb.Append($"    base.OnAwake();\n");   
+            WriteMethod( sb);  
+            sb.Append("    }\n");
+            sb.Append("    #endregion\n");
+            GUIUtility.systemCopyBuffer = sb.ToString();
+                
+            // 保存修改
+            //PrefabUtility.SavePrefabAsset(go);
+            //PrefabUtility.UnloadPrefabContents(go);
         } 
 
         private static void WriteField(Transform tf, StringBuilder sb)
@@ -72,7 +76,7 @@ namespace MyGameEditor
             {
                 var childTrans = tf.GetChild(i);
                 if (!childTrans.name.Contains(itemName))
-                {
+                { 
                     WriteField(childTrans, sb);
                 }
                
@@ -119,11 +123,11 @@ namespace MyGameEditor
         {
             for (int i = 0; i < tf.childCount; i++)
             {
-                CalcTypeListStack(tf);
+                CalcTypeListStack(tf,"");
             }
         }
 
-        private static void CalcTypeListStack(Transform tf)
+        private static void CalcTypeListStack(Transform tf,string path)
         {
             if (tf.childCount <= 0)
             {
@@ -133,110 +137,106 @@ namespace MyGameEditor
             for (int i = 0; i < tf.childCount; i++)
             {
                 var childTrans = tf.GetChild(i);
+                string pathTmp = $"{path}{childTrans.name}";
                 if (!childTrans.name.Contains(itemName))
-                {
-                    CalcTypeListStack(childTrans);
+                { 
+                    CalcTypeListStack(childTrans,$"{pathTmp}/");
                 }
                 
                 if (childTrans.name.Contains(" "))
                 {
                     continue;
                 }
-
+                
                 if (childTrans.name.Contains(textName))
                 {
-                    m_indexType.Add(textName);
+                    m_pathList.Add(pathTmp);
                     m_objectList.Add(childTrans.GetComponent<Text>());
                     m_nameList.Add(childTrans.name);
                 }
                 else if (childTrans.name.Contains(imageName))
                 {
-                    m_indexType.Add(imageName);
+                    m_pathList.Add(pathTmp);
                     m_objectList.Add(childTrans.GetComponent<Image>());
                     m_nameList.Add(childTrans.name);
                 }
                 else if (childTrans.name.Contains(goName))
                 {
-                    m_indexType.Add(goName);
+                    m_pathList.Add(pathTmp);
                     m_objectList.Add(childTrans.gameObject);
                     m_nameList.Add(childTrans.name);
                 }
                 else if (childTrans.name.Contains(tfName))
                 {
-                    m_indexType.Add(tfName);
+                    m_pathList.Add(pathTmp);
                     m_objectList.Add(childTrans);
                     m_nameList.Add(childTrans.name);
                 }
                 else if (childTrans.name.Contains(btnName))
                 {
-                    m_indexType.Add(btnName);
+                    m_pathList.Add(pathTmp);
                     m_objectList.Add(childTrans.GetComponent<Button>());
                     m_nameList.Add(childTrans.name);
                 }
                 else if (childTrans.name.Contains(inputText))
                 {
-                    m_indexType.Add(inputText);
+                    m_pathList.Add(pathTmp);
                     m_objectList.Add(childTrans.GetComponent<InputField>());
                     m_nameList.Add(childTrans.name);
                 }
                 else if (childTrans.name.Contains(rectName))
                 {
-                    m_indexType.Add(rectName);
+                    m_pathList.Add(pathTmp);
                     m_objectList.Add(childTrans.GetComponent<RectTransform>());
                     m_nameList.Add(childTrans.name);
                     //sb.Append($"        {childTrans.name} = m_obj.transform.Find(\"{tmp}/{childTrans.name}\").GetComponent<RectTransform>();\n"); 
                 }else if (childTrans.name.Contains(itemName))
                 {
-                    m_indexType.Add(itemName);
+                    m_pathList.Add(pathTmp);
                     m_objectList.Add(childTrans.gameObject);
                     m_nameList.Add(childTrans.name);
                 }
             }
         }
 
-        private static void WriteMethod(GameObject gameObject, RefRoot refRoot, StringBuilder sb)
+        private static void WriteMethod(StringBuilder sb)
         {
-            if (gameObject.GetComponent<RefRoot>() != null)
+            for (int i = 0; i < m_pathList.Count; i++)
             {
-                Object.Destroy(gameObject.GetComponent<RefRoot>());
-            } 
-            for (int i = 0; i < m_indexType.Count; i++)
-            {
-                if (m_indexType[i].Contains(" "))
+                if (m_nameList[i].Contains(" "))
                 {
                     continue;
+                } 
+                if (m_nameList[i].Contains(textName))
+                {
+                    sb.Append($"          {m_nameList[i]} = GameObject.Find(\"{m_pathList[i]}\").GetComponent<Text>();\n"); 
                 }
-                refRoot.AddRef(m_objectList[i]);
-                if (m_indexType[i].Contains(textName))
+                else if (m_nameList[i].Contains(imageName))
                 {
-                    sb.Append($"          {m_nameList[i]} = refRoot.GetText({i});\n"); 
+                    sb.Append($"          {m_nameList[i]} = GameObject.Find(\"{m_pathList[i]}\").GetComponent<Image>();\n"); 
                 }
-                else if (m_indexType[i].Contains(imageName))
+                else if (m_nameList[i].Contains(goName))
                 {
-                    sb.Append($"          {m_nameList[i]} = refRoot.GetImage({i});\n"); 
+                    sb.Append($"          {m_nameList[i]}  = GameObject.Find(\"{m_pathList[i]}\").gameObject;\n"); 
                 }
-                else if (m_indexType[i].Contains(goName))
+                else if (m_nameList[i].Contains(tfName))
                 {
-                    sb.Append($"          {m_nameList[i]} = refRoot.GetGameObject({i});\n"); 
+                    sb.Append($"         {m_nameList[i]} = GameObject.Find(\"{m_pathList[i]}\").transform;\n"); 
                 }
-                else if (m_indexType[i].Contains(tfName))
+                else if (m_nameList[i].Contains(btnName))
                 {
-                    sb.Append($"         {m_nameList[i]} = refRoot.GetTransform({i});\n"); 
+                    sb.Append($"          {m_nameList[i]} = GameObject.Find(\"{m_pathList[i]}\").GetComponent<Button>();\n"); 
                 }
-                else if (m_indexType[i].Contains(btnName))
+                else if (m_nameList[i].Contains(inputText))
                 {
-                    sb.Append($"          {m_nameList[i]} = refRoot.GetButton({i});\n"); 
+                    sb.Append($"          {m_nameList[i]} = GameObject.Find(\"{m_pathList[i]}\").GetComponent<InputField>();\n"); 
                 }
-                else if (m_indexType[i].Contains(inputText))
+                else if (m_nameList[i].Contains(rectName))
                 {
-                    sb.Append($"          {m_nameList[i]} = refRoot.GetInputField({i});\n"); 
-                }
-                else if (m_indexType[i].Contains(rectName))
+                    sb.Append($"          {m_nameList[i]} = GameObject.Find(\"{m_pathList[i]}\").GetComponent<RectTransform>();\n"); 
+                }else if (m_nameList[i].Contains(itemName))
                 {
-                    sb.Append($"          {m_nameList[i]} = refRoot.GetRectTransform({i});\n"); 
-                }else if (m_indexType[i].Contains(itemName))
-                {
-                    sb.Append($"          {m_nameList[i]} = refRoot.GetGameObject({i});\n");
+                    sb.Append($"          {m_nameList[i]} = GameObject.Find(\"{m_pathList[i]}\").gameObject;\n"); 
                 }
             }
         }
