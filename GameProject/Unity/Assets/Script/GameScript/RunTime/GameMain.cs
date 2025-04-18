@@ -136,6 +136,11 @@ namespace MyGame
                 {
                     UIModelControllerAssembly(type);
                 }
+
+                if (baseType == typeof(DataClass))
+                {
+                    DataClassAssembly(type);
+                }
             }
         }
 
@@ -155,18 +160,7 @@ namespace MyGame
         {
             if (Activator.CreateInstance(type) is UIController uiController)
             { 
-                System.Object classAttribute = type.GetCustomAttribute(typeof(ControllerOf), false);
-                UIModel paramModel = null;
-                if (classAttribute is ControllerOf controllerOf)
-                {
-                    var modelType = controllerOf.ModelType; 
-                    if (Activator.CreateInstance(modelType) is UIModel uiModel)
-                    { 
-                        paramModel = uiModel;
-                        UIManager.Instance.AddModel(uiModel);
-                    }
-                } 
-                UIManager.Instance.AddController(uiController, paramModel);
+                UIManager.Instance.AddController(uiController);
             }
         }
 
@@ -182,6 +176,14 @@ namespace MyGame
                     scene.SetScene(sceneId, st); 
                     GameWorld.Instance.AddSubScene(scene);
                 }
+            }
+        }
+
+        private static void DataClassAssembly(Type type)
+        {
+            if (Activator.CreateInstance(type) is DataClass dataClass)
+            { 
+                DataCenterManger.Instance.AddDataClass(type,dataClass);
             }
         }
     }

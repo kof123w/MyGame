@@ -14,7 +14,6 @@ namespace MyGame
         private int addWindowSortNormal = 100;
         private List<UIWindow> windowList = new List<UIWindow>();
         private readonly List<UIController> uIControllerList = new List<UIController>();
-        private readonly List<UIModel> uiModelList = new List<UIModel>();
         private Transform root;
 
         public int GetAddWindowSortNormal()
@@ -67,16 +66,11 @@ namespace MyGame
             return max;
         }
 
-        public void AddController(UIController controller,UIModel uiModel)
+        public void AddController(UIController controller)
         {
             controller.InitController();
             uIControllerList.Add(controller); 
         }
-
-        public void AddModel(UIModel uiModel)
-        {
-            uiModelList.Add(uiModel);
-        } 
         
         public static async UniTask Show<T>() where T : UIWindow, new()
         {
