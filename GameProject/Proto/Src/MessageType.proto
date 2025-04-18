@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+// 协议号枚举
+enum MessageType {
+  None = 0;
+  CSLoginReq = 1001001;
+  SCLoginRes = 2001001;
+}

@@ -17,8 +17,7 @@ namespace MyGame
             {
                 #region 参数设置和前置设置
                 DLogger.LogType = (DebugMode)logMode;
-                ResourcerDecorator.Instance.SetLoaderResourceType(resourceType);
-                NetManager.Instance.SetConnectType(netMode);
+                ResourcerDecorator.Instance.SetLoaderResourceType(resourceType); 
                 PreProcess();
                 //预加载一下配置
                 ConfigPreRead.PreRead();
@@ -30,6 +29,7 @@ namespace MyGame
                 UIManager.Instance.Init();
                 TaskManager.Instance.Init();
                 PlayerInputSystem.Instance.Init(); 
+                NetManager.Instance.InitTcpHandle();
                 GameWorld.Instance.Init();
                 #endregion
                 
@@ -106,7 +106,8 @@ namespace MyGame
         private static void AssemblyProcess()
         {
             var types = Assembly.GetExecutingAssembly().GetTypes();
-            var progressInterface = typeof(ITask); 
+            var progressInterface = typeof(ITask);
+            var netInterface = typeof(INetHandle);
             for (int i = 0; i < types.Length; i++)
             {
                 var type = types[i];
@@ -117,7 +118,13 @@ namespace MyGame
                     {
                         ProgressAssembly(type);
                         break;
-                    } 
+                    }
+
+                    if (interfaces[j].Name.Equals(netInterface.Name))
+                    {
+                        DLogger.Log(interfaces[j].Name);
+                        break;
+                    }
                 } 
                 var baseType = type.BaseType;
                 if (baseType == typeof(BaseSubScene))

@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+//登录协议请求，1001001
+message CSLoginReq{
+       string userAccount = 1;   //登录账号
+}
+
+//登录协议返回,2001001
+message SCLoginRes{
+       string userAcount = 1;
+       int64 playerRoleId = 2;  //玩家id
+       int32 timestamp = 3;     //登录进服务器的时间戳
+}

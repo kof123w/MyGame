@@ -2,7 +2,9 @@
     "name": "GameScript_Network",
     "rootNamespace": "",
     "references": [
-        "GUID:01e97303b65385446a040a6d70e9a509"
+        "GUID:01e97303b65385446a040a6d70e9a509",
+        "GUID:45d9b7d2576528b4995f99652191bcf4",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
