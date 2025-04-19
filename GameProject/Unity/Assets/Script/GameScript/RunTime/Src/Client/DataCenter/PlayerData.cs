@@ -3,7 +3,7 @@ using SingleTool;
 
 namespace MyGame
 {
-    public class PlayerDataManager : DataClass
+    public class PlayerData : DataClass
     {
         private string account;
         private long playerId;
@@ -19,7 +19,7 @@ namespace MyGame
             playerId = 0;
         }
 
-        private void SetData(string accountParam, long playerIdParam)
+        public void SetData(string accountParam, long playerIdParam)
         {
             account = accountParam;
             playerId = playerIdParam;

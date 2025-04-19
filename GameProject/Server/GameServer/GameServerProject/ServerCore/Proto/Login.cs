@@ -23,13 +23,13 @@ public static partial class LoginReflection {
     byte[] descriptorData = global::System.Convert.FromBase64String(
         string.Concat(
           "CgtMb2dpbi5wcm90byIhCgpDU0xvZ2luUmVxEhMKC3VzZXJBY2NvdW50GAEg",
-          "ASgJIkkKClNDTG9naW5SZXMSEgoKdXNlckFjb3VudBgBIAEoCRIUCgxwbGF5",
-          "ZXJSb2xlSWQYAiABKAMSEQoJdGltZXN0YW1wGAMgASgFYgZwcm90bzM="));
+          "ASgJIjYKClNDTG9naW5SZXMSEgoKdXNlckFjb3VudBgBIAEoCRIUCgxwbGF5",
+          "ZXJSb2xlSWQYAiABKANiBnByb3RvMw=="));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { },
         new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
           new pbr::GeneratedClrTypeInfo(typeof(global::CSLoginReq), global::CSLoginReq.Parser, new[]{ "UserAccount" }, null, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::SCLoginRes), global::SCLoginRes.Parser, new[]{ "UserAcount", "PlayerRoleId", "Timestamp" }, null, null, null, null)
+          new pbr::GeneratedClrTypeInfo(typeof(global::SCLoginRes), global::SCLoginRes.Parser, new[]{ "UserAcount", "PlayerRoleId" }, null, null, null, null)
         }));
   }
   #endregion
@@ -280,7 +280,6 @@ public sealed partial class SCLoginRes : pb::IMessage<SCLoginRes>
   public SCLoginRes(SCLoginRes other) : this() {
     userAcount_ = other.userAcount_;
     playerRoleId_ = other.playerRoleId_;
-    timestamp_ = other.timestamp_;
     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
   }
 
@@ -317,21 +316,6 @@ public sealed partial class SCLoginRes : pb::IMessage<SCLoginRes>
     }
   }
 
-  /// <summary>Field number for the "timestamp" field.</summary>
-  public const int TimestampFieldNumber = 3;
-  private int timestamp_;
-  /// <summary>
-  ///登录进服务器的时间戳
-  /// </summary>
-  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-  public int Timestamp {
-    get { return timestamp_; }
-    set {
-      timestamp_ = value;
-    }
-  }
-
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public override bool Equals(object other) {
@@ -349,7 +333,6 @@ public sealed partial class SCLoginRes : pb::IMessage<SCLoginRes>
     }
     if (UserAcount != other.UserAcount) return false;
     if (PlayerRoleId != other.PlayerRoleId) return false;
-    if (Timestamp != other.Timestamp) return false;
     return Equals(_unknownFields, other._unknownFields);
   }
 
@@ -359,7 +342,6 @@ public sealed partial class SCLoginRes : pb::IMessage<SCLoginRes>
     int hash = 1;
     if (UserAcount.Length != 0) hash ^= UserAcount.GetHashCode();
     if (PlayerRoleId != 0L) hash ^= PlayerRoleId.GetHashCode();
-    if (Timestamp != 0) hash ^= Timestamp.GetHashCode();
     if (_unknownFields != null) {
       hash ^= _unknownFields.GetHashCode();
     }
@@ -386,10 +368,6 @@ public sealed partial class SCLoginRes : pb::IMessage<SCLoginRes>
       output.WriteRawTag(16);
       output.WriteInt64(PlayerRoleId);
     }
-    if (Timestamp != 0) {
-      output.WriteRawTag(24);
-      output.WriteInt32(Timestamp);
-    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(output);
     }
@@ -408,10 +386,6 @@ public sealed partial class SCLoginRes : pb::IMessage<SCLoginRes>
       output.WriteRawTag(16);
       output.WriteInt64(PlayerRoleId);
     }
-    if (Timestamp != 0) {
-      output.WriteRawTag(24);
-      output.WriteInt32(Timestamp);
-    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(ref output);
     }
@@ -427,9 +401,6 @@ public sealed partial class SCLoginRes : pb::IMessage<SCLoginRes>
     }
     if (PlayerRoleId != 0L) {
       size += 1 + pb::CodedOutputStream.ComputeInt64Size(PlayerRoleId);
-    }
-    if (Timestamp != 0) {
-      size += 1 + pb::CodedOutputStream.ComputeInt32Size(Timestamp);
     }
     if (_unknownFields != null) {
       size += _unknownFields.CalculateSize();
@@ -448,9 +419,6 @@ public sealed partial class SCLoginRes : pb::IMessage<SCLoginRes>
     }
     if (other.PlayerRoleId != 0L) {
       PlayerRoleId = other.PlayerRoleId;
-    }
-    if (other.Timestamp != 0) {
-      Timestamp = other.Timestamp;
     }
     _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
   }
@@ -479,10 +447,6 @@ public sealed partial class SCLoginRes : pb::IMessage<SCLoginRes>
           PlayerRoleId = input.ReadInt64();
           break;
         }
-        case 24: {
-          Timestamp = input.ReadInt32();
-          break;
-        }
       }
     }
   #endif
@@ -508,10 +472,6 @@ public sealed partial class SCLoginRes : pb::IMessage<SCLoginRes>
         }
         case 16: {
           PlayerRoleId = input.ReadInt64();
-          break;
-        }
-        case 24: {
-          Timestamp = input.ReadInt32();
           break;
         }
       }

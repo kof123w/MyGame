@@ -1,4 +1,3 @@
-﻿using System.IO;
 using Google.Protobuf; 
 
 namespace MyGame
@@ -20,6 +19,15 @@ namespace MyGame
             message.MergeFrom(data);
             return message;
         }
+        
+        
+        // 反序列化消息
+        public static T Deserialize<T>(Packet packet) where T : IMessage, new()
+        {
+            var message = new T(); 
+            message.MergeFrom(packet.Body.ToByteArray());
+            return message;
+        }
 
         
         // 创建数据包
@@ -31,20 +39,7 @@ namespace MyGame
                 {
                     MessageType = messageType,
                     ErrorCode = errorCode
-                }, 
-                Body = body.ToByteString()
-            };
-        }
-        
-        public static Packet CreatePacket(MessageType messageType, CSLoginReq body, uint errorCode = 0)
-        {
-            return new Packet
-            {
-                Header = new MessageHeader()
-                {
-                    MessageType = messageType,
-                    ErrorCode = errorCode
-                }, 
+                },
                 Body = body.ToByteString()
             };
         }

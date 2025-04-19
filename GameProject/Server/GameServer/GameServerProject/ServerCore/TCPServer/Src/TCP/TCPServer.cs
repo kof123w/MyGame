@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
 
@@ -7,22 +8,20 @@ public class TCPServer : Singleton<TCPServer>
 {
     private TcpListener listener;
     private bool isRunning;
-    private readonly Dictionary<int, Client> clients = new Dictionary<int, Client>();
+    private readonly Dictionary<int, TCPClient> clients = new();
     private int nextClientId = 1;
 
-    // 服务器配置
-    private const int Port = 5555;
+    private const int Port = 12800;
     private const int MaxConnections = 100;
 
     public void Start()
     {
         isRunning = true;
-        listener = new TcpListener(IPAddress.Any, Port);
+        IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
+        listener = new TcpListener(ipAddress, Port);
         listener.Start(MaxConnections);
 
         Console.WriteLine($"游戏服务器已启动，监听端口 {Port}...");
-
-        // 开始接受客户端连接
         listener.BeginAcceptTcpClient(OnClientConnected, null);
     }
 
@@ -31,7 +30,6 @@ public class TCPServer : Singleton<TCPServer>
         isRunning = false;
         listener.Stop();
 
-        // 断开所有客户端
         lock (clients)
         {
             foreach (var client in clients.Values)
@@ -52,13 +50,10 @@ public class TCPServer : Singleton<TCPServer>
         try
         {
             TcpClient tcpClient = listener.EndAcceptTcpClient(ar);
-
-            // 继续监听新连接
             listener.BeginAcceptTcpClient(OnClientConnected, null);
 
-            // 处理新客户端
             int clientId = nextClientId++;
-            var client = new Client(clientId, tcpClient);
+            var client = new TCPClient(clientId, tcpClient);
 
             lock (clients)
             {
@@ -66,13 +61,11 @@ public class TCPServer : Singleton<TCPServer>
             }
 
             Console.WriteLine($"客户端 {clientId} 已连接，来自 {tcpClient.Client.RemoteEndPoint}");
-
-            // 开始接收客户端数据
             client.BeginReceive();
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"接受客户端连接时出错: {ex.Message}");
+            Console.WriteLine($"接受客户端连接时出错: {ex.Message},{ex.StackTrace}");
         }
     }
 
@@ -80,7 +73,7 @@ public class TCPServer : Singleton<TCPServer>
     {
         lock (clients)
         {
-            if (clients.TryGetValue(clientId, out Client client))
+            if (clients.TryGetValue(clientId, out TCPClient client))
             {
                 clients.Remove(clientId);
                 Console.WriteLine($"客户端 {clientId} 已断开连接");

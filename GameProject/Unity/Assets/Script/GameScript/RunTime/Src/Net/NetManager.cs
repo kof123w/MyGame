@@ -8,155 +8,100 @@ using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using DebugTool;
 using EventSystem;
+using GameTimer;
+using Google.Protobuf;
 using SingleTool;
 using UnityEngine;
 
 namespace MyGame
 {
     public class NetManager : Singleton<NetManager>
-    {
-        private Dictionary<MessageType,Action<Packet>> handleActions = new Dictionary<MessageType, Action<Packet>>(); 
-        private ConcurrentQueue<Packet> tcpPacketQueue = new ConcurrentQueue<Packet>(); 
-        private List<INetHandle> handles = new List<INetHandle>();
-        
-        private TcpLocalClient tcpClient;
-        
+    { 
+        private AsyncTcpClient asyncTcpClient; 
         private string serverIP = "127.0.0.1";
         private int serverPort = 12800;
+
+        //等待的回报类型
+        private volatile MessageType waitMessageType = MessageType.None;
         
-        public bool IsConnected {
+        private bool IsConnected {
             get
             {
-                if (tcpClient == null)
+                if (asyncTcpClient == null)
                 {
                     return false;
                 }
                 
-                return tcpClient.IsConnected;
+                return asyncTcpClient.IsConnected;
             }
         }
         
-        //等待的回报类型
-        private volatile MessageType waitMessageType = MessageType.None;
-        
-        public void InitTcpHandle()
+        public void Init()
         {
-            var types = Assembly.GetExecutingAssembly().GetTypes(); 
-            var netInterface = typeof(INetHandle);
-            for (int i = 0; i < types.Length; i++)
+            DLogger.Log("==============>Init NetManager");
+            //GameTimerManager.CreateLoopSecondTimer("NetManager_CheckTimeOut",1.0f,CheckTimeout);
+        }
+
+        private int waitSendCount = 0; 
+        private void CheckTimeout()
+        {
+            if (waitMessageType != MessageType.None)
             {
-                var type = types[i];
-                var interfaces = type.GetInterfaces(); 
-                for (int j = 0; j < interfaces.Length; j++)
-                { 
-                    if (interfaces[j].Name.Equals(netInterface.Name))
-                    {
-                        var handle = Activator.CreateInstance(type) as INetHandle;
-                        handle?.RegNet();
-                        handles.Add(handle);
-                    }
-                }  
+                waitSendCount += 1;
             }
-            
-            //开启线程处理分发协议
-            Task.Run(PacketDispatch);
-        }
-
-        public async UniTask ConnectServer()
-        {
-            tcpClient = new TcpLocalClient();
-            await tcpClient.Connected(serverIP, serverPort);
-        }
-
-        public void RegMessageType(MessageType type,Action<Packet> action)
-        {
-            handleActions.Add(type,action);
-        }
-
-        private void PacketDispatch()
-        {
-            while (true)
+            else
             {
-                tcpPacketQueue.TryDequeue(out var packet);
-                if(packet!=null){
-                    if (waitMessageType == packet.Header.MessageType - 1000000)
-                    {
-                        waitMessageType = MessageType.None;
-                    }
-
-                    if (handleActions.ContainsKey(packet.Header.MessageType))
-                    {
-                        handleActions[packet.Header.MessageType]?.Invoke(packet);
-                    }
-                }
+                waitSendCount = 0;
             }
-        }
 
-        public void AddPacket(Packet packet)
-        {
-            tcpPacketQueue.Enqueue(packet);
-        }
-
-        private CancellationTokenSource tokenSource;
-
-        public async void Send(MessageType type, Packet packet,bool wait = true)
-        {
-            try
+            if (waitSendCount == 3)
             {
-                if (!IsConnected)
-                {
-                    await ConnectServer();
-                }
-
-                if (!wait)
-                {
-                    tcpClient.Send(type, packet);
-                }
-                else
-                {
-                    AwaitSend(type, packet);
-                }
-            }
-            catch (Exception e)
-            {
-                throw; // TODO handle exception
-            }
-        }
-
-        private async UniTaskVoid AwaitSend(MessageType type, Packet packet)
-        {
-            waitMessageType = type;
-            tcpClient.Send(type, packet);
-            tokenSource?.Cancel();
-            tokenSource?.Dispose();
-            tokenSource = new CancellationTokenSource();
-            var task = AwaitRev(tokenSource.Token);
-            var timeout3S = UniTask.Delay(TimeSpan.FromSeconds(3), cancellationToken: CancellationTokenSource.CreateLinkedTokenSource(tokenSource.Token).Token);
-            var (_,index1) = await UniTask.WhenAny(task, timeout3S).SuppressCancellationThrow();
-            if (index1 == 1)
-            { 
                 GameEvent.Push(UIEvent.OpenWaitNetUI);
-                task = AwaitRev(tokenSource.Token);
-                var timeout6S = UniTask.Delay(TimeSpan.FromSeconds(3), cancellationToken:  CancellationTokenSource.CreateLinkedTokenSource(tokenSource.Token).Token);
-                var (_,index2) = await UniTask.WhenAny(task, timeout6S).SuppressCancellationThrow();
-                
-                if (index2 == 1)
-                {
-                    DLogger.Log("协议返回超时");
-                    tokenSource.Cancel();
-                    GameEvent.Push(UIEvent.CloseWaitNetUI);
-                }
             }
-            
-            if (task.Status.IsCompletedSuccessfully())
+
+            if (waitSendCount >= 6)
             {
-                DLogger.Log("任务正常完成");
+                if (sendTokenSource?.IsCancellationRequested == false)
+                {
+                    sendTokenSource?.Cancel();
+                    sendTokenSource?.Dispose();
+                }  
+                GameEvent.Push(UIEvent.CloseWaitNetUI);
+                waitSendCount = 0;
+                waitMessageType = MessageType.None;
             }
         }
 
-        private async UniTask AwaitRev(CancellationToken token)
+        private async UniTask<bool> ConnectServer()
         {
-            await UniTask.WaitUntil(()=>waitMessageType == MessageType.None,cancellationToken: token);
-        }
+            asyncTcpClient = new AsyncTcpClient();
+            return await asyncTcpClient.Connected(serverIP, serverPort);
+        } 
+
+        private CancellationTokenSource sendTokenSource; 
+
+        public async UniTask<Packet> SendAsync<T>(MessageType type,T t) where T : IMessage,new()
+        {
+            if (!IsConnected)
+            {
+                bool isCom = await ConnectServer();
+                if (!isCom)
+                {
+                    return null;
+                }
+            }
+
+            if (sendTokenSource?.IsCancellationRequested == false)
+            {
+                sendTokenSource?.Cancel(); 
+            } 
+            sendTokenSource?.Dispose();
+            sendTokenSource = new CancellationTokenSource(); 
+            waitMessageType = type;
+            Packet packet = ProtoHelper.CreatePacket(type,t);
+            var packetTask = await asyncTcpClient.SendAsync(packet,sendTokenSource.Token);     
+            waitMessageType = MessageType.None;
+            return packetTask;
+        }   
     }
 }

@@ -18,9 +18,7 @@ namespace MyGame
             m_inputAccount = GameObject.Find("Bg/m_inputAccount").GetComponent<InputField>();
             m_inputPassword = GameObject.Find("Bg/m_inputPassword").GetComponent<InputField>();
         }
-        #endregion
-
-
+        #endregion 
 
         public override void OnStart()
         {
@@ -31,10 +29,7 @@ namespace MyGame
         private void OnClickStart()
         {
             var account = m_inputAccount.text;
-            if (!string.IsNullOrEmpty(account))
-            {
-                GameEvent.Push(DataEvent.LoginEvent,account);
-            }
+            GameEvent.Push(UIEvent.UIEventTitleUILogin, account);
         }
     }
 }

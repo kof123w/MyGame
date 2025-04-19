@@ -19,9 +19,9 @@ namespace MyGame
             dataDict.Add(type, dataClass);
         }
 
-        public T GetDataClass<T>(Type type) where T : DataClass
+        public T GetDataClass<T>() where T : DataClass
         {
-            return dataDict.GetValueOrDefault(type) as T;
+            return dataDict.GetValueOrDefault(typeof(T)) as T;
         }
 
         public void OutLogin()

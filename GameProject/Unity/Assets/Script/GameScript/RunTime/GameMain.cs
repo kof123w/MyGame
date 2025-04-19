@@ -29,7 +29,7 @@ namespace MyGame
                 UIManager.Instance.Init();
                 TaskManager.Instance.Init();
                 PlayerInputSystem.Instance.Init(); 
-                NetManager.Instance.InitTcpHandle();
+                NetManager.Instance.Init();
                 GameWorld.Instance.Init();
                 #endregion
                 
@@ -106,25 +106,17 @@ namespace MyGame
         private static void AssemblyProcess()
         {
             var types = Assembly.GetExecutingAssembly().GetTypes();
-            var progressInterface = typeof(ITask);
-            var netInterface = typeof(INetHandle);
-            for (int i = 0; i < types.Length; i++)
+            var progressInterface = typeof(ITask); 
+            foreach (var type in types)
             {
-                var type = types[i];
                 var interfaces = type.GetInterfaces(); 
-                for (int j = 0; j < interfaces.Length; j++)
+                foreach (var t in interfaces)
                 {
-                    if (interfaces[j].Name.Equals(progressInterface.Name))
+                    if (t.Name.Equals(progressInterface.Name))
                     {
                         ProgressAssembly(type);
                         break;
-                    }
-
-                    if (interfaces[j].Name.Equals(netInterface.Name))
-                    {
-                        DLogger.Log(interfaces[j].Name);
-                        break;
-                    }
+                    } 
                 } 
                 var baseType = type.BaseType;
                 if (baseType == typeof(BaseSubScene))
@@ -142,8 +134,8 @@ namespace MyGame
                     DataClassAssembly(type);
                 }
             }
-        }
-
+        } 
+     
         private static void ProgressAssembly(Type type)
         { 
             System.Object classAttribute = type.GetCustomAttribute(typeof(RootTask), false);
