@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Buffers;
 using System.Net.Sockets;
 using System.Threading;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using DebugTool;
-using Google.Protobuf;
+using UnityEngine;
 
 namespace MyGame
 {
@@ -44,24 +44,50 @@ namespace MyGame
         {
             while (!token.IsCancellationRequested)
             {
-                // 3. 读取 4 字节长度前缀
-                var prefixBuffer = new byte[4];
-                await ReadExactAsync(networkStream, prefixBuffer, 4, CancellationTokenSource.CreateLinkedTokenSource(token).Token);
-                int bodyLength = BitConverter.ToInt32(prefixBuffer, 0);
-                
-                // 安全校验
-                if (bodyLength <= 0 || bodyLength > 4096)
+                // 1. 读取4字节长度前缀（使用ArrayPool）
+                var prefixBuffer = ArrayPool<byte>.Shared.Rent(4);
+                try
                 {
+                    await ReadExactAsync(networkStream, prefixBuffer, 4, token);
+                    int bodyLength = BitConverter.ToInt32(prefixBuffer, 0);
+            
+                    // 安全校验
+                    if (bodyLength <= 0 || bodyLength > 4906)
+                    {
+                        DLogger.Log($"非法消息长度: {bodyLength}");
+                        Disconnect();
+                        break;
+                    }
+
+                    // 2. 读取消息体（使用ArrayPool）
+                    var bodyBuffer = ArrayPool<byte>.Shared.Rent(bodyLength);
+                    try
+                    {
+                        await ReadExactAsync(networkStream, bodyBuffer, bodyLength, token); 
+                        // 使用Span限定实际数据范围
+                        var responseData = ProtoHelper.Deserialize<Packet>(bodyBuffer.AsSpan(0, bodyLength).ToArray());
+                        NetManager.Instance.AddPacket(responseData);
+                    }
+                    finally
+                    {
+                        ArrayPool<byte>.Shared.Return(bodyBuffer);
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    // 正常取消
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"接收数据异常: {ex}");
                     Disconnect();
                     break;
                 }
-
-                // 4. 读取 bodyLength 长度的数据
-                var bodyBuffer = new byte[bodyLength];
-                await ReadExactAsync(networkStream, bodyBuffer, bodyLength, CancellationTokenSource.CreateLinkedTokenSource(token).Token);
-                
-                var responseData = ProtoHelper.Deserialize<Packet>(bodyBuffer);
-                NetManager.Instance.AddPacket(responseData);
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(prefixBuffer);
+                }
             }
         }
 

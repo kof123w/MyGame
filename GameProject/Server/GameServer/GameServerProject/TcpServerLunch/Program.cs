@@ -3,9 +3,6 @@
 using EventSystem;
 using MyGame;
 using MyServer; 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
  
 class Program
 {
@@ -15,8 +12,12 @@ class Program
     static void Main(string[] args)
     {
         serverTask = Task.Run(() => RunServer(), cts.Token); // 启动服务器任务
-        Console.WriteLine("按任意键退出...");
-        Console.ReadKey(); 
+        Console.WriteLine("输入exit退出"); 
+        string? command = Console.ReadLine();
+        while (command != null && command.Equals("exit"))
+        {
+            command = Console.ReadLine();
+        }
         cts.Cancel();
         serverTask.Wait(); 
     }
