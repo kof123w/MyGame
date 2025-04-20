@@ -78,7 +78,6 @@ namespace MyGame
 
         public static void LateUpdate()
         { 
-            
             try
             {
                 GameWorld.Instance.LateTick();
@@ -106,17 +105,24 @@ namespace MyGame
         private static void AssemblyProcess()
         {
             var types = Assembly.GetExecutingAssembly().GetTypes();
-            var progressInterface = typeof(ITask); 
+            var taskInterface = typeof(ITask);
+            var netInterface = typeof(INetHandler);
             foreach (var type in types)
             {
                 var interfaces = type.GetInterfaces(); 
                 foreach (var t in interfaces)
                 {
-                    if (t.Name.Equals(progressInterface.Name))
+                    if (t.Name.Equals(taskInterface.Name))
                     {
                         ProgressAssembly(type);
                         break;
                     } 
+                    
+                    if (t.Name.Equals(netInterface.Name))
+                    {
+                        NetHandleAssembly(type);
+                        break;
+                    }  
                 } 
                 var baseType = type.BaseType;
                 if (baseType == typeof(BaseSubScene))
@@ -153,6 +159,14 @@ namespace MyGame
             if (Activator.CreateInstance(type) is UIController uiController)
             { 
                 UIManager.Instance.AddController(uiController);
+            }
+        }
+        
+        private static void NetHandleAssembly(Type type)
+        {
+            if (Activator.CreateInstance(type) is INetHandler netHandler)
+            { 
+                NetManager.Instance.AddHandler(netHandler);
             }
         }
 

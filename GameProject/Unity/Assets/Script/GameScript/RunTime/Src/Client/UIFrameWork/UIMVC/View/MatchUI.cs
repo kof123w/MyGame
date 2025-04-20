@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using EventSystem;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace MyGame
@@ -23,6 +24,7 @@ namespace MyGame
         private void Match()
         {
             // start Match
+            GameEvent.Push(NetEvent.MatchHandleEvent);
         }
     }
 }

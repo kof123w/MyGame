@@ -8,7 +8,7 @@ public class TCPServer : Singleton<TCPServer>
 {
     private TcpListener listener;
     private bool isRunning;
-    private readonly Dictionary<int, TCPClient> clients = new();
+    private readonly ConcurrentDictionary<int, TcpServerClient> clients = new();
     private int nextClientId = 1;
 
     private const int Port = 12800;
@@ -53,12 +53,9 @@ public class TCPServer : Singleton<TCPServer>
             listener.BeginAcceptTcpClient(OnClientConnected, null);
 
             int clientId = nextClientId++;
-            var client = new TCPClient(clientId, tcpClient);
+            var client = new TcpServerClient(clientId, tcpClient);
 
-            lock (clients)
-            {
-                clients.Add(clientId, client);
-            }
+            clients.TryAdd(clientId, client);
 
             Console.WriteLine($"客户端 {clientId} 已连接，来自 {tcpClient.Client.RemoteEndPoint}");
             client.BeginReceive();
@@ -73,9 +70,9 @@ public class TCPServer : Singleton<TCPServer>
     {
         lock (clients)
         {
-            if (clients.TryGetValue(clientId, out TCPClient client))
+            if (clients.TryGetValue(clientId, out var client))
             {
-                clients.Remove(clientId);
+                clients.Remove(clientId,out _);
                 Console.WriteLine($"客户端 {clientId} 已断开连接");
             }
         }

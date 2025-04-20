@@ -22,8 +22,10 @@ public static partial class MessageTypeReflection {
   static MessageTypeReflection() {
     byte[] descriptorData = global::System.Convert.FromBase64String(
         string.Concat(
-          "ChFNZXNzYWdlVHlwZS5wcm90byo7CgtNZXNzYWdlVHlwZRIICgROb25lEAAS",
-          "EAoKQ1NMb2dpblJlcRCpjD0SEAoKU0NMb2dpblJlcxDpkHpiBnByb3RvMw=="));
+          "ChFNZXNzYWdlVHlwZS5wcm90byqPAQoLTWVzc2FnZVR5cGUSCAoETm9uZRAA",
+          "EhAKCkNTTG9naW5SZXEQqYw9EhAKClNDTG9naW5SZXMQ6ZB6EhAKCkNTTWF0",
+          "Y2hSZXEQkZQ9EhAKClNDTWF0Y2hSZXMQ0Zh6EhYKEENTQ2FuY2VsTWF0Y2hS",
+          "ZXEQkpQ9EhYKEFNDQ2FuY2VsTWF0Y2hSZXMQ0ph6YgZwcm90bzM="));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { },
         new pbr::GeneratedClrTypeInfo(new[] {typeof(global::MessageType), }, null, null));
@@ -39,6 +41,22 @@ public enum MessageType {
   [pbr::OriginalName("None")] None = 0,
   [pbr::OriginalName("CSLoginReq")] CsloginReq = 1001001,
   [pbr::OriginalName("SCLoginRes")] ScloginRes = 2001001,
+  /// <summary>
+  ///请求匹配
+  /// </summary>
+  [pbr::OriginalName("CSMatchReq")] CsmatchReq = 1002001,
+  /// <summary>
+  ///匹配请求返回
+  /// </summary>
+  [pbr::OriginalName("SCMatchRes")] ScmatchRes = 2002001,
+  /// <summary>
+  ///取消匹配请求
+  /// </summary>
+  [pbr::OriginalName("CSCancelMatchReq")] CscancelMatchReq = 1002002,
+  /// <summary>
+  ///取消匹配返回
+  /// </summary>
+  [pbr::OriginalName("SCCancelMatchRes")] SccancelMatchRes = 2002002,
 }
 
 #endregion

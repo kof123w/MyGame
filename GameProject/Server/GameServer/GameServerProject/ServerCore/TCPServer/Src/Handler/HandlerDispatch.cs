@@ -5,7 +5,7 @@ namespace MyGame;
 
 public class HandlerDispatch : Singleton<HandlerDispatch>
 {
-    private Dictionary<MessageType,Action<Client,Packet>> handleActions = new (); 
+    private Dictionary<MessageType,Action<TcpServerClient,Packet>> handleActions = new (); 
     
     private Dictionary<Type, INetHandler> sendActions = new ();
     
@@ -32,13 +32,13 @@ public class HandlerDispatch : Singleton<HandlerDispatch>
         }
     }
 
-    public void RegisterHandler(MessageType type, Action<Client, Packet> action)
+    public void RegisterHandler(MessageType type, Action<TcpServerClient, Packet> action)
     {
         handleActions.Add(type, action);
     }
 
-    public void Dispatch(TCPClient client, Packet packet)
+    public void Dispatch(TcpServerClient serverClient, Packet packet)
     {
-        handleActions[packet.Header.MessageType]?.Invoke(client, packet);
+        handleActions[packet.Header.MessageType]?.Invoke(serverClient, packet);
     }
 }

@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+// 协议号枚举
+enum ResuleCode {
+     None = 0;
+     Finished = 1;  //完成的
+     Failed = 2;    //失败的
+}

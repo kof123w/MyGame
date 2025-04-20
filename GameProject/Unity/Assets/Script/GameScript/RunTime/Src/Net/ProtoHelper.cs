@@ -20,6 +20,13 @@ namespace MyGame
             message.MergeFrom(data);
             return message;
         }
+        
+        public static T Deserialize<T>(Packet packet) where T : IMessage, new()
+        {
+            var message = new T();
+            message.MergeFrom(packet.Body.ToByteArray());
+            return message;
+        }
 
         
         // 创建数据包

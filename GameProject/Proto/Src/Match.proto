@@ -1,0 +1,24 @@
+syntax = "proto3";
+import "ResuleCode.Proto";
+
+ //请求匹配，1002001
+message CSMatchReq{
+       string userAccount = 1;   //登录账号
+}
+
+ //匹配请求返回,2001001
+message SCMatchRes{
+       int32 state = 1;          // 0 等待中  1匹配完成 2断线重新进来
+       string relay = 2;      // relay信息 udp ip & 端口 & 房间号
+}
+
+//取消匹配, 1002002
+message CSCancelMatch{
+
+}
+
+//取消匹配返回, 2002002
+message SCCancelMatch{
+     ResuleCode resCode = 1;
+}
+

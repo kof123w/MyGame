@@ -12,22 +12,10 @@ namespace MyGame
             this.Subscribe<string>(UIEvent.UIEventTitleUILogin,Login);
         }
 
-        private async void Login(string account)
+        private void Login(string account)
         {
-             var packet = await LoginHandler.Instance.LoginHandler_Login(account);
-             if (packet != null)
-             {
-                 var playerData = DataCenterManger.Instance.GetDataClass<PlayerData>();
-                 if (playerData != null)
-                 {
-                     var scLoginRes = ProtoHelper.Deserialize<SCLoginRes>(packet.Body.ToByteArray());
-                     playerData.SetData(scLoginRes.UserAcount,scLoginRes.PlayerRoleId);
-                     
-                     DLogger.Log($"登录完成，账号{scLoginRes.UserAcount},进入匹配界面");
-                     await UIManager.Show<MatchUI>();
-                     UIManager.Close<TitleUI>();
-                 } 
-             }
+             //var packet = await LoginHandler.Instance.LoginHandler_Login(account);
+            GameEvent.Push(NetEvent.LoginHandleEvent, account);
         }
 
         private async void OpenTitleUI()
