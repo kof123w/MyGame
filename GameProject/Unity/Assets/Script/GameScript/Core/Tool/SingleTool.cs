@@ -1,6 +1,4 @@
- 
 using UnityEngine;
-
 namespace SingleTool
 {
     /// <summary>

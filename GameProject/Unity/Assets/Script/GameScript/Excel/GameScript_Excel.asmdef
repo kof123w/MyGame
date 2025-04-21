@@ -2,9 +2,7 @@
     "name": "GameScript_Excel",
     "rootNamespace": "",
     "references": [
-        "GUID:484926273ce8f1f469ec0d3f0d2b4ba1",
-        "GUID:45d9b7d2576528b4995f99652191bcf4",
-        "GUID:01e97303b65385446a040a6d70e9a509"
+        "GUID:45d9b7d2576528b4995f99652191bcf4"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -11,7 +11,7 @@ namespace MyGame
         private UdpClient client;
         private readonly string serverIp;
         private readonly int serverPort;
-        public event Action<Packet> OnReceived;
+        public event Action<byte[]> OnReceived;
         private CancellationTokenSource udpReceiveToken;
         public UdpLocalClient(string serverIp, int serverPort)
         {
@@ -39,7 +39,7 @@ namespace MyGame
                 var result = await client.ReceiveAsync().ConfigureAwait(false);
                 Packet packet = ProtoHelper.Deserialize<Packet>(result.Buffer);  
                 NetManager.Instance.AddPacket(packet);
-                OnReceived?.Invoke(packet);
+                OnReceived?.Invoke(result.Buffer);
             }
         }
 
