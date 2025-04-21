@@ -22,6 +22,8 @@ namespace MyGame
         {
             SCMatchRes scMatchRes = ProtoHelper.Deserialize<SCMatchRes>(packet);
             DLogger.Log($"收到匹配回调,{scMatchRes.Relay}");
+            
+            UDPServer.Instance.Start(scMatchRes.Relay);
         }
     }
 }

@@ -6,7 +6,7 @@ public class MatchNetHandler : INetHandler
 {
     public void RegNet()
     {
-        HandlerDispatch.Instance.RegisterHandler(MessageType.CsmatchReq,MatchHandle);
+        HandlerDispatch.Instance.RegisterTcpHandler(MessageType.CsmatchReq,MatchHandle);
     }
 
     private void MatchHandle(TcpServerClient client,Packet packet)

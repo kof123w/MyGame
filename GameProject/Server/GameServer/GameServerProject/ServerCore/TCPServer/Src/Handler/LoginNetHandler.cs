@@ -7,7 +7,7 @@ public class LoginNetHandler : INetHandler
 {
     public void RegNet()
     {
-        HandlerDispatch.Instance.RegisterHandler(MessageType.CsloginReq,LoginHandle);
+        HandlerDispatch.Instance.RegisterTcpHandler(MessageType.CsloginReq,LoginHandle);
     }
 
     public void LoginHandle(TcpServerClient client, Packet packet)

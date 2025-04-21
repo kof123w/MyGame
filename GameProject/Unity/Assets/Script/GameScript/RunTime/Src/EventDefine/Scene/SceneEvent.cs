@@ -2,7 +2,7 @@
 
 namespace MyGame
 {
-    public static class SceneEvent
+    public class SceneEvent
     { 
     }
 }

@@ -17,26 +17,26 @@ namespace MyGame
 {
     public class NetManager : Singleton<NetManager>
     { 
-        private AsyncTcpClient asyncTcpClient; 
+        private TcpLocalClient tcpLocalClient; 
         private string serverIP = "127.0.0.1";
-        private int serverPort = 12800;
-        
+        private int serverPort = 12800; 
         private Dictionary<MessageType, Action<Packet>> Dispatch = new();
         private ConcurrentQueue<Packet> PacketQueue = new();
         private List<INetHandler> NetHandlers = new();
         private CancellationTokenSource checkPacketCts;
+        
         //等待的回报类型
         private volatile MessageType waitMessageType = MessageType.None;
         
         private bool IsConnected {
             get
             {
-                if (asyncTcpClient == null)
+                if (tcpLocalClient == null)
                 {
                     return false;
                 }
                 
-                return asyncTcpClient.IsConnected;
+                return tcpLocalClient.IsConnected;
             }
         }
         
@@ -101,7 +101,7 @@ namespace MyGame
 
             if (waitSendCount == 3)
             {
-                GameEvent.Push(UIEvent.OpenWaitNetUI);
+                GameEvent.Push(WaitNetUIEvent.OpenWaitNetUI);
             }
 
             if (waitSendCount >= 6)
@@ -111,7 +111,7 @@ namespace MyGame
                     sendTokenSource?.Cancel();
                     sendTokenSource?.Dispose();
                 }  
-                GameEvent.Push(UIEvent.CloseWaitNetUI);
+                GameEvent.Push(WaitNetUIEvent.CloseWaitNetUI);
                 waitSendCount = 0;
                 waitMessageType = MessageType.None;
             }
@@ -119,15 +119,15 @@ namespace MyGame
 
         private async UniTask<bool> ConnectServer()
         {
-            if (asyncTcpClient!=null)
+            if (tcpLocalClient!=null)
             {
-                asyncTcpClient.Disconnect();
-                asyncTcpClient = null;
+                tcpLocalClient.Disconnect();
+                tcpLocalClient = null;
                 await UniTask.Delay(100); 
             }
 
-            asyncTcpClient = new AsyncTcpClient();
-            return await asyncTcpClient.Connected(serverIP, serverPort);
+            tcpLocalClient = new TcpLocalClient();
+            return await tcpLocalClient.Connected(serverIP, serverPort);
         } 
 
         private CancellationTokenSource sendTokenSource; 
@@ -156,7 +156,7 @@ namespace MyGame
             sendTokenSource = new CancellationTokenSource(); 
             waitMessageType = type;
             Packet packet = ProtoHelper.CreatePacket(type,t);
-            var packetTask = await asyncTcpClient.SendAsync(packet,sendTokenSource.Token);     
+            var packetTask = await tcpLocalClient.SendAsync(packet,sendTokenSource.Token);     
             waitMessageType = MessageType.None;
             return packetTask;
         }   
@@ -179,7 +179,7 @@ namespace MyGame
             } 
             waitMessageType = type;
             Packet packet = ProtoHelper.CreatePacket(type,t);
-            asyncTcpClient.Send(packet);      
+            tcpLocalClient.Send(packet);      
         }   
     }
 }

@@ -2,7 +2,7 @@
 
 namespace MyGame
 {
-    public partial struct TaskEvent
+    public struct TaskEvent
     {
         public static readonly long TaskChange = "TaskEvent_Change".StringToHash(); 
         public static readonly long TaskSetCurTask = "TaskEvent_SetCurTask".StringToHash();

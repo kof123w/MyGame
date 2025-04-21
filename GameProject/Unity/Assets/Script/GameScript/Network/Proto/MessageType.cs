@@ -22,10 +22,13 @@ public static partial class MessageTypeReflection {
   static MessageTypeReflection() {
     byte[] descriptorData = global::System.Convert.FromBase64String(
         string.Concat(
-          "ChFNZXNzYWdlVHlwZS5wcm90byqPAQoLTWVzc2FnZVR5cGUSCAoETm9uZRAA",
+          "ChFNZXNzYWdlVHlwZS5wcm90byqHAgoLTWVzc2FnZVR5cGUSCAoETm9uZRAA",
           "EhAKCkNTTG9naW5SZXEQqYw9EhAKClNDTG9naW5SZXMQ6ZB6EhAKCkNTTWF0",
           "Y2hSZXEQkZQ9EhAKClNDTWF0Y2hSZXMQ0Zh6EhYKEENTQ2FuY2VsTWF0Y2hS",
-          "ZXEQkpQ9EhYKEFNDQ2FuY2VsTWF0Y2hSZXMQ0ph6YgZwcm90bzM="));
+          "ZXEQkpQ9EhYKEFNDQ2FuY2VsTWF0Y2hSZXMQ0ph6EhYKEENTRnJhbWVIZWFy",
+          "dEJlYXQQ+Zs9EhYKEFNDRnJhbWVIZWFydEJlYXQQuaB6EhAKCkNTSm9pblJv",
+          "b20Q+ps9EhAKClNDSm9pblJvb20QuqB6EhAKCkNTRXhpdFJvb20Q+5s9EhAK",
+          "ClNDRXhpdFJvb20Qu6B6YgZwcm90bzM="));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { },
         new pbr::GeneratedClrTypeInfo(new[] {typeof(global::MessageType), }, null, null));
@@ -57,6 +60,30 @@ public enum MessageType {
   ///取消匹配返回
   /// </summary>
   [pbr::OriginalName("SCCancelMatchRes")] SccancelMatchRes = 2002002,
+  /// <summary>
+  ///帧同步心跳
+  /// </summary>
+  [pbr::OriginalName("CSFrameHeartBeat")] CsframeHeartBeat = 1003001,
+  /// <summary>
+  ///帧同步心跳
+  /// </summary>
+  [pbr::OriginalName("SCFrameHeartBeat")] ScframeHeartBeat = 2003001,
+  /// <summary>
+  ///加入房间
+  /// </summary>
+  [pbr::OriginalName("CSJoinRoom")] CsjoinRoom = 1003002,
+  /// <summary>
+  ///加入房间
+  /// </summary>
+  [pbr::OriginalName("SCJoinRoom")] ScjoinRoom = 2003002,
+  /// <summary>
+  ///退出房间
+  /// </summary>
+  [pbr::OriginalName("CSExitRoom")] CsexitRoom = 1003003,
+  /// <summary>
+  ///退出房间
+  /// </summary>
+  [pbr::OriginalName("SCExitRoom")] ScexitRoom = 2003003,
 }
 
 #endregion

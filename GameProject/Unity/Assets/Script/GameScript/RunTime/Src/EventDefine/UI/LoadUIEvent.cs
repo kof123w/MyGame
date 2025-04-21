@@ -2,7 +2,7 @@
 
 namespace MyGame
 {
-    public partial struct UIEvent
+    public struct LoadUIEvent
     {
         public static long UIEventLoadUISetProgress = "UIEvent_LoadUISetProgress".StringToHash(); 
     }  

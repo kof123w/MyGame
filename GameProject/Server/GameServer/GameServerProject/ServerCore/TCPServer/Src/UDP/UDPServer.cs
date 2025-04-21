@@ -1,21 +1,21 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using MyGame;
 
 namespace MyServer;
 
-public class UDPServer
+public class UDPServer : Singleton<UDPServer>
 {
     private UdpClient receiver;
     private UdpClient sender;
     private CancellationTokenSource cts;
-    private readonly int port;
+    private int port;
     private readonly string multicastIp = "239.192.10.1";
 
-    public UDPServer(int port)
+    public void SetPort(int port)
     {
-        this.port = port;
-        
+        this.port = port; 
     }
 
     public async Task StartAsync()
@@ -31,11 +31,14 @@ public class UDPServer
         Console.WriteLine($"UDP 服务器已启动，监听端口{port}");
         try
         {
-            // 异步接收数据
-            var result = await receiver.ReceiveAsync().ConfigureAwait(false);
+            while (true)
+            {
+                // 异步接收数据
+                var result = await receiver.ReceiveAsync().ConfigureAwait(false);
                 
-            // 处理接收到的数据
-            ProcessReceivedData(result.Buffer, result.RemoteEndPoint);
+                // 处理接收到的数据
+                ProcessReceivedData(result.Buffer, result.RemoteEndPoint);
+            }
 
         }
         catch (OperationCanceledException e)
@@ -55,20 +58,29 @@ public class UDPServer
     
     //接收处理
     private void ProcessReceivedData(byte[] data, IPEndPoint remoteEP)
-    {
-        string message = Encoding.UTF8.GetString(data);
-        Console.WriteLine($"收到来自 {remoteEP} 的消息: {message}");
-
-        // 示例：发送回复
-       // byte[] replyData = Encoding.UTF8.GetBytes($"已收到你的消息: {message}");
-       // udpServer.Send(replyData, replyData.Length, remoteEP);
+    { 
+        Packet packet = ProtoHelper.Deserialize<Packet>(data);
+        Console.WriteLine($"收到来自 {remoteEP} 的消息: 协议号{packet.Header.MessageType}");
+        
+       HandlerDispatch.Instance.Dispatch(remoteEP,packet);
     }
 
-    public async Task SendAsync(byte[] data)
+    public async Task MulticastSendAsync(byte[] data)
     {
         sender = new UdpClient(); 
         await sender.SendAsync(data, data.Length, new IPEndPoint(IPAddress.Parse(multicastIp), port + 1));
         sender.Close(); 
+    }
+
+    public async Task SendAsync(byte[] data, IPEndPoint remoteEp)
+    {
+        await receiver.SendAsync(data, data.Length, remoteEp);
+    }
+    
+    public async Task SendAsync(Packet packet, IPEndPoint remoteEp)
+    {
+        var bytes = ProtoHelper.Serialize(packet);
+        await receiver.SendAsync(bytes, bytes.Length, remoteEp);
     }
 
     public void Stop()

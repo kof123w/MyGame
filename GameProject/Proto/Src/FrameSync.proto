@@ -1,0 +1,47 @@
+syntax = "proto3";
+import "ResuleCode.Proto";
+
+//帧同步心跳,1003001
+message CSFrameHeartBeat{
+     
+}
+
+//帧同步心跳,2003001
+message SCFrameHeartBeat{
+     
+}
+
+//加入房间号,1003002
+message CSJoinRoom{
+     int32 roomId = 1;
+}
+
+//加入房间号回复,2003002
+message SCJointRoom{
+     ResuleCode resuleCode = 1;
+     int32 randomSeed = 2;
+     int32 playerIndex = 3;
+     int32 tick = 4;
+}
+
+//退出当前房间,1003003
+message CSExitRoom{
+
+}
+
+//退出当前房间,2003003
+message SCExitRoom{
+     ResuleCode resuleCode = 1;
+}
+
+//操作采集,1003004
+message CSFrameSample{
+    int excueFrame = 1;   //客户端执行到的帧数
+    PlayerInput sample = 2;  //采集的帧数
+}
+
+//玩家输入
+message PlayerInput{
+    int64 dup = 1;
+    int64 dright = 2;
+}

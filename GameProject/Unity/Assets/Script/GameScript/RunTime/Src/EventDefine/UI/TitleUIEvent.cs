@@ -2,7 +2,7 @@
 
 namespace MyGame
 {
-    public partial struct UIEvent
+    public struct TitleUIEvent
     {
         public static long UIEventOpenTitleUI = "UIEvent_OpenTitleUI".StringToHash(); 
         public static long UIEventCloseTitleUI = "UIEvent_CloseTitleUI".StringToHash(); 

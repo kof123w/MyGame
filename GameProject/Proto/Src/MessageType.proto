@@ -5,8 +5,20 @@ enum MessageType {
   None = 0;
   CSLoginReq = 1001001;
   SCLoginRes = 2001001;
+
   CSMatchReq = 1002001;  //请求匹配
   SCMatchRes = 2002001;  //匹配请求返回
   CSCancelMatchReq = 1002002;  //取消匹配请求
   SCCancelMatchRes = 2002002;  //取消匹配返回
+
+  CSFrameHeartBeat = 1003001;  //帧同步心跳
+  SCFrameHeartBeat = 2003001;  //帧同步心跳
+  CSJoinRoom = 1003002;  //加入房间
+  SCJoinRoom = 2003002;  //加入房间
+  CSExitRoom = 1003003;  //退出房间
+  SCExitRoom = 2003003;  //退出房间
+  CSCSFrameSample = 1003004; //操作采集,1003004
+
+  // todo ..
+  
 }

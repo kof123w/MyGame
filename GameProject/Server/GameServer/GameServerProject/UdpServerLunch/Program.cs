@@ -27,9 +27,10 @@ class Program
         Console.WriteLine("Init Event System!!!");
         EventListenManager.Instance.Init();
         Console.WriteLine("Init Handler Dispatch!!!");
+        HandlerDispatch.Instance.IsUDP = true;
         HandlerDispatch.Instance.Init();
-        Console.WriteLine("Lunch Tcp Server");
-        UDPServer tcpServer = new UDPServer(12900);
-        tcpServer.StartAsync(); 
+        Console.WriteLine("Lunch Tcp Server"); 
+        UDPServer.Instance.SetPort(12900);
+        _ = UDPServer.Instance.StartAsync(); 
     }
 }
