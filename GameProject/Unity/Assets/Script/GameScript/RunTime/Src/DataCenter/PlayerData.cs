@@ -24,5 +24,10 @@ namespace MyGame
             account = accountParam;
             playerId = playerIdParam;
         }
+
+        public long GetId()
+        {
+            return playerId;
+        }
     }
 }

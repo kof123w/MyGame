@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DebugTool;
+using UnityEngine;
 
 namespace MyGame
 {
@@ -18,10 +19,11 @@ namespace MyGame
         {
             this.serverIp = serverIp;
             this.serverPort = serverPort;
-            client = new UdpClient(); 
+            client = new UdpClient();   
             client.Connect(serverIp, serverPort);
-        }
-
+            
+        } 
+        
         public void StartReceive()
         {
             if (udpReceiveToken?.IsCancellationRequested == false)
@@ -35,11 +37,18 @@ namespace MyGame
 
         private async UniTask UdpReceive(CancellationToken token)
         {
-            while (!token.IsCancellationRequested)
+            try
             {
-                var result = await client.ReceiveAsync().ConfigureAwait(false); 
-                //NetManager.Instance.AddPacket(result.Buffer); 
-                UDPNetManager.Instance.HandlerDispatch(result.Buffer);
+                while (!token.IsCancellationRequested)
+                {
+                    var result = await client.ReceiveAsync().ConfigureAwait(false);
+                    //NetManager.Instance.AddPacket(result.Buffer); 
+                    UDPNetManager.Instance.HandlerDispatch(result.Buffer);
+                }
+            }
+            catch
+            {
+                // ignored
             }
         }
 

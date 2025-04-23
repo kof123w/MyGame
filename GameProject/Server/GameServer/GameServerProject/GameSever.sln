@@ -4,8 +4,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerCore", "ServerCore\Se
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcpServerLunch", "TcpServerLunch\TcpServerLunch.csproj", "{BCE215EA-A2E4-45E1-A951-822DC176F310}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UdpServerLunch", "UdpServerLunch\UdpServerLunch.csproj", "{BADC4DF8-6063-4089-B53B-7DA693BF054B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpServerLunch", "HttpServerLunch\HttpServerLunch.csproj", "{6067A752-4F20-47C6-A331-0F7454B68997}"
 EndProject
 Global
@@ -22,10 +20,6 @@ Global
 		{BCE215EA-A2E4-45E1-A951-822DC176F310}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCE215EA-A2E4-45E1-A951-822DC176F310}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCE215EA-A2E4-45E1-A951-822DC176F310}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BADC4DF8-6063-4089-B53B-7DA693BF054B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BADC4DF8-6063-4089-B53B-7DA693BF054B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BADC4DF8-6063-4089-B53B-7DA693BF054B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BADC4DF8-6063-4089-B53B-7DA693BF054B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6067A752-4F20-47C6-A331-0F7454B68997}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6067A752-4F20-47C6-A331-0F7454B68997}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6067A752-4F20-47C6-A331-0F7454B68997}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -1,4 +1,5 @@
 syntax = "proto3";
+import "Player.Proto";
 
 //登录协议请求，1001001
 message CSLoginReq{
@@ -7,7 +8,6 @@ message CSLoginReq{
 
 //登录协议返回,2001001
 message SCLoginRes{
-       string userAcount = 1;
-       int64 playerRoleId = 2;  //玩家id
-       int32 timestamp = 3;     //登录进服务器的时间戳
+       PlayerData playerData = 1;  //玩家数据
+       int32 timestamp = 2;     //登录进服务器的时间戳
 }

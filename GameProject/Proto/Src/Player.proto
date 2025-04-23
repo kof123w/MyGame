@@ -1,0 +1,6 @@
+syntax = "proto3";
+
+message PlayerData{
+    string userAcount = 1;
+    int64 playerRoleId = 2;  //玩家id
+}

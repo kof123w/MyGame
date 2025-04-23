@@ -22,14 +22,14 @@ public static partial class MessageTypeReflection {
   static MessageTypeReflection() {
     byte[] descriptorData = global::System.Convert.FromBase64String(
         string.Concat(
-          "ChFNZXNzYWdlVHlwZS5wcm90byqeAgoLTWVzc2FnZVR5cGUSCAoETm9uZRAA",
+          "ChFNZXNzYWdlVHlwZS5wcm90byqrAgoLTWVzc2FnZVR5cGUSCAoETm9uZRAA",
           "EhAKCkNTTG9naW5SZXEQqYw9EhAKClNDTG9naW5SZXMQ6ZB6EhAKCkNTTWF0",
           "Y2hSZXEQkZQ9EhAKClNDTWF0Y2hSZXMQ0Zh6EhYKEENTQ2FuY2VsTWF0Y2hS",
           "ZXEQkpQ9EhYKEFNDQ2FuY2VsTWF0Y2hSZXMQ0ph6EhYKEENTRnJhbWVIZWFy",
-          "dEJlYXQQ+Zs9EhYKEFNDRnJhbWVIZWFydEJlYXQQuaB6EhAKCkNTSm9pblJv",
-          "b20Q+ps9EhAKClNDSm9pblJvb20QuqB6EhAKCkNTRXhpdFJvb20Q+5s9EhAK",
-          "ClNDRXhpdFJvb20Qu6B6EhUKD0NTQ1NGcmFtZVNhbXBsZRD8mz1iBnByb3Rv",
-          "Mw=="));
+          "dEJlYXQQ+Zs9EhYKEFNDRnJhbWVIZWFydEJlYXQQuaB6EhwKFkNTUG9zdENs",
+          "aWVudFVkcEFkZHJlc3MQ+ps9EhAKCkNTRXhpdEdhbWUQ+5s9EhAKClNDRXhp",
+          "dEdhbWUQu6B6EhUKD0NTQ1NGcmFtZVNhbXBsZRD8mz0SEQoLU0NGcmFtZURh",
+          "dGEQvaB6YgZwcm90bzM="));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { },
         new pbr::GeneratedClrTypeInfo(new[] {typeof(global::MessageType), }, null, null));
@@ -70,25 +70,25 @@ public enum MessageType {
   /// </summary>
   [pbr::OriginalName("SCFrameHeartBeat")] ScframeHeartBeat = 2003001,
   /// <summary>
-  ///加入房间
+  ///临时协议，上传Udp地址
   /// </summary>
-  [pbr::OriginalName("CSJoinRoom")] CsjoinRoom = 1003002,
+  [pbr::OriginalName("CSPostClientUdpAddress")] CspostClientUdpAddress = 1003002,
   /// <summary>
-  ///加入房间
+  ///退出当前对局
   /// </summary>
-  [pbr::OriginalName("SCJoinRoom")] ScjoinRoom = 2003002,
+  [pbr::OriginalName("CSExitGame")] CsexitGame = 1003003,
   /// <summary>
-  ///退出房间
+  ///退出当前对局
   /// </summary>
-  [pbr::OriginalName("CSExitRoom")] CsexitRoom = 1003003,
-  /// <summary>
-  ///退出房间
-  /// </summary>
-  [pbr::OriginalName("SCExitRoom")] ScexitRoom = 2003003,
+  [pbr::OriginalName("SCExitGame")] ScexitGame = 2003003,
   /// <summary>
   ///操作采集,1003004
   /// </summary>
   [pbr::OriginalName("CSCSFrameSample")] CscsframeSample = 1003004,
+  /// <summary>
+  ///帧同步下发
+  /// </summary>
+  [pbr::OriginalName("SCFrameData")] ScframeData = 2003005,
 }
 
 #endregion

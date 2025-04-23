@@ -84,7 +84,7 @@ namespace MyGame
                 }
                 catch (Exception ex)
                 {
-                    Debug.LogError($"接收数据异常: {ex}");
+                    //Debug.LogError($"接收数据异常: {ex}");
                     Disconnect();
                     break;
                 }
@@ -97,6 +97,11 @@ namespace MyGame
 
         public void Disconnect()
         {
+            if (receiveCts?.IsCancellationRequested ?? false)
+            {
+                receiveCts?.Cancel();
+                receiveCts?.Dispose();
+            }
             tcpClient?.Close();
         }
 

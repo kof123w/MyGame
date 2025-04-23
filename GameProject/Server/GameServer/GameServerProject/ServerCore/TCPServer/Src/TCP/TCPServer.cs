@@ -11,13 +11,21 @@ public class TCPServer : Singleton<TCPServer>
     private readonly ConcurrentDictionary<int, TcpServerClient> clients = new();
     private int nextClientId = 1;
 
-    private const int Port = 12800;
-    private const int MaxConnections = 100;
+    private  int Port = 12800;
+    private  int MaxConnections = 100;
+    private string IpAddress = "127.0.0.1";
+
+    public void SetParam(int port, int maxConnections, string ipAddress)
+    {
+        Port = port;
+        MaxConnections = maxConnections;
+        IpAddress = ipAddress;
+    }
 
     public void Start()
     {
         isRunning = true;
-        IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
+        IPAddress ipAddress = IPAddress.Parse(IpAddress);
         listener = new TcpListener(ipAddress, Port);
         listener.Start(MaxConnections);
 

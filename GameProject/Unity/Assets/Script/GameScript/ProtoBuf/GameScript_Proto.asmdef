@@ -1,5 +1,5 @@
 {
-    "name": "GameScript_Network",
+    "name": "GameScript_Proto",
     "rootNamespace": "",
     "references": [
         "GUID:01e97303b65385446a040a6d70e9a509",

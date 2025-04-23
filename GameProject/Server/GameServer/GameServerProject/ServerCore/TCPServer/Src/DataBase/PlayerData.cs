@@ -3,12 +3,14 @@ using MyServer;
 
 namespace MyGame;
 
-public class PlayerData
+public class PlayerServerData
 {
     public long RoleId { get; set; } 
     public string Account { get; set; }
     
     public bool IsOnline { get; set; }
+    
+    public int CurRoomID { get; set; }
     
     //临时这样放着了
     private TcpServerClient TcpServerClient { get; set; }

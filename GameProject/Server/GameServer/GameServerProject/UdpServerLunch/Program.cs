@@ -11,6 +11,7 @@ class Program
     static void Main(string[] args)
     {
         serverTask = Task.Run(() => RunServer(), cts.Token); // 启动服务器任务
+        Thread.Sleep(1000);
         Console.WriteLine("输入exit退出"); 
         string? command = Console.ReadLine();
         while (command != null && command.Equals("exit"))

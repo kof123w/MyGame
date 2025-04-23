@@ -23,15 +23,17 @@ public static partial class MatchReflection {
     byte[] descriptorData = global::System.Convert.FromBase64String(
         string.Concat(
           "CgtNYXRjaC5wcm90bxoQUmVzdWxlQ29kZS5Qcm90byIhCgpDU01hdGNoUmVx",
-          "EhMKC3VzZXJBY2NvdW50GAEgASgJIioKClNDTWF0Y2hSZXMSDQoFc3RhdGUY",
-          "ASABKAUSDQoFcmVsYXkYAiABKAkiDwoNQ1NDYW5jZWxNYXRjaCItCg1TQ0Nh",
+          "EhMKC3VzZXJBY2NvdW50GAEgASgJIoMBCgpTQ01hdGNoUmVzEg0KBXN0YXRl",
+          "GAEgASgFEhEKCXVkcEFkcmVzcxgCIAEoCRIMCgRwb3J0GAMgASgFEg4KBnJv",
+          "b21JZBgEIAEoBRISCgpyYW5kb21TZWVkGAUgASgFEhMKC3BsYXllckluZGV4",
+          "GAYgASgFEgwKBHRpY2sYByABKAUiDwoNQ1NDYW5jZWxNYXRjaCItCg1TQ0Nh",
           "bmNlbE1hdGNoEhwKB3Jlc0NvZGUYASABKA4yCy5SZXN1bGVDb2RlYgZwcm90",
           "bzM="));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { global::ResuleCodeReflection.Descriptor, },
         new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
           new pbr::GeneratedClrTypeInfo(typeof(global::CSMatchReq), global::CSMatchReq.Parser, new[]{ "UserAccount" }, null, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::SCMatchRes), global::SCMatchRes.Parser, new[]{ "State", "Relay" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::SCMatchRes), global::SCMatchRes.Parser, new[]{ "State", "UdpAdress", "Port", "RoomId", "RandomSeed", "PlayerIndex", "Tick" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CSCancelMatch), global::CSCancelMatch.Parser, null, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::SCCancelMatch), global::SCCancelMatch.Parser, new[]{ "ResCode" }, null, null, null, null)
         }));
@@ -283,7 +285,12 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public SCMatchRes(SCMatchRes other) : this() {
     state_ = other.state_;
-    relay_ = other.relay_;
+    udpAdress_ = other.udpAdress_;
+    port_ = other.port_;
+    roomId_ = other.roomId_;
+    randomSeed_ = other.randomSeed_;
+    playerIndex_ = other.playerIndex_;
+    tick_ = other.tick_;
     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
   }
 
@@ -308,18 +315,93 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
     }
   }
 
-  /// <summary>Field number for the "relay" field.</summary>
-  public const int RelayFieldNumber = 2;
-  private string relay_ = "";
+  /// <summary>Field number for the "udpAdress" field.</summary>
+  public const int UdpAdressFieldNumber = 2;
+  private string udpAdress_ = "";
   /// <summary>
-  /// relay信息 udp ip &amp; 端口 &amp; 房间号
+  /// relay信息 udp ip &amp; 端口 &amp; 房间号 
   /// </summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-  public string Relay {
-    get { return relay_; }
+  public string UdpAdress {
+    get { return udpAdress_; }
     set {
-      relay_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      udpAdress_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+    }
+  }
+
+  /// <summary>Field number for the "port" field.</summary>
+  public const int PortFieldNumber = 3;
+  private int port_;
+  /// <summary>
+  ///端口号
+  /// </summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int Port {
+    get { return port_; }
+    set {
+      port_ = value;
+    }
+  }
+
+  /// <summary>Field number for the "roomId" field.</summary>
+  public const int RoomIdFieldNumber = 4;
+  private int roomId_;
+  /// <summary>
+  ///房间id
+  /// </summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int RoomId {
+    get { return roomId_; }
+    set {
+      roomId_ = value;
+    }
+  }
+
+  /// <summary>Field number for the "randomSeed" field.</summary>
+  public const int RandomSeedFieldNumber = 5;
+  private int randomSeed_;
+  /// <summary>
+  ///随机种子
+  /// </summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int RandomSeed {
+    get { return randomSeed_; }
+    set {
+      randomSeed_ = value;
+    }
+  }
+
+  /// <summary>Field number for the "playerIndex" field.</summary>
+  public const int PlayerIndexFieldNumber = 6;
+  private int playerIndex_;
+  /// <summary>
+  ///房间里玩家索引
+  /// </summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int PlayerIndex {
+    get { return playerIndex_; }
+    set {
+      playerIndex_ = value;
+    }
+  }
+
+  /// <summary>Field number for the "tick" field.</summary>
+  public const int TickFieldNumber = 7;
+  private int tick_;
+  /// <summary>
+  ///服务器tick同步
+  /// </summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int Tick {
+    get { return tick_; }
+    set {
+      tick_ = value;
     }
   }
 
@@ -339,7 +421,12 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
       return true;
     }
     if (State != other.State) return false;
-    if (Relay != other.Relay) return false;
+    if (UdpAdress != other.UdpAdress) return false;
+    if (Port != other.Port) return false;
+    if (RoomId != other.RoomId) return false;
+    if (RandomSeed != other.RandomSeed) return false;
+    if (PlayerIndex != other.PlayerIndex) return false;
+    if (Tick != other.Tick) return false;
     return Equals(_unknownFields, other._unknownFields);
   }
 
@@ -348,7 +435,12 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
   public override int GetHashCode() {
     int hash = 1;
     if (State != 0) hash ^= State.GetHashCode();
-    if (Relay.Length != 0) hash ^= Relay.GetHashCode();
+    if (UdpAdress.Length != 0) hash ^= UdpAdress.GetHashCode();
+    if (Port != 0) hash ^= Port.GetHashCode();
+    if (RoomId != 0) hash ^= RoomId.GetHashCode();
+    if (RandomSeed != 0) hash ^= RandomSeed.GetHashCode();
+    if (PlayerIndex != 0) hash ^= PlayerIndex.GetHashCode();
+    if (Tick != 0) hash ^= Tick.GetHashCode();
     if (_unknownFields != null) {
       hash ^= _unknownFields.GetHashCode();
     }
@@ -371,9 +463,29 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
       output.WriteRawTag(8);
       output.WriteInt32(State);
     }
-    if (Relay.Length != 0) {
+    if (UdpAdress.Length != 0) {
       output.WriteRawTag(18);
-      output.WriteString(Relay);
+      output.WriteString(UdpAdress);
+    }
+    if (Port != 0) {
+      output.WriteRawTag(24);
+      output.WriteInt32(Port);
+    }
+    if (RoomId != 0) {
+      output.WriteRawTag(32);
+      output.WriteInt32(RoomId);
+    }
+    if (RandomSeed != 0) {
+      output.WriteRawTag(40);
+      output.WriteInt32(RandomSeed);
+    }
+    if (PlayerIndex != 0) {
+      output.WriteRawTag(48);
+      output.WriteInt32(PlayerIndex);
+    }
+    if (Tick != 0) {
+      output.WriteRawTag(56);
+      output.WriteInt32(Tick);
     }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(output);
@@ -389,9 +501,29 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
       output.WriteRawTag(8);
       output.WriteInt32(State);
     }
-    if (Relay.Length != 0) {
+    if (UdpAdress.Length != 0) {
       output.WriteRawTag(18);
-      output.WriteString(Relay);
+      output.WriteString(UdpAdress);
+    }
+    if (Port != 0) {
+      output.WriteRawTag(24);
+      output.WriteInt32(Port);
+    }
+    if (RoomId != 0) {
+      output.WriteRawTag(32);
+      output.WriteInt32(RoomId);
+    }
+    if (RandomSeed != 0) {
+      output.WriteRawTag(40);
+      output.WriteInt32(RandomSeed);
+    }
+    if (PlayerIndex != 0) {
+      output.WriteRawTag(48);
+      output.WriteInt32(PlayerIndex);
+    }
+    if (Tick != 0) {
+      output.WriteRawTag(56);
+      output.WriteInt32(Tick);
     }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(ref output);
@@ -406,8 +538,23 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
     if (State != 0) {
       size += 1 + pb::CodedOutputStream.ComputeInt32Size(State);
     }
-    if (Relay.Length != 0) {
-      size += 1 + pb::CodedOutputStream.ComputeStringSize(Relay);
+    if (UdpAdress.Length != 0) {
+      size += 1 + pb::CodedOutputStream.ComputeStringSize(UdpAdress);
+    }
+    if (Port != 0) {
+      size += 1 + pb::CodedOutputStream.ComputeInt32Size(Port);
+    }
+    if (RoomId != 0) {
+      size += 1 + pb::CodedOutputStream.ComputeInt32Size(RoomId);
+    }
+    if (RandomSeed != 0) {
+      size += 1 + pb::CodedOutputStream.ComputeInt32Size(RandomSeed);
+    }
+    if (PlayerIndex != 0) {
+      size += 1 + pb::CodedOutputStream.ComputeInt32Size(PlayerIndex);
+    }
+    if (Tick != 0) {
+      size += 1 + pb::CodedOutputStream.ComputeInt32Size(Tick);
     }
     if (_unknownFields != null) {
       size += _unknownFields.CalculateSize();
@@ -424,8 +571,23 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
     if (other.State != 0) {
       State = other.State;
     }
-    if (other.Relay.Length != 0) {
-      Relay = other.Relay;
+    if (other.UdpAdress.Length != 0) {
+      UdpAdress = other.UdpAdress;
+    }
+    if (other.Port != 0) {
+      Port = other.Port;
+    }
+    if (other.RoomId != 0) {
+      RoomId = other.RoomId;
+    }
+    if (other.RandomSeed != 0) {
+      RandomSeed = other.RandomSeed;
+    }
+    if (other.PlayerIndex != 0) {
+      PlayerIndex = other.PlayerIndex;
+    }
+    if (other.Tick != 0) {
+      Tick = other.Tick;
     }
     _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
   }
@@ -451,7 +613,27 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
           break;
         }
         case 18: {
-          Relay = input.ReadString();
+          UdpAdress = input.ReadString();
+          break;
+        }
+        case 24: {
+          Port = input.ReadInt32();
+          break;
+        }
+        case 32: {
+          RoomId = input.ReadInt32();
+          break;
+        }
+        case 40: {
+          RandomSeed = input.ReadInt32();
+          break;
+        }
+        case 48: {
+          PlayerIndex = input.ReadInt32();
+          break;
+        }
+        case 56: {
+          Tick = input.ReadInt32();
           break;
         }
       }
@@ -478,7 +660,27 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
           break;
         }
         case 18: {
-          Relay = input.ReadString();
+          UdpAdress = input.ReadString();
+          break;
+        }
+        case 24: {
+          Port = input.ReadInt32();
+          break;
+        }
+        case 32: {
+          RoomId = input.ReadInt32();
+          break;
+        }
+        case 40: {
+          RandomSeed = input.ReadInt32();
+          break;
+        }
+        case 48: {
+          PlayerIndex = input.ReadInt32();
+          break;
+        }
+        case 56: {
+          Tick = input.ReadInt32();
           break;
         }
       }

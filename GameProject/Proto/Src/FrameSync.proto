@@ -11,41 +11,52 @@ message SCFrameHeartBeat{
      
 }
 
-//加入房间号,1003002
-message CSJoinRoom{
-     int32 roomId = 1;
-}
-
-//加入房间号回复,2003002
-message SCJointRoom{
-     ResuleCode resuleCode = 1;
-     int32 randomSeed = 2;
-     int32 playerIndex = 3;
-     int32 tick = 4;
+//临时协议，上传客户端的UDP地址,2003002
+message CSPostClientUdpAddress{
+    int64 playerId = 1;
+    int32 roomId = 2;
 }
 
 //退出当前房间,1003003
-message CSExitRoom{
-
+message CSExitGame{
+     
 }
 
 //退出当前房间,2003003
-message SCExitRoom{
-     ResuleCode resuleCode = 1;
+message SCExitGame{
+    ResuleCode resuleCode = 1;
 }
 
 //操作采集,1003004  
 message CSFrameSample{
-    repeated FrameInput frameInputList = 1;
+    int64 playerId = 1;
+    int32 roomId = 2;
+    int32 clientCurFrame = 3;   //客户端当前帧数
+    repeated FrameInput frameInputList = 4;
 }
 
 message FrameInput{
-     int64 subFrameTime = 1;
-     repeated PlayerInput playerInputList = 2;
+    int64 subFrameTime = 1;
+    repeated PlayerInput playerInputList = 2;
 }
 
 //玩家输入
 message PlayerInput{
     int64 dup = 1;
     int64 dright = 2;
+}
+
+//SCFrameData = 2003005;  //帧同步下发
+message SCFrameData{
+    repeated FrameData frameDataList = 1;
+}
+
+message FrameData{
+    int32 frame = 1;
+    repeated FramePlayerInput FramePlayerInputList = 2;
+}
+
+message FramePlayerInput{
+    int64 playerId = 1;  //玩家索引
+    FrameInput frameInput = 2;  //玩家这一帧的操作
 }

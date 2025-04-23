@@ -54,8 +54,15 @@ class Launch : MonoBehaviour
 
     void LateUpdate()
     {
-        #if UNITY_LOCAL_SCRIPT
+#if UNITY_LOCAL_SCRIPT
         GameMain.LateUpdate();
-        #endif
+#endif
+    }
+
+    void OnApplicationQuit()
+    {
+#if UNITY_LOCAL_SCRIPT
+        GameMain.OnApplicationQuit();
+#endif 
     }
 }

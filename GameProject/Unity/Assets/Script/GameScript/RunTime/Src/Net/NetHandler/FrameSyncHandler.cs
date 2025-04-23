@@ -3,6 +3,7 @@
 using System;
 using DebugTool;
 using Google.Protobuf;
+using UnityEngine;
 
 namespace MyGame
 {
@@ -10,15 +11,14 @@ namespace MyGame
     public class FrameSyncHandler : INetHandler
     {
         public void RegNet()
-        {
-            //NetManager.Instance.RegNetHandler(MessageType.ScjoinRoom,JoinRoomHandler);
-            UDPNetManager.Instance.RegNetHandler(MessageType.ScjoinRoom,JoinRoomHandler);
+        {  
+            UDPNetManager.Instance.RegNetHandler(MessageType.ScframeData,SyncFrame);
         }
 
-        private void JoinRoomHandler(byte[] data)
+        private void SyncFrame(byte[] data)
         {
-            SCJointRoom scJointRoom = ProtoHelper.Deserialize<SCJointRoom>(data);
-            DLogger.Log($"JoinRoomHandler  scJointRoom.Tick:{scJointRoom.Tick} scJointRoom.playerIndex:{scJointRoom.PlayerIndex} scJointRoom.RandomSeed:{scJointRoom.RandomSeed}");
+             SCFrameData scFrameData = ProtoHelper.Deserialize<SCFrameData>(data); 
+             DLogger.Log($"收到帧数据: {scFrameData.FrameDataList[^1].Frame}");
         }
     }
 }

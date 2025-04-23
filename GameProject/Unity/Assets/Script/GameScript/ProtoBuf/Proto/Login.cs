@@ -22,14 +22,15 @@ public static partial class LoginReflection {
   static LoginReflection() {
     byte[] descriptorData = global::System.Convert.FromBase64String(
         string.Concat(
-          "CgtMb2dpbi5wcm90byIhCgpDU0xvZ2luUmVxEhMKC3VzZXJBY2NvdW50GAEg",
-          "ASgJIkkKClNDTG9naW5SZXMSEgoKdXNlckFjb3VudBgBIAEoCRIUCgxwbGF5",
-          "ZXJSb2xlSWQYAiABKAMSEQoJdGltZXN0YW1wGAMgASgFYgZwcm90bzM="));
+          "CgtMb2dpbi5wcm90bxoMUGxheWVyLlByb3RvIiEKCkNTTG9naW5SZXESEwoL",
+          "dXNlckFjY291bnQYASABKAkiQAoKU0NMb2dpblJlcxIfCgpwbGF5ZXJEYXRh",
+          "GAEgASgLMgsuUGxheWVyRGF0YRIRCgl0aW1lc3RhbXAYAiABKAViBnByb3Rv",
+          "Mw=="));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-        new pbr::FileDescriptor[] { },
+        new pbr::FileDescriptor[] { global::PlayerReflection.Descriptor, },
         new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
           new pbr::GeneratedClrTypeInfo(typeof(global::CSLoginReq), global::CSLoginReq.Parser, new[]{ "UserAccount" }, null, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::SCLoginRes), global::SCLoginRes.Parser, new[]{ "UserAcount", "PlayerRoleId", "Timestamp" }, null, null, null, null)
+          new pbr::GeneratedClrTypeInfo(typeof(global::SCLoginRes), global::SCLoginRes.Parser, new[]{ "PlayerData", "Timestamp" }, null, null, null, null)
         }));
   }
   #endregion
@@ -278,8 +279,7 @@ public sealed partial class SCLoginRes : pb::IMessage<SCLoginRes>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public SCLoginRes(SCLoginRes other) : this() {
-    userAcount_ = other.userAcount_;
-    playerRoleId_ = other.playerRoleId_;
+    playerData_ = other.playerData_ != null ? other.playerData_.Clone() : null;
     timestamp_ = other.timestamp_;
     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
   }
@@ -290,35 +290,23 @@ public sealed partial class SCLoginRes : pb::IMessage<SCLoginRes>
     return new SCLoginRes(this);
   }
 
-  /// <summary>Field number for the "userAcount" field.</summary>
-  public const int UserAcountFieldNumber = 1;
-  private string userAcount_ = "";
-  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-  public string UserAcount {
-    get { return userAcount_; }
-    set {
-      userAcount_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-    }
-  }
-
-  /// <summary>Field number for the "playerRoleId" field.</summary>
-  public const int PlayerRoleIdFieldNumber = 2;
-  private long playerRoleId_;
+  /// <summary>Field number for the "playerData" field.</summary>
+  public const int PlayerDataFieldNumber = 1;
+  private global::PlayerData playerData_;
   /// <summary>
-  ///玩家id
+  ///玩家数据
   /// </summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-  public long PlayerRoleId {
-    get { return playerRoleId_; }
+  public global::PlayerData PlayerData {
+    get { return playerData_; }
     set {
-      playerRoleId_ = value;
+      playerData_ = value;
     }
   }
 
   /// <summary>Field number for the "timestamp" field.</summary>
-  public const int TimestampFieldNumber = 3;
+  public const int TimestampFieldNumber = 2;
   private int timestamp_;
   /// <summary>
   ///登录进服务器的时间戳
@@ -347,8 +335,7 @@ public sealed partial class SCLoginRes : pb::IMessage<SCLoginRes>
     if (ReferenceEquals(other, this)) {
       return true;
     }
-    if (UserAcount != other.UserAcount) return false;
-    if (PlayerRoleId != other.PlayerRoleId) return false;
+    if (!object.Equals(PlayerData, other.PlayerData)) return false;
     if (Timestamp != other.Timestamp) return false;
     return Equals(_unknownFields, other._unknownFields);
   }
@@ -357,8 +344,7 @@ public sealed partial class SCLoginRes : pb::IMessage<SCLoginRes>
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public override int GetHashCode() {
     int hash = 1;
-    if (UserAcount.Length != 0) hash ^= UserAcount.GetHashCode();
-    if (PlayerRoleId != 0L) hash ^= PlayerRoleId.GetHashCode();
+    if (playerData_ != null) hash ^= PlayerData.GetHashCode();
     if (Timestamp != 0) hash ^= Timestamp.GetHashCode();
     if (_unknownFields != null) {
       hash ^= _unknownFields.GetHashCode();
@@ -378,16 +364,12 @@ public sealed partial class SCLoginRes : pb::IMessage<SCLoginRes>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
     output.WriteRawMessage(this);
   #else
-    if (UserAcount.Length != 0) {
+    if (playerData_ != null) {
       output.WriteRawTag(10);
-      output.WriteString(UserAcount);
-    }
-    if (PlayerRoleId != 0L) {
-      output.WriteRawTag(16);
-      output.WriteInt64(PlayerRoleId);
+      output.WriteMessage(PlayerData);
     }
     if (Timestamp != 0) {
-      output.WriteRawTag(24);
+      output.WriteRawTag(16);
       output.WriteInt32(Timestamp);
     }
     if (_unknownFields != null) {
@@ -400,16 +382,12 @@ public sealed partial class SCLoginRes : pb::IMessage<SCLoginRes>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-    if (UserAcount.Length != 0) {
+    if (playerData_ != null) {
       output.WriteRawTag(10);
-      output.WriteString(UserAcount);
-    }
-    if (PlayerRoleId != 0L) {
-      output.WriteRawTag(16);
-      output.WriteInt64(PlayerRoleId);
+      output.WriteMessage(PlayerData);
     }
     if (Timestamp != 0) {
-      output.WriteRawTag(24);
+      output.WriteRawTag(16);
       output.WriteInt32(Timestamp);
     }
     if (_unknownFields != null) {
@@ -422,11 +400,8 @@ public sealed partial class SCLoginRes : pb::IMessage<SCLoginRes>
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public int CalculateSize() {
     int size = 0;
-    if (UserAcount.Length != 0) {
-      size += 1 + pb::CodedOutputStream.ComputeStringSize(UserAcount);
-    }
-    if (PlayerRoleId != 0L) {
-      size += 1 + pb::CodedOutputStream.ComputeInt64Size(PlayerRoleId);
+    if (playerData_ != null) {
+      size += 1 + pb::CodedOutputStream.ComputeMessageSize(PlayerData);
     }
     if (Timestamp != 0) {
       size += 1 + pb::CodedOutputStream.ComputeInt32Size(Timestamp);
@@ -443,11 +418,11 @@ public sealed partial class SCLoginRes : pb::IMessage<SCLoginRes>
     if (other == null) {
       return;
     }
-    if (other.UserAcount.Length != 0) {
-      UserAcount = other.UserAcount;
-    }
-    if (other.PlayerRoleId != 0L) {
-      PlayerRoleId = other.PlayerRoleId;
+    if (other.playerData_ != null) {
+      if (playerData_ == null) {
+        PlayerData = new global::PlayerData();
+      }
+      PlayerData.MergeFrom(other.PlayerData);
     }
     if (other.Timestamp != 0) {
       Timestamp = other.Timestamp;
@@ -472,14 +447,13 @@ public sealed partial class SCLoginRes : pb::IMessage<SCLoginRes>
           _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
           break;
         case 10: {
-          UserAcount = input.ReadString();
+          if (playerData_ == null) {
+            PlayerData = new global::PlayerData();
+          }
+          input.ReadMessage(PlayerData);
           break;
         }
         case 16: {
-          PlayerRoleId = input.ReadInt64();
-          break;
-        }
-        case 24: {
           Timestamp = input.ReadInt32();
           break;
         }
@@ -503,14 +477,13 @@ public sealed partial class SCLoginRes : pb::IMessage<SCLoginRes>
           _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
           break;
         case 10: {
-          UserAcount = input.ReadString();
+          if (playerData_ == null) {
+            PlayerData = new global::PlayerData();
+          }
+          input.ReadMessage(PlayerData);
           break;
         }
         case 16: {
-          PlayerRoleId = input.ReadInt64();
-          break;
-        }
-        case 24: {
           Timestamp = input.ReadInt32();
           break;
         }

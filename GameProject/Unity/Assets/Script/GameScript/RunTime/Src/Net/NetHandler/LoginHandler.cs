@@ -30,8 +30,8 @@ namespace MyGame
                 var scLoginRes = ProtoHelper.Deserialize<SCLoginRes>(data);
                 if (scLoginRes != null)
                 {
-                    playerData.SetData(scLoginRes.UserAcount,scLoginRes.PlayerRoleId); 
-                    DLogger.Log($"登录完成，账号{scLoginRes.UserAcount},进入匹配界面");
+                    playerData.SetData(scLoginRes.PlayerData.UserAcount,scLoginRes.PlayerData.PlayerRoleId); 
+                    DLogger.Log($"登录完成，账号{scLoginRes.PlayerData.UserAcount},进入匹配界面");
                     await UIManager.Show<MatchUI>();
                     UIManager.Close<TitleUI>();
                 }

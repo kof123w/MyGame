@@ -23,26 +23,12 @@ public class HandlerDispatch : Singleton<HandlerDispatch>
             for (int j = 0; j < interfaces.Length; j++)
             { 
                 if (interfaces[j].Name.Equals(netInterface.Name))
-                {
-                    //开启UDP的情况下就进行检测这个handler是不是要运用到udp
-                    if (IsUDP)
-                    {
-                        object? classAttribute = type.GetCustomAttribute(typeof(UDPUseTag), false);
-                        if (classAttribute is UDPUseTag udpUseTag)
-                        {
-                            //直接跳过
-                            if (!udpUseTag.UDPUse)
-                            {
-                                continue;
-                            }
-                        } 
-                    }
-
+                {  
                     if (Activator.CreateInstance(type) is INetHandler handle)
                     {
                         handle.RegNet();
                         sendActions.Add(type, handle);
-                    }
+                    } 
                 }
             }  
         }

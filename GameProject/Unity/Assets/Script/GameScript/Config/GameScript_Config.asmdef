@@ -1,5 +1,5 @@
 {
-    "name": "GameScript_Excel",
+    "name": "GameScript_Config",
     "rootNamespace": "",
     "references": [
         "GUID:45d9b7d2576528b4995f99652191bcf4"

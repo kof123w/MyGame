@@ -14,11 +14,13 @@ public class LoginNetHandler : INetHandler
     {
         // login handler logic  
         CSLoginReq csLoginReq = CSLoginReq.Parser.ParseFrom(data); 
-        PlayerData pd = PlayerDataCenter.Instance.GetPlayerData(csLoginReq.UserAccount);
+        PlayerServerData pd = PlayerDataCenter.Instance.GetPlayerData(csLoginReq.UserAccount);
         pd.IsOnline = true;
         SCLoginRes scLoginRes = new SCLoginRes();
-        scLoginRes.PlayerRoleId = pd.RoleId;
-        scLoginRes.UserAcount = pd.Account;
+        PlayerData playerData = new PlayerData();
+        playerData.PlayerRoleId = pd.RoleId;
+        playerData.UserAcount = pd.Account;
+        scLoginRes.PlayerData = playerData;
         client.BindPlayer(pd);
         client.Send(MessageType.ScloginRes,scLoginRes);
         

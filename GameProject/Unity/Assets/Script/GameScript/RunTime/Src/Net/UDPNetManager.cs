@@ -15,21 +15,17 @@ public class UDPNetManager : Singleton<UDPNetManager>,INetworkService
     public event Action<byte[]> OnReceived;
     private Dictionary<MessageType, Action<byte[]>> Dispatch = new();
     private List<INetHandler> NetHandlers = new();
-    public void Start(string relay)
-    {
-        string [] relayArr = relay.Split ('&');
-        
-        string ip = relayArr[0];
-        int port = int.Parse(relayArr[1]);
-        int roomId = int.Parse(relayArr[2]);
+    public void Start(string udpAddress, int port,int roomId)
+    { 
+           
         curRoomId = roomId;
-        udpLocalClient = new UdpLocalClient (ip, port);
+        udpLocalClient = new UdpLocalClient (udpAddress, port);
         udpLocalClient.StartReceive();
         
         // todo .. 创建出来临时直接加入发加入房间
-        CSJoinRoom csJoinRoom = new CSJoinRoom();
-        csJoinRoom.RoomId = roomId;
-        Send(MessageType.CsjoinRoom, csJoinRoom); 
+        //CSJoinRoom csJoinRoom = new CSJoinRoom();
+        //csJoinRoom.RoomId = roomId;
+        //Send(MessageType.CsjoinRoom, csJoinRoom);  
     }
 
     public void Send<T>(MessageType type, T t) where T : IMessage,new()
@@ -64,5 +60,10 @@ public class UDPNetManager : Singleton<UDPNetManager>,INetworkService
             handlerAction?.Invoke(data.AsSpan(4,data.Length - 4).ToArray());
         }
         ArrayPool<byte>.Shared.Return(prefixBuffer);
+    }
+
+    public void Disconnect()
+    {
+        udpLocalClient?.Close();
     }
 }

@@ -13,11 +13,11 @@ enum MessageType {
 
   CSFrameHeartBeat = 1003001;  //帧同步心跳
   SCFrameHeartBeat = 2003001;  //帧同步心跳
-  CSJoinRoom = 1003002;  //加入房间
-  SCJoinRoom = 2003002;  //加入房间
-  CSExitRoom = 1003003;  //退出房间
-  SCExitRoom = 2003003;  //退出房间
+  CSPostClientUdpAddress = 1003002;  //临时协议，上传Udp地址
+  CSExitGame = 1003003;  //退出当前对局
+  SCExitGame = 2003003;  //退出当前对局
   CSCSFrameSample = 1003004; //操作采集,1003004
+  SCFrameData = 2003005;  //帧同步下发
 
   // todo ..
   

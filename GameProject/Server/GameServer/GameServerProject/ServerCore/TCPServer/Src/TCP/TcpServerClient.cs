@@ -9,7 +9,7 @@ namespace MyServer;
 public class TcpServerClient  
 {
     private readonly TcpClient tcpClient;
-    private PlayerData playerData;
+    private PlayerServerData playerData;
     private readonly int id;
     private NetworkStream stream;
     private byte[] receiveBuffer;
@@ -104,13 +104,13 @@ public class TcpServerClient
         HandlerDispatch.Instance.Dispatch(this, data,msgType);
     }
 
-    public void BindPlayer(PlayerData player)
+    public void BindPlayer(PlayerServerData player)
     {
         playerData = player;
         playerData.SetTcpServerClient(this);
     }
 
-    public PlayerData? GetPlayer()
+    public PlayerServerData GetPlayer()
     {
         return playerData;
     }
@@ -120,6 +120,8 @@ public class TcpServerClient
         try
         {
             Console.WriteLine($"客户端{id}IP{tcpClient.Client.RemoteEndPoint}断开连接");
+            RoomLogic.Instance.ExitRoom(playerData.CurRoomID,playerData);
+            
             stream?.Close();
             tcpClient?.Close();
             playerData.IsOnline = false;

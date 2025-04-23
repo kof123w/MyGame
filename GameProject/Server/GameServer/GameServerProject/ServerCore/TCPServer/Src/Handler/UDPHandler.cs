@@ -1,4 +1,6 @@
 using System.Net;
+using System.Net.Sockets;
+using ConsoleApp1.TCPServer.Src.ServerParam;
 using MyServer;
 
 namespace MyGame;
@@ -7,19 +9,20 @@ namespace MyGame;
 public class UDPHandler : INetHandler
 {
     public void RegNet()
+    { 
+         HandlerDispatch.Instance.RegisterUdpHandler(MessageType.CscsframeSample,FrameSampleHandle);
+         HandlerDispatch.Instance.RegisterUdpHandler(MessageType.CspostClientUdpAddress,PostPlayerAddress); 
+    } 
+
+    private void PostPlayerAddress(IPEndPoint clientAddress, byte[] packet)
     {
-         HandlerDispatch.Instance.RegisterUdpHandler(MessageType.CsjoinRoom,JoinRoomHandle);
+        var postClientUdpAddress = ProtoHelper.Deserialize<CSPostClientUdpAddress>(packet); 
+        RoomLogic.Instance.SetRoomPlayerState(postClientUdpAddress.RoomId,postClientUdpAddress.PlayerId,clientAddress);
     }
 
-    private void JoinRoomHandle(IPEndPoint clientAddress,byte[] packet)
+    private void FrameSampleHandle(IPEndPoint clientAddress, byte[] packet)
     {
-        CSJoinRoom joinRoom = ProtoHelper.Deserialize<CSJoinRoom>(packet);
-        int index = RoomLogic.Instance.JoinRoom(joinRoom.RoomId, clientAddress);
-        int randomSeed = RoomLogic.Instance.GetRoomRandomSeed(joinRoom.RoomId);
-        SCJointRoom scJointRoom = new SCJointRoom();
-        scJointRoom.ResuleCode = index > 0 ? ResuleCode.Finished : ResuleCode.Failed;
-        scJointRoom.PlayerIndex = index;
-        scJointRoom.RandomSeed = randomSeed;
-        _ = UDPServer.Instance.SendAsync( MessageType.ScjoinRoom,scJointRoom, clientAddress);
+        var frameSample = ProtoHelper.Deserialize<CSFrameSample>(packet);
+        RoomLogic.Instance.SamplePlayerHandler(frameSample);
     }
 }

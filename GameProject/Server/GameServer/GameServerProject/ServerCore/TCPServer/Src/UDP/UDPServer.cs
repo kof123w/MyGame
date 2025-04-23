@@ -31,30 +31,69 @@ public class UDPServer : Singleton<UDPServer>
         receiver.Client.SendTimeout = 3000; // 3秒
         receiver.Ttl = (short)GameScope.DataCenter;
         Console.WriteLine($"UDP 服务器已启动，监听端口{port}");
-        try
+        
+        while (true)
         {
-            while (true)
-            {
+            try
+            { 
                 // 异步接收数据
                 var result = await receiver.ReceiveAsync().ConfigureAwait(false);
                 
                 // 处理接收到的数据
                 ProcessReceivedData(result.Buffer, result.RemoteEndPoint);
             }
+            catch (SocketException ex)
+            {
+                // 根据错误码判断是否需重建receiver
+                if (IsFatalError(ex.SocketErrorCode))
+                {
+                    /*receiver.Dispose();
+                    receiver = new UdpClient(port); // 或重新初始化Socket
 
-        }
-        catch (OperationCanceledException e)
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);*/
+                } 
+            }
+            catch (ObjectDisposedException)
+            {
+                // 明确被释放时需重建
+                //  receiver = new UdpClient(port);
+            }
+            catch (Exception ex)
+            {
+                // 其他异常（如权限问题）可能需要终止或重建
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
+           
+        } 
+        // ReSharper disable once FunctionNeverReturns
+    }
+    
+    private bool IsFatalError(SocketError errorCode)
+    {
+        switch (errorCode)
         {
-            Console.WriteLine(e);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
-        finally
-        {
-            receiver.Close();
-            Console.WriteLine("UDP 服务器已停止");
+            // 需要关闭并重建receiver的致命错误
+            case SocketError.AccessDenied:       // 权限丢失
+            case SocketError.Shutdown:           // Socket已被关闭
+            case SocketError.ConnectionReset:     // 远程强制关闭（某些UDP场景可能触发）
+            case SocketError.NotSocket:           // 底层Socket已失效
+            case SocketError.OperationAborted:   // 操作被取消（如Dispose后调用）
+            case SocketError.SocketNotSupported: // 协议/地址族不支持
+            case SocketError.ProtocolFamilyNotSupported:
+            case SocketError.ProtocolNotSupported:
+                return true;
+
+            // 可恢复的临时错误（无需关闭）
+            case SocketError.TimedOut:           // 超时
+            case SocketError.NetworkDown:         // 网络不可用
+            case SocketError.NetworkUnreachable:
+            case SocketError.HostUnreachable:
+            case SocketError.TryAgain:           // 临时资源不足
+            case SocketError.MessageSize:         // 数据包过大（需调整缓冲区）
+            default:
+                return false;
         }
     }
      
@@ -87,6 +126,15 @@ public class UDPServer : Singleton<UDPServer>
         bufferList.AddRange(BitConverter.GetBytes((int)messageType));
         bufferList.AddRange(bytes);
         await receiver.SendAsync(bufferList.ToArray(), bufferList.Count, remoteEp);
+    }
+    
+    public void Send(MessageType messageType,IMessage message, IPEndPoint remoteEp)
+    {
+        List<byte> bufferList = new List<byte>(); 
+        var bytes = ProtoHelper.Serialize(message);
+        bufferList.AddRange(BitConverter.GetBytes((int)messageType));
+        bufferList.AddRange(bytes);
+        receiver.Send(bufferList.ToArray(), bufferList.Count, remoteEp);
     }
 
     public void Stop()

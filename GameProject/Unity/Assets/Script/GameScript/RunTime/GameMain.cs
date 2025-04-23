@@ -90,7 +90,14 @@ namespace MyGame
             }
            
         }
-        
+
+        //监听程序退出
+        public static void OnApplicationQuit()
+        {
+            UDPNetManager.Instance.Disconnect();
+            NetManager.Instance.Disconnect();
+        }
+
         //前置处理
         private static void PreProcess()
         {

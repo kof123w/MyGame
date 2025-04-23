@@ -8,7 +8,7 @@ set PROTOC_PATH=E:\UnityWorkSpace\MyGame\GameProject\Proto\protoc.exe
 set PROTO_SRC_DIR=E:\UnityWorkSpace\MyGame\GameProject\Proto\Src
 
 :: 设置输出目录
-set OUTPUT_DIR=E:\UnityWorkSpace\MyGame\GameProject\Unity\Assets\Script\GameScript\Network\Proto
+set OUTPUT_DIR=E:\UnityWorkSpace\MyGame\GameProject\Unity\Assets\Script\GameScript\ProtoBuf\Proto
 
 :: 创建输出目录（如果不存在）
 if not exist "%OUTPUT_DIR%" mkdir "%OUTPUT_DIR%"

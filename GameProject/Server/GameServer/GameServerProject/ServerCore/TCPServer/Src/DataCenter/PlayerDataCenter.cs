@@ -5,11 +5,11 @@ namespace MyGame;
 
 public class PlayerDataCenter : Singleton<PlayerDataCenter>
 {
-    private ConcurrentDictionary<long, PlayerData> playerDataCenters = new ConcurrentDictionary<long, PlayerData?>(); 
+    private readonly ConcurrentDictionary<long, PlayerServerData> _playerDataCenters = new(); 
 
-    public PlayerData GetPlayerData(string account)
+    public PlayerServerData GetPlayerData(string account)
     {
-        foreach (var playerDataPair in playerDataCenters)
+        foreach (var playerDataPair in _playerDataCenters)
         {
             if (playerDataPair.Value.Account.Equals(account))
             {
@@ -18,13 +18,13 @@ public class PlayerDataCenter : Singleton<PlayerDataCenter>
         }
         
         var player = GenPlayerData(account);
-        playerDataCenters.TryAdd(player.RoleId, player);
+        _playerDataCenters.TryAdd(player.RoleId, player);
         return player;
     }
 
-    private PlayerData GenPlayerData(string account)
+    private PlayerServerData GenPlayerData(string account)
     {
-        PlayerData playerData = new PlayerData
+        PlayerServerData playerData = new PlayerServerData
         {
             Account = account,
             RoleId = IDGenerator.GenHash()

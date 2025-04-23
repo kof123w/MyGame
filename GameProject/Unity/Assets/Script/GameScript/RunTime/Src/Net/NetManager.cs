@@ -149,6 +149,11 @@ namespace MyGame
             } 
             waitMessageType = type; 
             tcpLocalClient.Send(type,t);      
-        }   
+        }
+
+        public void Disconnect()
+        {
+            tcpLocalClient?.Disconnect();
+        }
     }
 }

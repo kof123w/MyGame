@@ -23,7 +23,7 @@ namespace MyGame
         internal void SetTick(int tickParam)
         {
             tick = tickParam;
-            tickTime = 1000.0f / tick;
+            tickTime = tick / 1000.0f;
             curTickTime = 0.0f;
         }
         
