@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Net.Sockets;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -6,12 +7,12 @@ using DebugTool;
 
 namespace MyGame
 {
-    public class UdpLocalClient : INetworkService
+    public class UdpLocalClient 
     {
         private UdpClient client;
         private readonly string serverIp;
         private readonly int serverPort;
-        public event Action<byte[]> OnReceived;
+        
         private CancellationTokenSource udpReceiveToken;
         public UdpLocalClient(string serverIp, int serverPort)
         {
@@ -36,18 +37,22 @@ namespace MyGame
         {
             while (!token.IsCancellationRequested)
             {
-                var result = await client.ReceiveAsync().ConfigureAwait(false);
-                Packet packet = ProtoHelper.Deserialize<Packet>(result.Buffer);  
-                NetManager.Instance.AddPacket(packet);
-                OnReceived?.Invoke(result.Buffer);
+                var result = await client.ReceiveAsync().ConfigureAwait(false); 
+                //NetManager.Instance.AddPacket(result.Buffer); 
+                UDPNetManager.Instance.HandlerDispatch(result.Buffer);
             }
         }
 
-        public void Send(byte[] data)
+        public void Send(int messageType,byte[] data)
         {
             try
-            {
-                client.Send(data, data.Length);
+            { 
+                var messageTypePrefix = BitConverter.GetBytes((int)messageType);
+                var finalData = ArrayPool<byte>.Shared.Rent(4 + data.Length); 
+                Buffer.BlockCopy(messageTypePrefix, 0, finalData, 0, 4);
+                Buffer.BlockCopy(data, 0, finalData, 4, data.Length); 
+                client.Send(finalData, 4 + data.Length);
+                ArrayPool<byte>.Shared.Return(finalData);
             }
             catch (Exception ex)
             {
@@ -61,8 +66,7 @@ namespace MyGame
             {
                 udpReceiveToken?.Cancel();
                 udpReceiveToken?.Dispose();
-            } 
-            OnReceived = null;
+            }  
             client?.Close();
         }
     }

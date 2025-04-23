@@ -77,5 +77,9 @@ namespace MyGame
         #endregion
 
 
+        public void Clear()
+        {
+            
+        }
     }
 }

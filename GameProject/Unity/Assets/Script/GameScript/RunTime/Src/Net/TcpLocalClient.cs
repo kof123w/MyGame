@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DebugTool;
+using Google.Protobuf;
 using UnityEngine;
 
 namespace MyGame
@@ -23,15 +24,19 @@ namespace MyGame
             {
                 tcpClient = new TcpClient();
                 await tcpClient.ConnectAsync(serverIp, serverPort).AsUniTask().SuppressCancellationThrow();
-                networkStream = tcpClient.GetStream();
-                if (receiveCts?.IsCancellationRequested ?? false)
+                bool isConnect = tcpClient.Connected;
+                if (isConnect)
                 {
-                    receiveCts?.Cancel();
-                    receiveCts?.Dispose();
-                }
-                receiveCts = new CancellationTokenSource();
-                ReceivedData(receiveCts.Token).Forget();
-                return true;
+                    networkStream = tcpClient.GetStream();
+                    if (receiveCts?.IsCancellationRequested ?? false)
+                    {
+                        receiveCts?.Cancel();
+                        receiveCts?.Dispose();
+                    }
+                    receiveCts = new CancellationTokenSource();
+                    ReceivedData(receiveCts.Token).Forget();
+                } 
+                return isConnect;
             }
             catch (Exception e)
             { 
@@ -64,9 +69,8 @@ namespace MyGame
                     try
                     {
                         await ReadExactAsync(networkStream, bodyBuffer, bodyLength, token); 
-                        // 使用Span限定实际数据范围
-                        var responseData = ProtoHelper.Deserialize<Packet>(bodyBuffer.AsSpan(0, bodyLength).ToArray());
-                        NetManager.Instance.AddPacket(responseData);
+                        // 使用Span限定实际数据范围 
+                        NetManager.Instance.AddPacket(bodyBuffer.AsSpan(0, bodyLength).ToArray());
                     }
                     finally
                     {
@@ -97,37 +101,6 @@ namespace MyGame
         }
 
         private byte[] responseBuffer = new byte[4096];
-        public async UniTask<Packet> SendAsync(Packet packet,CancellationToken token)
-        {
-            var data = ProtoHelper.Serialize(packet);
-            // 加上长度前缀（4字节，表示 data 长度）
-            var lengthPrefix = BitConverter.GetBytes(data.Length);
-            var finalData = new byte[4 + data.Length];
-            Buffer.BlockCopy(lengthPrefix, 0, finalData, 0, 4);
-            Buffer.BlockCopy(data, 0, finalData, 4, data.Length);
-
-            await networkStream.WriteAsync(finalData, 0, finalData.Length, CancellationTokenSource.CreateLinkedTokenSource(token).Token)
-                .AsUniTask()
-                .SuppressCancellationThrow();
-            
-            /*var (canceled,bytesRead) = 
-                await networkStream.ReadAsync(responseBuffer, 0, responseBuffer.Length,CancellationTokenSource.CreateLinkedTokenSource(token).Token).
-                AsUniTask().
-                SuppressCancellationThrow();*/
-
-            // 3. 读取 4 字节长度前缀
-            var prefixBuffer = new byte[4];
-            await ReadExactAsync(networkStream, prefixBuffer, 4, CancellationTokenSource.CreateLinkedTokenSource(token).Token);
-            int bodyLength = BitConverter.ToInt32(prefixBuffer, 0);
-
-            // 4. 读取 bodyLength 长度的数据
-            var bodyBuffer = new byte[bodyLength];
-            await ReadExactAsync(networkStream, bodyBuffer, bodyLength, CancellationTokenSource.CreateLinkedTokenSource(token).Token);
- 
-            // 5. 反序列化
-            var responseData = ProtoHelper.Deserialize<Packet>(bodyBuffer);
-            return responseData;
-        }
         
         private static async UniTask ReadExactAsync(NetworkStream stream, byte[] buffer, int length, CancellationToken token)
         {
@@ -143,15 +116,17 @@ namespace MyGame
             }
         }
         
-        public void Send(Packet packet)
+        public void Send(MessageType messageType,IMessage message)
         {
-            var data = ProtoHelper.Serialize(packet);
+            var data = ProtoHelper.Serialize(message);
             // 加上长度前缀（4字节，表示 data 长度）
-            var lengthPrefix = BitConverter.GetBytes(data.Length);
-            var finalData = new byte[4 + data.Length];
+            var lengthPrefix = BitConverter.GetBytes(data.Length + 4);
+            var messageTypePrefix = BitConverter.GetBytes((int)messageType);
+            var finalData = new byte[8 + data.Length];
             Buffer.BlockCopy(lengthPrefix, 0, finalData, 0, 4);
-            Buffer.BlockCopy(data, 0, finalData, 4, data.Length);
-
+            Buffer.BlockCopy(messageTypePrefix, 0, finalData, 4, 4);
+            Buffer.BlockCopy(data, 0, finalData, 8, data.Length);
+         
             networkStream.Write(finalData, 0, finalData.Length); 
         }
     }

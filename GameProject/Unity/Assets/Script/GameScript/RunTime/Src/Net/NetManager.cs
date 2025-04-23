@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net.Sockets;
@@ -20,8 +21,8 @@ namespace MyGame
         private TcpLocalClient tcpLocalClient; 
         private string serverIP = "127.0.0.1";
         private int serverPort = 12800; 
-        private Dictionary<MessageType, Action<Packet>> Dispatch = new();
-        private ConcurrentQueue<Packet> PacketQueue = new();
+        private Dictionary<MessageType, Action<byte[]>> Dispatch = new();
+        private ConcurrentQueue<byte[]> PacketQueue = new();
         private List<INetHandler> NetHandlers = new();
         private CancellationTokenSource checkPacketCts;
         
@@ -54,12 +55,12 @@ namespace MyGame
             NetHandlers.Add(handler);
         }
 
-        public void AddPacket(Packet packet)
+        public void AddPacket(byte[] packet)
         {
             PacketQueue.Enqueue(packet);
         }
 
-        public void RegNetHandler(MessageType messageType, Action<Packet> handler)
+        public void RegNetHandler(MessageType messageType, Action<byte[]> handler)
         {
             Dispatch.Add(messageType, handler);
         }
@@ -71,18 +72,23 @@ namespace MyGame
                 await UniTask.Yield();
                 if (PacketQueue.TryDequeue(out var packet))
                 {
-                    if (packet != null && packet.Header!=null)
+                    var prxBuffer = ArrayPool<byte>.Shared.Rent(4);
+                    Array.Copy(packet, 0, prxBuffer, 0, 4);
+                    
+                    MessageType messageType = (MessageType)BitConverter.ToInt32(prxBuffer, 0);
+                    if (messageType == waitMessageType + 1000000)
                     {
-                        if (packet.Header.MessageType == waitMessageType + 1000000)
-                        {
-                            waitMessageType = MessageType.None;
-                        }
+                        waitMessageType = MessageType.None;
+                    }
 
-                        if (Dispatch.TryGetValue(packet.Header.MessageType, out var handlerAction))
-                        {
-                            handlerAction(packet);
-                        }
-                    } 
+                    if (Dispatch.TryGetValue(messageType, out var handlerAction))
+                    {
+                        var data = new byte[packet.Length - 4];
+                        Array.Copy(packet, 4, data, 0, packet.Length - 4);
+                        handlerAction(data.AsSpan(0,packet.Length - 4).ToArray());
+                    }
+                    
+                    ArrayPool<byte>.Shared.Return(prxBuffer);
                 }
             }
         }
@@ -105,12 +111,7 @@ namespace MyGame
             }
 
             if (waitSendCount >= 6)
-            {
-                if (sendTokenSource?.IsCancellationRequested == false)
-                {
-                    sendTokenSource?.Cancel();
-                    sendTokenSource?.Dispose();
-                }  
+            { 
                 GameEvent.Push(WaitNetUIEvent.CloseWaitNetUI);
                 waitSendCount = 0;
                 waitMessageType = MessageType.None;
@@ -127,39 +128,8 @@ namespace MyGame
             }
 
             tcpLocalClient = new TcpLocalClient();
-            return await tcpLocalClient.Connected(serverIP, serverPort);
-        } 
-
-        private CancellationTokenSource sendTokenSource; 
-
-        public async UniTask<Packet> SendAsync<T>(MessageType type,T t) where T : IMessage,new()
-        {
-            if (waitMessageType != MessageType.None)
-            {
-                return null;
-            }
-
-            if (!IsConnected)
-            {
-                bool isCom = await ConnectServer();
-                if (!isCom)
-                {
-                    return null;
-                }
-            }
-
-            if (sendTokenSource?.IsCancellationRequested == false)
-            {
-                sendTokenSource?.Cancel(); 
-            } 
-            sendTokenSource?.Dispose();
-            sendTokenSource = new CancellationTokenSource(); 
-            waitMessageType = type;
-            Packet packet = ProtoHelper.CreatePacket(type,t);
-            var packetTask = await tcpLocalClient.SendAsync(packet,sendTokenSource.Token);     
-            waitMessageType = MessageType.None;
-            return packetTask;
-        }   
+            return await tcpLocalClient. Connected(serverIP, serverPort);
+        }  
         
         
         public async void Send<T>(MessageType type,T t) where T : IMessage,new()
@@ -177,9 +147,8 @@ namespace MyGame
                     return;
                 }
             } 
-            waitMessageType = type;
-            Packet packet = ProtoHelper.CreatePacket(type,t);
-            tcpLocalClient.Send(packet);      
+            waitMessageType = type; 
+            tcpLocalClient.Send(type,t);      
         }   
     }
 }

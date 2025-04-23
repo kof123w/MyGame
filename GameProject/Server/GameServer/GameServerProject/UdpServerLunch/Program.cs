@@ -19,6 +19,7 @@ class Program
         }
 
         cts.Cancel();
+        UDPServer.Instance.Stop();
         serverTask.Wait(); 
     }
  

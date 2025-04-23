@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using DebugTool;
 using EventSystem;
+using Google.Protobuf;
 using SingleTool;
 
 namespace MyGame
@@ -21,21 +22,20 @@ namespace MyGame
             NetManager.Instance.Send(MessageType.CsloginReq, csLoginReq);  
         }
 
-        private async void LoginRes(Packet packet)
+        private async void LoginRes(byte[] data)
         {
-            if (packet != null)
+            var playerData = DataCenterManger.Instance.GetDataClass<PlayerData>();
+            if (playerData != null)
             {
-                var playerData = DataCenterManger.Instance.GetDataClass<PlayerData>();
-                if (playerData != null)
+                var scLoginRes = ProtoHelper.Deserialize<SCLoginRes>(data);
+                if (scLoginRes != null)
                 {
-                    var scLoginRes = ProtoHelper.Deserialize<SCLoginRes>(packet.Body.ToByteArray());
-                    playerData.SetData(scLoginRes.UserAcount,scLoginRes.PlayerRoleId);
-                     
+                    playerData.SetData(scLoginRes.UserAcount,scLoginRes.PlayerRoleId); 
                     DLogger.Log($"登录完成，账号{scLoginRes.UserAcount},进入匹配界面");
                     await UIManager.Show<MatchUI>();
                     UIManager.Close<TitleUI>();
-                } 
-            }
+                }
+            } 
         }
     }
 }

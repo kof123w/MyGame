@@ -26,6 +26,11 @@ namespace GameTimer
         {
             
         }
+
+        public void Clear()
+        {
+             
+        }
     }
 }
 

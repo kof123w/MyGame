@@ -10,10 +10,10 @@ public class LoginNetHandler : INetHandler
         HandlerDispatch.Instance.RegisterTcpHandler(MessageType.CsloginReq,LoginHandle);
     }
 
-    public void LoginHandle(TcpServerClient client, Packet packet)
+    public void LoginHandle(TcpServerClient client, byte[] data)
     {
         // login handler logic  
-        CSLoginReq csLoginReq = CSLoginReq.Parser.ParseFrom(packet.Body); 
+        CSLoginReq csLoginReq = CSLoginReq.Parser.ParseFrom(data); 
         PlayerData pd = PlayerDataCenter.Instance.GetPlayerData(csLoginReq.UserAccount);
         pd.IsOnline = true;
         SCLoginRes scLoginRes = new SCLoginRes();

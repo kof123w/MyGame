@@ -9,7 +9,7 @@ public class MatchNetHandler : INetHandler
         HandlerDispatch.Instance.RegisterTcpHandler(MessageType.CsmatchReq,MatchHandle);
     }
 
-    private void MatchHandle(TcpServerClient client,Packet packet)
+    private void MatchHandle(TcpServerClient client,byte[] packet)
     {
          MatchLogic.Instance.JoinMatch(client.GetPlayer());
     }

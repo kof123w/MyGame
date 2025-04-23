@@ -34,10 +34,14 @@ message SCExitRoom{
      ResuleCode resuleCode = 1;
 }
 
-//操作采集,1003004
+//操作采集,1003004  
 message CSFrameSample{
-    int excueFrame = 1;   //客户端执行到的帧数
-    PlayerInput sample = 2;  //采集的帧数
+    repeated FrameInput frameInputList = 1;
+}
+
+message FrameInput{
+     int64 subFrameTime = 1;
+     repeated PlayerInput playerInputList = 2;
 }
 
 //玩家输入

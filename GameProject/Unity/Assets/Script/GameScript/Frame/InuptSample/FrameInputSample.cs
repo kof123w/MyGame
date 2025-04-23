@@ -9,23 +9,41 @@ namespace MyGame
         //获得到的输入字段
         private float dup = 0.0f;
         private float dright = 0.0f;
-        FrameInputBuffer frameInputBuffer = new FrameInputBuffer();
+        private bool needSample = false;
+        private FrameInputBuffer frameInputBuffer = new FrameInputBuffer();
 
-        internal void InitEvent()
+        internal void SubscribeEvent()
         {
             this.Subscribe<float,float>(SignalEvent.SignalControl_MoveSignal,SignalControl_MoveSignal);
         }
 
-        internal void InputSample()
+        internal void UnSubscribeEvent()
         {
-            
+            this.UnSubscribe(SignalEvent.SignalControl_MoveSignal);
         }
-        
+
+        internal void InputSample(float currTickTime,float tickTime)
+        {
+            if (needSample)
+            {
+                FrameInput frameInput = ObjectPool.Pool.Malloc<FrameInput>();
+                frameInput.AddInputCommand(new InputCommand(dup, dright)); 
+                frameInputBuffer.AddInput(frameInput);
+                needSample = false;
+            }
+        }
+
+        internal CSFrameSample PackInput()
+        {
+            return frameInputBuffer.PackPlayerInput();
+        }
+
 
         private void SignalControl_MoveSignal(float u,float r)
         {
             dup = u;
             dright = r;
+            needSample = true;
         }
     }
 }

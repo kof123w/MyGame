@@ -1,5 +1,6 @@
 ﻿using DebugTool;
 using EventSystem;
+using Google.Protobuf;
 
 namespace MyGame
 {
@@ -18,12 +19,12 @@ namespace MyGame
             NetManager.Instance.Send(MessageType.CsmatchReq, csMatchReq); 
         }
 
-        public void MatchRes(Packet packet)
+        public void MatchRes(byte[] data)
         {
-            SCMatchRes scMatchRes = ProtoHelper.Deserialize<SCMatchRes>(packet);
+            SCMatchRes scMatchRes = (SCMatchRes)ProtoHelper.Deserialize<SCMatchRes>(data);
             DLogger.Log($"收到匹配回调,{scMatchRes.Relay}");
             
-            UDPServer.Instance.Start(scMatchRes.Relay);
+            UDPNetManager.Instance.Start(scMatchRes.Relay);
         }
     }
 }

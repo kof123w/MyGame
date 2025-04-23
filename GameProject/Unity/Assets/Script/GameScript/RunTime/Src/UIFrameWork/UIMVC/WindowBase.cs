@@ -99,5 +99,10 @@ namespace MyGame
         {
             return false;
         }
+
+        public void Clear()
+        {
+            
+        }
     }
 }

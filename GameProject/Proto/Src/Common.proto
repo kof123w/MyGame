@@ -1,16 +1,4 @@
 syntax = "proto3";
-import "MessageType.Proto";
-
-message MessageHeader{
-      MessageType messageType = 1;   //协议号
-      uint32 errorCode = 2;   //0就是成功
-}
-
-//包装消息
-message Packet{
-     MessageHeader header = 1;   
-     bytes body = 2;   //存放具体消息的序列化字节
-}
 
 //心跳协议
 message HeartBeat{

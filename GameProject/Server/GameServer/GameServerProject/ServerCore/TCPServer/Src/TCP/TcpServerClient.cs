@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Net.Sockets;
 using Google.Protobuf;
@@ -57,11 +58,13 @@ public class TcpServerClient
             {
                 if (receiveCache.Count < 4) break; // 不够读长度
 
-                int msgLen = BitConverter.ToInt32(receiveCache.ToArray(), 0);
+                int msgLen = receiveCache.Count - 4;
                 if (receiveCache.Count < 4 + msgLen) break; // 不够一条完整消息
-
-                byte[] fullMessage = receiveCache.Skip(4).Take(msgLen).ToArray();
-                HandleData(fullMessage);
+                
+                byte[] messageTypeData = receiveCache.Skip(4).Take(8).ToArray();
+                MessageType msgType = (MessageType) BitConverter.ToInt32(messageTypeData, 0);
+                byte[] fullMessage = receiveCache.Skip(8).Take(msgLen).ToArray();
+                HandleData(msgType,fullMessage);
                 receiveCache.RemoveRange(0, 4 + msgLen);
             }
 
@@ -78,13 +81,14 @@ public class TcpServerClient
     {
         try
         {
-            var packet = ProtoHelper.CreatePacket(messageType, t);
-            byte[] payload = ProtoHelper.Serialize(packet);
-            byte[] lengthPrefix = BitConverter.GetBytes(payload.Length);
+            byte[] payload = ProtoHelper.Serialize(t);
+            byte[] lengthPrefix = BitConverter.GetBytes(payload.Length + 4);
+            byte[] messageTypePrefix = BitConverter.GetBytes((int)messageType);
 
-            byte[] fullData = new byte[4 + payload.Length];
+            byte[] fullData = new byte[8 + payload.Length];
             Buffer.BlockCopy(lengthPrefix, 0, fullData, 0, 4);
-            Buffer.BlockCopy(payload, 0, fullData, 4, payload.Length);
+            Buffer.BlockCopy(messageTypePrefix, 0, fullData, 4, 4);
+            Buffer.BlockCopy(payload, 0, fullData, 8, payload.Length);
 
             stream.Write(fullData, 0, fullData.Length);
         }
@@ -95,10 +99,9 @@ public class TcpServerClient
         }
     }
 
-    public void HandleData(byte[] data)
-    {
-        Packet packet = ProtoHelper.Deserialize<Packet>(data);
-        HandlerDispatch.Instance.Dispatch(this, packet);
+    private void HandleData(MessageType msgType,byte[] data)
+    {  
+        HandlerDispatch.Instance.Dispatch(this, data,msgType);
     }
 
     public void BindPlayer(PlayerData player)

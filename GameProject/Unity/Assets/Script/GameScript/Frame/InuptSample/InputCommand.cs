@@ -1,11 +1,13 @@
-﻿namespace MyGame
+﻿using FixMath.NET;
+
+namespace MyGame
 {
     public struct InputCommand 
     {
-        private float Dup;
-        private float Dright; 
+        public Fix64 Dup;
+        public Fix64 Dright; 
 
-        public InputCommand(float dup, float dright, byte isRunning)
+        public InputCommand(float dup, float dright)
         {
             Dup = dup;
             Dright = dright; 

@@ -11,7 +11,7 @@ public class UDPHandler : INetHandler
          HandlerDispatch.Instance.RegisterUdpHandler(MessageType.CsjoinRoom,JoinRoomHandle);
     }
 
-    private void JoinRoomHandle(IPEndPoint clientAddress,Packet packet)
+    private void JoinRoomHandle(IPEndPoint clientAddress,byte[] packet)
     {
         CSJoinRoom joinRoom = ProtoHelper.Deserialize<CSJoinRoom>(packet);
         int index = RoomLogic.Instance.JoinRoom(joinRoom.RoomId, clientAddress);
@@ -20,6 +20,6 @@ public class UDPHandler : INetHandler
         scJointRoom.ResuleCode = index > 0 ? ResuleCode.Finished : ResuleCode.Failed;
         scJointRoom.PlayerIndex = index;
         scJointRoom.RandomSeed = randomSeed;
-        _ = UDPServer.Instance.SendAsync(ProtoHelper.CreatePacket(MessageType.ScjoinRoom,scJointRoom), clientAddress);
+        _ = UDPServer.Instance.SendAsync( MessageType.ScjoinRoom,scJointRoom, clientAddress);
     }
 }

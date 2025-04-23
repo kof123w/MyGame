@@ -167,7 +167,16 @@ namespace MyGame
         {
             if (Activator.CreateInstance(type) is INetHandler netHandler)
             { 
-                NetManager.Instance.AddHandler(netHandler);
+                System.Object udpHandler = type.GetCustomAttribute(typeof(UDPHandler), false);
+                UDPHandler udpHandlerInstance = (UDPHandler)udpHandler;
+                if (udpHandlerInstance!=null && udpHandlerInstance.UseUDP )
+                { 
+                    UDPNetManager.Instance.AddHandler(netHandler);
+                }
+                else
+                {
+                    NetManager.Instance.AddHandler(netHandler);
+                } 
             }
         }
 

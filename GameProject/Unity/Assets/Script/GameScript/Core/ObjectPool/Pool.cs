@@ -20,6 +20,36 @@ namespace ObjectPool
             return t;
         }
 
+        public static void Free<T>(List<T> objects) where T : class, IMemoryPool, new()
+        {
+            if (objects == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < objects.Count; i++)
+            {
+                objects[i].Clear();
+                Free(objects[i]);
+            }
+            
+            objects.Clear();
+        }
+        
+        public static void Free<T>(T[] objects) where T : class, IMemoryPool, new()
+        {
+            if (objects == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < objects.Length; i++)
+            {
+                objects[i].Clear();
+                Free(objects[i]);
+            }
+        }
+
         public static void Free<T>(T obj) where T : class, IMemoryPool, new()
         {
             if (Instance == null)

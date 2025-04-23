@@ -90,5 +90,10 @@ namespace MyGame
         {
             this.tracker = trackerParam;
         }
+
+        public void Clear()
+        {
+            
+        }
     }
 }

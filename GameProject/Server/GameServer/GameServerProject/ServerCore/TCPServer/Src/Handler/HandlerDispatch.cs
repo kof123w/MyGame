@@ -6,9 +6,9 @@ namespace MyGame;
 
 public class HandlerDispatch : Singleton<HandlerDispatch>
 {
-    private Dictionary<MessageType,Action<TcpServerClient,Packet>> tcpActions = new (); 
+    private Dictionary<MessageType,Action<TcpServerClient,byte[]>> tcpActions = new (); 
     private Dictionary<Type, INetHandler> sendActions = new ();
-    private Dictionary<MessageType,Action<IPEndPoint, Packet>> udpActions = new ();
+    private Dictionary<MessageType,Action<IPEndPoint, byte[]>> udpActions = new ();
     
     public bool IsUDP { get; set; }
     
@@ -48,23 +48,23 @@ public class HandlerDispatch : Singleton<HandlerDispatch>
         }
     }
 
-    public void RegisterTcpHandler(MessageType type, Action<TcpServerClient, Packet> action)
+    public void RegisterTcpHandler(MessageType type, Action<TcpServerClient, byte[]> action)
     {
         tcpActions.Add(type, action);
     }
     
-    public void RegisterUdpHandler(MessageType type, Action<IPEndPoint, Packet> action)
+    public void RegisterUdpHandler(MessageType type, Action<IPEndPoint, byte[]> action)
     {
         udpActions.Add(type, action);
     }
 
-    public void Dispatch(TcpServerClient serverClient, Packet packet)
+    public void Dispatch(TcpServerClient serverClient, byte[] packet,MessageType type)
     {
-        tcpActions[packet.Header.MessageType]?.Invoke(serverClient, packet);
+        tcpActions[type]?.Invoke(serverClient, packet);
     }
     
-    public void Dispatch(IPEndPoint clientAddress, Packet packet)
+    public void Dispatch(IPEndPoint clientAddress, byte[] packet,MessageType type)
     {
-        udpActions[packet.Header.MessageType]?.Invoke(clientAddress, packet);
+        udpActions[type]?.Invoke(clientAddress, packet);
     }
 }

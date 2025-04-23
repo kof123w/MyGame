@@ -1,6 +1,8 @@
+using System.Buffers;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using Google.Protobuf;
 using MyGame;
 
 namespace MyServer;
@@ -55,14 +57,19 @@ public class UDPServer : Singleton<UDPServer>
             Console.WriteLine("UDP 服务器已停止");
         }
     }
-    
-    //接收处理
+     
     private void ProcessReceivedData(byte[] data, IPEndPoint remoteEP)
     { 
-        Packet packet = ProtoHelper.Deserialize<Packet>(data);
-        Console.WriteLine($"收到来自 {remoteEP} 的消息: 协议号{packet.Header.MessageType}");
+        //临时处理
+        List<byte> bufferList = new List<byte>(); 
+        bufferList.AddRange(data);
+
+        var prefix = bufferList.Take(4).ToArray();
+        var messageType = (MessageType)BitConverter.ToInt32(prefix, 0);
         
-       HandlerDispatch.Instance.Dispatch(remoteEP,packet);
+        Console.WriteLine($"收到来自 {remoteEP} 的消息: 协议号{messageType}");
+        
+       HandlerDispatch.Instance.Dispatch(remoteEP,bufferList.Skip(4).Take(bufferList.Count).ToArray(), messageType); 
     }
 
     public async Task MulticastSendAsync(byte[] data)
@@ -72,15 +79,14 @@ public class UDPServer : Singleton<UDPServer>
         sender.Close(); 
     }
 
-    public async Task SendAsync(byte[] data, IPEndPoint remoteEp)
-    {
-        await receiver.SendAsync(data, data.Length, remoteEp);
-    }
     
-    public async Task SendAsync(Packet packet, IPEndPoint remoteEp)
+    public async Task SendAsync(MessageType messageType,IMessage message, IPEndPoint remoteEp)
     {
-        var bytes = ProtoHelper.Serialize(packet);
-        await receiver.SendAsync(bytes, bytes.Length, remoteEp);
+        List<byte> bufferList = new List<byte>(); 
+        var bytes = ProtoHelper.Serialize(message);
+        bufferList.AddRange(BitConverter.GetBytes((int)messageType));
+        bufferList.AddRange(bytes);
+        await receiver.SendAsync(bufferList.ToArray(), bufferList.Count, remoteEp);
     }
 
     public void Stop()
