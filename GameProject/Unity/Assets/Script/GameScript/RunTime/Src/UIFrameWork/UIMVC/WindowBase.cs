@@ -65,22 +65,22 @@ namespace MyGame
             //base hide ..
         }
 
-        public virtual void OnUpdate()
+        public virtual void OnUIUpdate()
         {
             //base OnUpdate ..
         }
 
-        public virtual void OnAwake()
+        public virtual void OnUIAwake()
         {
             //base OnAwake ..
         }
 
-        public virtual void OnDestroy()
+        public virtual void OnUIDestroy()
         {
             //base OnDestroy ..
         }
 
-        public virtual void OnStart()
+        public virtual void OnUIStart()
         {
             //base OnStart ..
         } 
@@ -90,7 +90,7 @@ namespace MyGame
             return MIsDestroyed;
         }
 
-        public virtual bool OnDestroyIsDestroy()
+        public virtual bool OnUIDestroyIsDestroy()
         {
             return true;
         }
@@ -100,7 +100,7 @@ namespace MyGame
             return false;
         }
 
-        public void Clear()
+        public void OnDestroy()
         {
             
         }

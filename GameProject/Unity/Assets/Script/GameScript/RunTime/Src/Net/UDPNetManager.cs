@@ -9,10 +9,8 @@ using UnityEngine;
 public class UDPNetManager : Singleton<UDPNetManager>,INetworkService
 {
     private UdpLocalClient udpLocalClient;
-    private int curRoomId;
-   
-
-    public event Action<byte[]> OnReceived;
+    private int curRoomId; 
+    public event Action<int,byte[]> OnReceived ;
     private Dictionary<MessageType, Action<byte[]>> Dispatch = new();
     private List<INetHandler> NetHandlers = new();
     public void Start(string udpAddress, int port,int roomId)
@@ -59,6 +57,7 @@ public class UDPNetManager : Singleton<UDPNetManager>,INetworkService
         { 
             handlerAction?.Invoke(data.AsSpan(4,data.Length - 4).ToArray());
         }
+
         ArrayPool<byte>.Shared.Return(prefixBuffer);
     }
 

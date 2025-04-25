@@ -24,9 +24,9 @@ namespace MyGame
             return inputCommands[index];
         }
 
-        public void Clear()
+        public void OnDestroy()
         {
-            
+            inputCommands.Clear();
         }
     }
 }

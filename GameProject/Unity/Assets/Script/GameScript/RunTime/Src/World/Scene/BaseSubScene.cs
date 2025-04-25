@@ -9,11 +9,6 @@ namespace MyGame
         private SceneLoadResourceConfig sceneConfig;
         private SceneType sceneType;
 
-        public void Start()
-        {
-            
-        }
-
         public void SetScene(int configId, SceneType st)
         {
             sceneType = st;

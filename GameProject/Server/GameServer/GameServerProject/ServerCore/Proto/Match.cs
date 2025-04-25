@@ -23,17 +23,16 @@ public static partial class MatchReflection {
     byte[] descriptorData = global::System.Convert.FromBase64String(
         string.Concat(
           "CgtNYXRjaC5wcm90bxoQUmVzdWxlQ29kZS5Qcm90byIhCgpDU01hdGNoUmVx",
-          "EhMKC3VzZXJBY2NvdW50GAEgASgJIoMBCgpTQ01hdGNoUmVzEg0KBXN0YXRl",
-          "GAEgASgFEhEKCXVkcEFkcmVzcxgCIAEoCRIMCgRwb3J0GAMgASgFEg4KBnJv",
-          "b21JZBgEIAEoBRISCgpyYW5kb21TZWVkGAUgASgFEhMKC3BsYXllckluZGV4",
-          "GAYgASgFEgwKBHRpY2sYByABKAUiDwoNQ1NDYW5jZWxNYXRjaCItCg1TQ0Nh",
-          "bmNlbE1hdGNoEhwKB3Jlc0NvZGUYASABKA4yCy5SZXN1bGVDb2RlYgZwcm90",
-          "bzM="));
+          "EhMKC3VzZXJBY2NvdW50GAEgASgJIn4KClNDTWF0Y2hSZXMSDQoFc3RhdGUY",
+          "ASABKAUSEQoJdWRwQWRyZXNzGAIgASgJEgwKBHBvcnQYAyABKAUSDgoGcm9v",
+          "bUlkGAQgASgFEhIKCnJhbmRvbVNlZWQYBSABKAUSDgoGcm9sZUlkGAYgASgF",
+          "EgwKBHRpY2sYByABKAUiDwoNQ1NDYW5jZWxNYXRjaCItCg1TQ0NhbmNlbE1h",
+          "dGNoEhwKB3Jlc0NvZGUYASABKA4yCy5SZXN1bGVDb2RlYgZwcm90bzM="));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { global::ResuleCodeReflection.Descriptor, },
         new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
           new pbr::GeneratedClrTypeInfo(typeof(global::CSMatchReq), global::CSMatchReq.Parser, new[]{ "UserAccount" }, null, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::SCMatchRes), global::SCMatchRes.Parser, new[]{ "State", "UdpAdress", "Port", "RoomId", "RandomSeed", "PlayerIndex", "Tick" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::SCMatchRes), global::SCMatchRes.Parser, new[]{ "State", "UdpAdress", "Port", "RoomId", "RandomSeed", "RoleId", "Tick" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CSCancelMatch), global::CSCancelMatch.Parser, null, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::SCCancelMatch), global::SCCancelMatch.Parser, new[]{ "ResCode" }, null, null, null, null)
         }));
@@ -289,7 +288,7 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
     port_ = other.port_;
     roomId_ = other.roomId_;
     randomSeed_ = other.randomSeed_;
-    playerIndex_ = other.playerIndex_;
+    roleId_ = other.roleId_;
     tick_ = other.tick_;
     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
   }
@@ -375,18 +374,18 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
     }
   }
 
-  /// <summary>Field number for the "playerIndex" field.</summary>
-  public const int PlayerIndexFieldNumber = 6;
-  private int playerIndex_;
+  /// <summary>Field number for the "roleId" field.</summary>
+  public const int RoleIdFieldNumber = 6;
+  private int roleId_;
   /// <summary>
   ///房间里玩家索引
   /// </summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-  public int PlayerIndex {
-    get { return playerIndex_; }
+  public int RoleId {
+    get { return roleId_; }
     set {
-      playerIndex_ = value;
+      roleId_ = value;
     }
   }
 
@@ -425,7 +424,7 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
     if (Port != other.Port) return false;
     if (RoomId != other.RoomId) return false;
     if (RandomSeed != other.RandomSeed) return false;
-    if (PlayerIndex != other.PlayerIndex) return false;
+    if (RoleId != other.RoleId) return false;
     if (Tick != other.Tick) return false;
     return Equals(_unknownFields, other._unknownFields);
   }
@@ -439,7 +438,7 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
     if (Port != 0) hash ^= Port.GetHashCode();
     if (RoomId != 0) hash ^= RoomId.GetHashCode();
     if (RandomSeed != 0) hash ^= RandomSeed.GetHashCode();
-    if (PlayerIndex != 0) hash ^= PlayerIndex.GetHashCode();
+    if (RoleId != 0) hash ^= RoleId.GetHashCode();
     if (Tick != 0) hash ^= Tick.GetHashCode();
     if (_unknownFields != null) {
       hash ^= _unknownFields.GetHashCode();
@@ -479,9 +478,9 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
       output.WriteRawTag(40);
       output.WriteInt32(RandomSeed);
     }
-    if (PlayerIndex != 0) {
+    if (RoleId != 0) {
       output.WriteRawTag(48);
-      output.WriteInt32(PlayerIndex);
+      output.WriteInt32(RoleId);
     }
     if (Tick != 0) {
       output.WriteRawTag(56);
@@ -517,9 +516,9 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
       output.WriteRawTag(40);
       output.WriteInt32(RandomSeed);
     }
-    if (PlayerIndex != 0) {
+    if (RoleId != 0) {
       output.WriteRawTag(48);
-      output.WriteInt32(PlayerIndex);
+      output.WriteInt32(RoleId);
     }
     if (Tick != 0) {
       output.WriteRawTag(56);
@@ -550,8 +549,8 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
     if (RandomSeed != 0) {
       size += 1 + pb::CodedOutputStream.ComputeInt32Size(RandomSeed);
     }
-    if (PlayerIndex != 0) {
-      size += 1 + pb::CodedOutputStream.ComputeInt32Size(PlayerIndex);
+    if (RoleId != 0) {
+      size += 1 + pb::CodedOutputStream.ComputeInt32Size(RoleId);
     }
     if (Tick != 0) {
       size += 1 + pb::CodedOutputStream.ComputeInt32Size(Tick);
@@ -583,8 +582,8 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
     if (other.RandomSeed != 0) {
       RandomSeed = other.RandomSeed;
     }
-    if (other.PlayerIndex != 0) {
-      PlayerIndex = other.PlayerIndex;
+    if (other.RoleId != 0) {
+      RoleId = other.RoleId;
     }
     if (other.Tick != 0) {
       Tick = other.Tick;
@@ -629,7 +628,7 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
           break;
         }
         case 48: {
-          PlayerIndex = input.ReadInt32();
+          RoleId = input.ReadInt32();
           break;
         }
         case 56: {
@@ -676,7 +675,7 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
           break;
         }
         case 48: {
-          PlayerIndex = input.ReadInt32();
+          RoleId = input.ReadInt32();
           break;
         }
         case 56: {

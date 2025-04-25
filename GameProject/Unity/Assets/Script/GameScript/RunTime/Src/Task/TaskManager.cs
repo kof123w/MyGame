@@ -9,38 +9,38 @@ namespace MyGame
 {
     public class TaskManager : Singleton<TaskManager>
     {
-        private List<Type> progresses = new List<Type>();
-        private Dictionary<Type, ITask> progressDict = new Dictionary<Type, ITask>(); 
-        private Type curProgressType; //当前流程    
+        private List<Type> tasks = new List<Type>();
+        private Dictionary<Type, ITask> taskDict = new Dictionary<Type, ITask>(); 
+        private Type curTaskType; //当前流程    
         
         public void Init()
         {
             DLogger.Log("==============>Init ProgressManager");  
             //监听对应事件
-            this.Subscribe<Type>(TaskEvent.TaskChange, ChangeProgress); 
-            this.Subscribe<Type>(TaskEvent.TaskSetCurTask,SetCurProgressType);
-            this.Subscribe<Type,ITask>(TaskEvent.TaskAddTask,AddProgress); 
+            this.Subscribe<Type>(TaskEvent.TaskChange, ChangeTask); 
+            this.Subscribe<Type>(TaskEvent.TaskSetCurTask,SetCurTaskType);
+            this.Subscribe<Type,ITask>(TaskEvent.TaskAddTask,AddTask); 
             this.Subscribe(TaskEvent.TaskLunch,Lunch); 
         } 
 
-        private void AddProgress(Type type,ITask task)
+        private void AddTask(Type type,ITask task)
         {
-            progresses.Add(type);
-            progressDict.Add(type, task); 
+            tasks.Add(type);
+            taskDict.Add(type, task); 
         } 
 
-        private void SetCurProgressType(Type progressType)
+        private void SetCurTaskType(Type taskType)
         {
-            curProgressType = progressType;
+            curTaskType = taskType;
         }  
 
-        private void ChangeProgress(Type progressType)
+        private void ChangeTask(Type taskType)
         {
-            if (progressType != null)
+            if (taskType != null)
             { 
-                if (progressDict.TryGetValue(progressType, out ITask progress))
+                if (taskDict.TryGetValue(taskType, out ITask progress))
                 {  
-                    curProgressType = progressType; 
+                    curTaskType = taskType; 
                     progress.Run().Forget();
                 } 
             }
@@ -49,11 +49,11 @@ namespace MyGame
         private void Lunch()
         {
             DLogger.Log("==============>Game Start!!!!");
-            if (curProgressType != null)
+            if (curTaskType != null)
             {
-                if (progressDict.TryGetValue(curProgressType, out ITask progress))
+                if (taskDict.TryGetValue(curTaskType, out ITask task))
                 {
-                    progress.Run().Forget();
+                    task.Run().Forget();
                 }
             }
         }

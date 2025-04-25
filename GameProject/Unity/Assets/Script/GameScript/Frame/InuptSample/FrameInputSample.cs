@@ -22,11 +22,12 @@ namespace MyGame
             this.UnSubscribe(SignalEvent.SignalControl_MoveSignal);
         }
 
-        internal void InputSample(float currTickTime,float tickTime)
+        internal void InputSample(Fix64 currTickTime,Fix64 tickTime)
         {
             if (needSample)
             {
                 FrameInput frameInput = ObjectPool.Pool.Malloc<FrameInput>();
+                frameInput.SubFrameTime = currTickTime / tickTime;
                 frameInput.AddInputCommand(new InputCommand(dup, dright)); 
                 frameInputBuffer.AddInput(frameInput);
                 needSample = false;

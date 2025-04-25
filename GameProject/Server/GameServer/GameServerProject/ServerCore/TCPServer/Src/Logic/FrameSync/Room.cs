@@ -100,10 +100,27 @@ public class Room
             var frameData = frameDataList[^1];
             for (int i = 0; i < sample.FrameInputList.Count; i++)
             {
-                FramePlayerInput framePlayerInput = new FramePlayerInput();
-                framePlayerInput.FrameInput = sample.FrameInputList[i];
-                framePlayerInput.PlayerId = sample.PlayerId;
-                frameData.FramePlayerInputList.Add(framePlayerInput);
+                FramePlayerInput framePlayerInput = null;
+                for (int j = 0; j < frameData.FramePlayerInputList.Count; j++) {
+                    if (frameData.FramePlayerInputList[j].PlayerId == sample.PlayerId)
+                    {
+                        framePlayerInput = frameData.FramePlayerInputList[j];
+                    }
+                }
+
+                if (framePlayerInput == null)
+                {
+                    framePlayerInput = new FramePlayerInput();
+                    framePlayerInput.PlayerId = sample.PlayerId;
+                    frameData.FramePlayerInputList.Add(framePlayerInput);
+                } 
+                foreach (var player in _players)
+                {
+                    if (player.PlayerId == sample.PlayerId)
+                    {
+                        player.RunFrame = sample.ClientCurFrame;
+                    }
+                }
             } 
         }
 
@@ -130,6 +147,7 @@ public class Room
         }
         cancellationTokenSource = new CancellationTokenSource();
         Tick(cancellationTokenSource.Token);
+        IsStarted = true;
     }
     
     //直接用异步的方法来处理
@@ -137,29 +155,37 @@ public class Room
     {
         while (!token.IsCancellationRequested)
         {
-            await Task.Delay(1000/LunchParam.ServerTick, token);
-            //处理服务器当前帧逻辑
-            FrameData frameData = new FrameData();
-            frameData.Frame = CurRoomFrame + 1;
-            lock (frameDataList)
-            { 
-                frameDataList.Add(frameData);
-            }
-
-            lock (_players)
+            try
             {
-                foreach (var player in _players)
+                await Task.Delay(1000/LunchParam.ServerTick);
+                //处理服务器当前帧逻辑
+                FrameData frameData = new FrameData();
+                frameData.Frame = CurRoomFrame;
+                lock (frameDataList)
+                { 
+                    frameDataList.Add(frameData);
+                }
+
+                lock (_players)
                 {
-                    if (player.IsPlaying)
+                    foreach (var player in _players)
                     {
-                        SCFrameData scFrameData = new SCFrameData();
-                        scFrameData.FrameDataList.Add(frameDataList.Skip(player.RunFrame));
-                        UDPServer.Instance.Send(MessageType.ScframeData,scFrameData,player.EndPoint);
+                        if (player.IsPlaying)
+                        {
+                            SCFrameData scFrameData = new SCFrameData();
+                            scFrameData.FrameDataList.Add(frameDataList.Skip(player.RunFrame));
+                            UDPServer.Instance.Send(MessageType.ScframeData,scFrameData,player.EndPoint);
+                        }
                     }
                 }
-            }
             
-            CurRoomFrame++;
+                CurRoomFrame++;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }

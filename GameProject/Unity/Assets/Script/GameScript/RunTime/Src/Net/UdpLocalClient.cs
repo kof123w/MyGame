@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Buffers;
+using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -13,15 +14,15 @@ namespace MyGame
         private UdpClient client;
         private readonly string serverIp;
         private readonly int serverPort;
-        
+        private IPEndPoint endPoint;
         private CancellationTokenSource udpReceiveToken;
         public UdpLocalClient(string serverIp, int serverPort)
         {
             this.serverIp = serverIp;
             this.serverPort = serverPort;
             client = new UdpClient();   
-            client.Connect(serverIp, serverPort);
-            
+            //client.Connect(serverIp, serverPort);
+            endPoint = new IPEndPoint(IPAddress.Parse(serverIp), serverPort); 
         } 
         
         public void StartReceive()
@@ -60,7 +61,7 @@ namespace MyGame
                 var finalData = ArrayPool<byte>.Shared.Rent(4 + data.Length); 
                 Buffer.BlockCopy(messageTypePrefix, 0, finalData, 0, 4);
                 Buffer.BlockCopy(data, 0, finalData, 4, data.Length); 
-                client.Send(finalData, 4 + data.Length);
+                client.Send(finalData, 4 + data.Length,endPoint);
                 ArrayPool<byte>.Shared.Return(finalData);
             }
             catch (Exception ex)

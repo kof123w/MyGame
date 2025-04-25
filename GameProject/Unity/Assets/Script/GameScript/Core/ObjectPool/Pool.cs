@@ -29,7 +29,7 @@ namespace ObjectPool
 
             for (int i = 0; i < objects.Count; i++)
             {
-                objects[i].Clear();
+                objects[i].OnDestroy();
                 Free(objects[i]);
             }
             
@@ -45,7 +45,7 @@ namespace ObjectPool
 
             for (int i = 0; i < objects.Length; i++)
             {
-                objects[i].Clear();
+                objects[i].OnDestroy();
                 Free(objects[i]);
             }
         }

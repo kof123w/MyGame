@@ -75,8 +75,8 @@ namespace MyGame
             MGameObject = go;
             MTransform = go.transform; 
             MTransform.SetParent(UIManager.GetRoot(),false);
-            OnAwake();
-            OnStart(); 
+            OnUIAwake();
+            OnUIStart(); 
         } 
     }
 }

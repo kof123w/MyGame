@@ -10,9 +10,9 @@ namespace MyGame
         public Button m_btnStart;
         public InputField m_inputAccount;
         public InputField m_inputPassword;
-        public override void OnAwake()
+        public override void OnUIAwake()
         {
-            base.OnAwake();
+            base.OnUIAwake();
             m_textStart = GameObject.Find("Bg/m_btnStart/m_textStart").GetComponent<Text>();
             m_btnStart = GameObject.Find("Bg/m_btnStart").GetComponent<Button>();
             m_inputAccount = GameObject.Find("Bg/m_inputAccount").GetComponent<InputField>();
@@ -20,9 +20,9 @@ namespace MyGame
         }
         #endregion 
 
-        public override void OnStart()
+        public override void OnUIStart()
         {
-            base.OnStart();
+            base.OnUIStart();
             m_btnStart.onClick.AddListener(OnClickStart);
         }
 

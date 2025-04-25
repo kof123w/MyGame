@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace FixedPhysicsComponent
 {  
-    public class AssetFix64Box : AssetShape
+    public class Fix64Fix64Box : Fix64Shape
     {
         BoxCollider boxCollider = null;  
         protected override Entity CreateEntityShape()

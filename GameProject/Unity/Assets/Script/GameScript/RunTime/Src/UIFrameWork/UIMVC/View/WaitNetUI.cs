@@ -11,16 +11,16 @@ namespace MyGame
         public Text m_textLoadText;
         public GameObject m_goProgress;
 
-        public override void OnAwake()
+        public override void OnUIAwake()
         {
-            base.OnAwake();
+            base.OnUIAwake();
             m_textLoadText = GameObject.Find("Bg/m_goProgress/m_textLoadText").GetComponent<Text>();
             m_goProgress = GameObject.Find("Bg/m_goProgress").gameObject;
         }
 
         #endregion
 
-        public override bool OnDestroyIsDestroy()
+        public override bool OnUIDestroyIsDestroy()
         {
             return false;
         } 

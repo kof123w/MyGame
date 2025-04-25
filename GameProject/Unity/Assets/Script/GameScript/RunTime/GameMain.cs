@@ -67,7 +67,7 @@ namespace MyGame
             {
                 GameWorld.Instance.FixedTick(); 
                 PlayerInputSystem.Instance.RevInput();
-                FrameLogic.Instance.FixedTick();
+                FrameContext.Instance.FixedTick();
             }
             catch(Exception e)
             {

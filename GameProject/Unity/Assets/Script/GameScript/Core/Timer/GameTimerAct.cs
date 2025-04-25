@@ -27,7 +27,7 @@ namespace GameTimer
             
         }
 
-        public void Clear()
+        public void OnDestroy()
         {
              
         }

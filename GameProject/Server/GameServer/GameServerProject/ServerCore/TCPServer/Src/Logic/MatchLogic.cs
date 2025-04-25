@@ -40,7 +40,7 @@ public class MatchLogic : Singleton<MatchLogic>
         scMatchRes.UdpAdress = "127.0.0.1";
         scMatchRes.Port = 12900;
         scMatchRes.RoomId = roomId; //房间号需要产生的，这里直接写死9980 
-        scMatchRes.PlayerIndex = index;
+        scMatchRes.RoleId = index;
         scMatchRes.Tick = LunchParam.ServerTick;
         Console.WriteLine($"发送客户端匹配信息{scMatchRes.UdpAdress}");
         player.Send(MessageType.ScmatchRes, scMatchRes);

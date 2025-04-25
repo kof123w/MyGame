@@ -8,16 +8,16 @@ namespace MyGame
     {
         #region 自动生成
         public Button m_btnMatch;
-        public override void OnAwake()
+        public override void OnUIAwake()
         {
-            base.OnAwake();
+            base.OnUIAwake();
             m_btnMatch = GameObject.Find("Bg/m_btnMatch").GetComponent<Button>();
         }
         #endregion
 
-        public override void OnStart()
+        public override void OnUIStart()
         {
-            base.OnStart();
+            base.OnUIStart();
             m_btnMatch.onClick.AddListener(Match);
         }
 

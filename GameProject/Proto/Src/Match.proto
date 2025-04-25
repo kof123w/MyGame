@@ -13,7 +13,7 @@ message SCMatchRes{
      int32 port = 3;            //端口号
      int32 roomId = 4;         //房间id
      int32 randomSeed = 5;      //随机种子
-     int32 playerIndex = 6;    //房间里玩家索引
+     int32 roleId = 6;    //房间里玩家索引
      int32 tick = 7;          //服务器tick同步
 }
 

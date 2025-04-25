@@ -73,4 +73,15 @@ public class RoomLogic : Singleton<RoomLogic>
         
         return 0;
     }
+
+    public void CloseAllRooms()
+    {
+        foreach (var roomPair in rooms)
+        {
+            var room = roomPair.Value;
+            room.CloseRoom();
+        }
+        
+        rooms.Clear();
+    }
 }  

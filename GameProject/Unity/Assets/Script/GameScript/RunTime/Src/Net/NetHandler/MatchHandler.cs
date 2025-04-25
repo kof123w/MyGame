@@ -29,7 +29,10 @@ namespace MyGame
             csPostClientUdpAddress.RoomId = scMatchRes.RoomId;
             csPostClientUdpAddress.PlayerId = pd.GetId(); 
             UDPNetManager.Instance.Send(MessageType.CspostClientUdpAddress,csPostClientUdpAddress);
-            FrameLogic.Instance.Start(scMatchRes.RandomSeed,scMatchRes.Tick,UDPNetManager.Instance);
+            
+            //初始化帧同步需要的参数
+            FrameContext.Context.InitParam(scMatchRes.RandomSeed,scMatchRes.Tick,scMatchRes.RoleId,scMatchRes.RoomId,UDPNetManager.Instance);
+            GameEvent.Push(TaskEvent.TaskChange,typeof(SceneMap01Task));
         }
     }
 }

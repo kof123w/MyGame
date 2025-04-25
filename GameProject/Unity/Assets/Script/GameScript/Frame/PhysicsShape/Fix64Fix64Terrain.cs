@@ -12,7 +12,7 @@ namespace MyGame
     /// <summary>
     /// 地形初始化走自己的逻辑
     /// </summary>
-    public class AssetFix64Terrain : AssetShape
+    public class Fix64Fix64Terrain : Fix64Shape
     { 
         private Terrain terrain;
         private BEPUphysics.BroadPhaseEntries.Terrain fixedTerrain; 

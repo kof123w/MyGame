@@ -25,7 +25,18 @@ namespace MyGame
             worldGameObject = NodePool.MallocEmptyNode();
             worldTransform = worldGameObject.transform;
             worldTransform.SetParent(GameWorld.GetGameWorldTransform());
-        } 
+        }
+
+        public T[] GetComponentByNodeName<T>(string nodeName)
+        {
+            var findRoot = trans.Find(nodeName);
+            T[] result = null;
+            if (findRoot != null)
+            {
+                result = findRoot.GetComponentsInChildren<T>();
+            } 
+            return result;
+        }
 
         /// <summary>
         /// 加载这个资源
@@ -91,7 +102,17 @@ namespace MyGame
             this.tracker = trackerParam;
         }
 
-        public void Clear()
+        public T GetComponent<T>()
+        {
+           return trans.GetComponent<T>();
+        }
+
+        public T GetComponentInChild<T>()
+        {
+            return trans.GetComponentInChildren<T>();
+        }
+
+        public void OnDestroy()
         {
             
         }

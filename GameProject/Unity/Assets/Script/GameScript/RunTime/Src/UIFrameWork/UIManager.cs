@@ -42,7 +42,7 @@ namespace MyGame
         {
             foreach (var window in windowList.Where(window => !window.IsDestroy() && window.IsLoaded() && window.IsShow))
             {
-                window.OnUpdate();
+                window.OnUIUpdate();
             }
         }
 
@@ -130,7 +130,7 @@ namespace MyGame
             {
                 if (list[index] is T t)
                 {
-                    if (t.OnDestroyIsDestroy())
+                    if (t.OnUIDestroyIsDestroy())
                     {
                         t.Destroy();
                         Pool.Free(t);

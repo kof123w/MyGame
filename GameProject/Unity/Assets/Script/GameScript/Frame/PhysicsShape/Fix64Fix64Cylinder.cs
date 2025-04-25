@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace MyGame
 {
-    public class AssetFix64Cylinder : AssetShape
+    public class Fix64Fix64Cylinder : Fix64Shape
     {
         private CapsuleCollider unityCapsule;   
         protected float Height;

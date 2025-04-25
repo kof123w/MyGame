@@ -10,9 +10,9 @@ public class LoadUI : UIWindow
     public RectTransform m_rectFill;
     public RectTransform m_rectBackground;
     public GameObject m_goProgress;
-    public override void OnAwake()
+    public override void OnUIAwake()
     {
-        base.OnAwake();
+        base.OnUIAwake();
         m_textLoadText = GameObject.Find("Bg/m_goProgress/m_textLoadText").GetComponent<Text>();
         m_rectFill = GameObject.Find("Bg/m_goProgress/m_rectBackground/m_rectFill").GetComponent<RectTransform>();
         m_rectBackground = GameObject.Find("Bg/m_goProgress/m_rectBackground").GetComponent<RectTransform>();
@@ -23,15 +23,15 @@ public class LoadUI : UIWindow
 
 
     private readonly string timerSource = "LoadUIUpdateDotText";
-    public override void OnStart()
+    public override void OnUIStart()
     {
-        base.OnStart();
+        base.OnUIStart();
         GameTimerManager.CreateLoopFrameTimer(timerSource,0.3f,UpdateTxt);
     }
 
-    public override void OnDestroy()
+    public override void OnUIDestroy()
     {
-        base.OnDestroy();
+        OnUIDestroy();
         if (!GameTimerManager.IsFreeTimer(timerSource))
         {
             GameTimerManager.FreeTimer(timerSource);
@@ -52,7 +52,7 @@ public class LoadUI : UIWindow
         m_textLoadText.text = $"{loadText}{tmpPtr}";
     }
 
-    public override bool OnDestroyIsDestroy()
+    public override bool OnUIDestroyIsDestroy()
     {
         return false;
     } 

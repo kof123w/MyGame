@@ -24,49 +24,55 @@ public class UDPServer : Singleton<UDPServer>
     { 
         cts = new CancellationTokenSource();
         receiver = new UdpClient(port);
-        // 选择组织内部的多播地址（不会与公共协议冲突）
-        IPAddress gameMulticastAddress = IPAddress.Parse(multicastIp); 
-        receiver.JoinMulticastGroup(gameMulticastAddress);
-        receiver.Client.ReceiveTimeout = 5000; // 5秒
-        receiver.Client.SendTimeout = 3000; // 3秒
-        receiver.Ttl = (short)GameScope.DataCenter;
+       // receiver.Client.ReceiveTimeout = 5000; // 5秒
+       // receiver.Client.SendTimeout = 3000; // 3秒
+        //receiver.Ttl = (short)GameScope.DataCenter;
         Console.WriteLine($"UDP 服务器已启动，监听端口{port}");
-        
-        while (true)
+
+        try
         {
-            try
-            { 
-                // 异步接收数据
-                var result = await receiver.ReceiveAsync().ConfigureAwait(false);
-                
-                // 处理接收到的数据
-                ProcessReceivedData(result.Buffer, result.RemoteEndPoint);
-            }
-            catch (SocketException ex)
+            while (!cts.IsCancellationRequested)
             {
-                // 根据错误码判断是否需重建receiver
-                if (IsFatalError(ex.SocketErrorCode))
+                try
                 {
-                    /*receiver.Dispose();
-                    receiver = new UdpClient(port); // 或重新初始化Socket
+                    // 异步接收数据
+                    var result = await receiver.ReceiveAsync().WithCancellation(cts.Token);
+                    // 处理接收到的数据
+                    ProcessReceivedData(result.Buffer, result.RemoteEndPoint);
+                }
+                catch (OperationCanceledException)
+                {
+                    // 正常关闭
+                    break;
+                }
+                catch (SocketException ex) when (ex.SocketErrorCode == SocketError.ConnectionReset)
+                {
+                    // 客户端强制关闭
+                    continue;
+                }
+                catch (ObjectDisposedException ex)
+                {
+                    // 明确被释放时需重建
+                    receiver = new UdpClient(port);
 
                     Console.WriteLine(ex.Message);
-                    Console.WriteLine(ex.StackTrace);*/
-                } 
+                    Console.WriteLine(ex.StackTrace);
+                }
+                catch (Exception ex)
+                {
+                    // 其他错误
+                    Console.WriteLine($"错误: {ex.Message}");
+                    // 根据严重程度决定是否继续
+                    /*if (IsFatalError(ex.))
+                        break;*/
+                }
+
             }
-            catch (ObjectDisposedException)
-            {
-                // 明确被释放时需重建
-                //  receiver = new UdpClient(port);
-            }
-            catch (Exception ex)
-            {
-                // 其他异常（如权限问题）可能需要终止或重建
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-            }
-           
-        } 
+        }
+        finally
+        {
+            receiver.Close();
+        }
         // ReSharper disable once FunctionNeverReturns
     }
     
@@ -97,6 +103,7 @@ public class UDPServer : Singleton<UDPServer>
         }
     }
      
+     
     private void ProcessReceivedData(byte[] data, IPEndPoint remoteEP)
     { 
         //临时处理
@@ -105,8 +112,6 @@ public class UDPServer : Singleton<UDPServer>
 
         var prefix = bufferList.Take(4).ToArray();
         var messageType = (MessageType)BitConverter.ToInt32(prefix, 0);
-        
-        Console.WriteLine($"收到来自 {remoteEP} 的消息: 协议号{messageType}");
         
        HandlerDispatch.Instance.Dispatch(remoteEP,bufferList.Skip(4).Take(bufferList.Count).ToArray(), messageType); 
     }
@@ -142,5 +147,21 @@ public class UDPServer : Singleton<UDPServer>
         cts?.Cancel();
         sender?.Close();
         receiver?.Close();
+    }
+}
+
+static class UdpServerExtra
+{
+    public static async Task<UdpReceiveResult> WithCancellation(this Task<UdpReceiveResult> task, CancellationToken cancellationToken)
+    {
+        var tcs = new TaskCompletionSource<bool>();
+        using (cancellationToken.Register(s => ((TaskCompletionSource<bool>)s).TrySetResult(true), tcs))
+        {
+            if (task != await Task.WhenAny(task, tcs.Task))
+            {
+                throw new OperationCanceledException(cancellationToken);
+            }
+        }
+        return await task;
     }
 }
