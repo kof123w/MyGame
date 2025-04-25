@@ -15,6 +15,12 @@ namespace MyGame
         protected Vector3 offsetCenter = Vector3.zero;
         protected float mass = 1;
         private Entity entityShape; 
+        protected Collider entityCollider;  //unity的碰撞器直接用到这里来
+
+        protected void SetEntityCollider(Collider entityColliderParam)
+        {
+            entityCollider = entityColliderParam;
+        }
 
         protected Entity EntityShape {
             get
@@ -34,6 +40,8 @@ namespace MyGame
         {
             return null;
         } 
+        
+        
         
         #endregion
 

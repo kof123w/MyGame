@@ -111,7 +111,7 @@ namespace MyGame.Map
             } 
         } 
         
-        public void OnDestroy()
+        public new void OnDestroy()
         {
             var physicsSpace = FrameContext.Context.GetSpace();
             foreach (var entity in entityShapes)

@@ -4,15 +4,15 @@ using UnityEngine;
 
 namespace MyGame
 {
-    public class Fix64Fix64Capsule : Fix64Shape
+    public class Fix64Capsule : Fix64Shape
     { 
         private CapsuleCollider unityCapsule;   
         protected float Height;
         protected float Radius;
 
         protected override Entity CreateEntityShape()
-        {/*
-            unityCapsule = trans.GetComponent<CapsuleCollider>();
+        {
+            unityCapsule = (CapsuleCollider)entityCollider;
             //获取 Unity CapsuleCollider参数
             Radius = unityCapsule.radius;
             Height = unityCapsule.height;
@@ -40,15 +40,18 @@ namespace MyGame
             Vector3 worldEnd = unityCapsule.transform.TransformPoint(localEnd);
 
             //装换成BEPphics的坐标
-            var bePuStart = MathConvertor.Vector3ConvertToFpVector3(ref worldStart);
-            var bePuEnd = MathConvertor.Vector3ConvertToFpVector3(ref worldEnd);
-            var eCapsule = new BEPUphysics.Entities.Prefabs.Capsule(bePuStart, bePuEnd, Radius, mass);
-
-            /*var physicsSpace = GameWorld.GetPhysicsSpace();
-            physicsSpace.Add(eCapsule); #1#
-            return eCapsule;*/
-
-            return null;
+            var bePuStart = MathConvertor.Vector3ToFix3(ref worldStart);
+            var bePuEnd = MathConvertor.Vector3ToFix3(ref worldEnd);
+            var capsule = new BEPUphysics.Entities.Prefabs.Capsule(bePuStart, bePuEnd, Radius, mass); 
+            var physicsSpace = FrameContext.Context.GetSpace();
+            physicsSpace.Add(capsule);
+            return capsule;
+        }
+        
+        public new void OnDestroy()
+        {
+            var physicsSpace = FrameContext.Context.GetSpace();
+            physicsSpace.Add(EntityShape);   
         }
     }
 }
