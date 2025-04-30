@@ -240,6 +240,7 @@ GameObject:
   m_Component:
   - component: {fileID: 191350422}
   - component: {fileID: 191350423}
+  - component: {fileID: 191350424}
   m_Layer: 0
   m_Name: StartGame
   m_TagString: Untagged
@@ -277,6 +278,19 @@ MonoBehaviour:
   logMode: 1
   netMode: 0
   resourceType: 0
+--- !u!114 &191350424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 191350421}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 692ecfbb8d07a8f4ab4a24c005c97073, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fontSize: 15
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0

@@ -20,7 +20,7 @@ namespace DebugTool
     { 
         public static DebugMode LogType;  
         //private static string logFilePath = Path.Combine(Application.persistentDataPath, "game_log.txt");
-        private static readonly string  LOGFilePath = $"E:/UnityWorkSpace/Log/game_log.txt";
+        //private static readonly string  LOGFilePath = $"E:/UnityWorkSpace/Log/game_log.txt";
         
         [Conditional("DEBUG_LOG")]
         public static void Log(string log)
@@ -29,7 +29,7 @@ namespace DebugTool
             {
                 string logMessage = $"[{DateTime.Now}] {log}\n"; 
                 // 写入文件
-                File.AppendAllText(LOGFilePath, logMessage);
+                //File.AppendAllText(LOGFilePath, logMessage);
                 Debug.Log(log);
             }
         }
@@ -39,9 +39,9 @@ namespace DebugTool
         {
             if (LogType == DebugMode.AllLog || LogType == DebugMode.Error || LogType == DebugMode.WarringOrError)
             {
-                string logMessage = $"[{DateTime.Now}] {log}\n"; 
+                //string logMessage = $"[{DateTime.Now}] {log}\n"; 
                 // 写入文件
-                File.AppendAllText(LOGFilePath, logMessage);
+                //File.AppendAllText(LOGFilePath, logMessage);
                 Debug.LogError(log);
             }
         }
@@ -51,9 +51,9 @@ namespace DebugTool
         {
             if (LogType == DebugMode.AllLog || LogType == DebugMode.Error || LogType == DebugMode.WarringOrError)
             {
-                string logMessage = $"[{DateTime.Now}] {log}\n"; 
+                //string logMessage = $"[{DateTime.Now}] {log}\n"; 
                 // 写入文件
-                File.AppendAllText(LOGFilePath, logMessage);
+                //File.AppendAllText(LOGFilePath, logMessage);
                 Debug.LogError(log);
             }
         }

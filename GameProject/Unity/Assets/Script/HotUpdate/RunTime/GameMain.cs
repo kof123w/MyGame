@@ -78,7 +78,7 @@ namespace MyGame
         }
 
         public static void LateUpdate()
-        { 
+        {  
             try
             {
                 GameWorld.Instance.LateTick();
