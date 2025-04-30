@@ -18,8 +18,7 @@ namespace MyGame
 
         private void SyncFrame(byte[] data)
         {
-             SCFrameData scFrameData = ProtoHelper.Deserialize<SCFrameData>(data); 
-             DLogger.Log($"收到帧数据: {scFrameData.FrameDataList[^1].Frame} 数据长度 {scFrameData.FrameDataList.Count} 客户端本地处理帧数:{FrameContext.Context.GetSyncFrame()}");
+             SCFrameData scFrameData = ProtoHelper.Deserialize<SCFrameData>(data);   
              GameEvent.Push(FrameSignal.Signal_FrameSync,scFrameData);
         }
     }

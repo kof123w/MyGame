@@ -16,10 +16,13 @@ MonoBehaviour:
   useGlobalIl2cpp: 1
   hybridclrRepoURL: https://gitee.com/focus-creative-games/hybridclr
   il2cppPlusRepoURL: https://gitee.com/focus-creative-games/il2cpp_plus
-  hotUpdateAssemblyDefinitions: []
-  hotUpdateAssemblies:
-  - Assets/StreamingAssets/AotDll/GameCore.dll
-  - Assets/StreamingAssets/AotDll/GameSourceGenerator.dll
+  hotUpdateAssemblyDefinitions:
+  - {fileID: 5897886265953266890, guid: 1674e4a46a9623a45874c6fc8bc7de30, type: 3}
+  - {fileID: 5897886265953266890, guid: 45d9b7d2576528b4995f99652191bcf4, type: 3}
+  - {fileID: 5897886265953266890, guid: 82e3ec034e8ea534488b739e4052783a, type: 3}
+  - {fileID: 5897886265953266890, guid: 33921d76a51cb05419f11139f7976cbe, type: 3}
+  - {fileID: 5897886265953266890, guid: 23d430eea4b57cb44924d00ee583c63a, type: 3}
+  hotUpdateAssemblies: []
   preserveHotUpdateAssemblies: []
   hotUpdateDllCompileOutputRootDir: HybridCLRData/HotUpdateDlls
   externalHotUpdateAssembliyDirs: []

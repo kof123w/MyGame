@@ -11,6 +11,7 @@ public class RoomLogic : Singleton<RoomLogic>
     
     public int JoinRoom(int roomId,PlayerServerData playerData)
     {
+        playerData.CurRoomID = roomId;
         if (rooms.TryGetValue(roomId,out var room))
         {
             return room.JoinRoom(playerData);

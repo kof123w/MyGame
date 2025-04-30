@@ -1,5 +1,5 @@
 using UnityEngine;
-#if UNITY_LOCAL_SCRIPT
+#if UNITY_EDITOR
 using MyGame;
 #endif
 
@@ -31,38 +31,38 @@ class Launch : MonoBehaviour
     [Header("资源模式")] public ResourceLoadType resourceType;
     void Start()
     { 
-#if UNITY_LOCAL_SCRIPT
+#if UNITY_EDITOR
         //进入游戏 
-        GameMain.LaunchGame((int)logMode,(int)netMode,(int)resourceType); 
+        //GameMain.LaunchGame((int)logMode,(int)netMode,(int)resourceType); 
 #endif
     }
 
     private void Update()
     {
-#if UNITY_LOCAL_SCRIPT 
-        GameMain.Update();
+#if UNITY_EDITOR 
+       // GameMain.Update();
 #endif
         
     }
 
     void FixedUpdate()
     {
-#if UNITY_LOCAL_SCRIPT 
-        GameMain.FixedUpdate();
+#if UNITY_EDITOR 
+       // GameMain.FixedUpdate();
 #endif
     }
 
     void LateUpdate()
     {
-#if UNITY_LOCAL_SCRIPT
-        GameMain.LateUpdate();
+#if UNITY_EDITOR
+        //GameMain.LateUpdate();
 #endif
     }
 
     void OnApplicationQuit()
     {
-#if UNITY_LOCAL_SCRIPT
-        GameMain.OnApplicationQuit();
+#if UNITY_EDITOR
+       // GameMain.OnApplicationQuit();
 #endif 
     }
 }

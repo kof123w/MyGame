@@ -24,7 +24,7 @@ namespace MyGame
         {
             worldGameObject = NodePool.MallocEmptyNode();
             worldTransform = worldGameObject.transform;
-            worldTransform.SetParent(GameWorld.GetGameWorldTransform());
+            worldTransform.SetParent(GameWorld.GetWorldTrans());
         }
 
         public T[] GetComponentByNodeName<T>(string nodeName)

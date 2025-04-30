@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BEPUphysics;
+using DebugTool;
 using EventSystem;
 using FixedMath;
 using FixedMath.Threading;
@@ -18,11 +19,12 @@ namespace MyGame
         
         internal FrameInputSample frameInputSample;
         internal INetworkService networkService;  //临时使用依赖注入的方法 
+        internal FrameExecutor frameExecutor;
         
         //设置一下tick时间 
         internal int tick;
-        internal Fix64 tickTime;
-        internal Fix64 curTickTime; 
+        internal float tickTime;
+        internal float curTickTime; 
 
         internal FrameBuffer frameBuffer;
         internal bool IsUpdate; 
@@ -33,7 +35,8 @@ namespace MyGame
                 frameBuffer.AddConfirmedFrame(scFrameData.FrameDataList[i]);
             } 
         } 
-
+        
+        FrameData frameData = null;
         internal void FixedTick()
         {
             if (!IsUpdate)
@@ -44,18 +47,17 @@ namespace MyGame
             
             //进行输入采集 
             frameInputSample.InputSample(curTickTime,tickTime);  
-
+            frameExecutor.Execute(frameData); 
             if (curTickTime >= tickTime)
             {
-                frameBuffer.GetNextFrame(); 
-                
+                frameData = frameBuffer.GetNextFrame(); 
                 //打包发送
                 CSFrameSample csFrameSample = frameInputSample.PackInput();
                 csFrameSample.PlayerId = FrameContext.Context.CtrlRoleID;
                 csFrameSample.RoomId = FrameContext.Context.SrvRoomID;
                 csFrameSample.ClientCurFrame = frameBuffer.GetLastConfirmedFrameId();
-                networkService.Send((int)MessageType.CscsframeSample,ProtoHelper.Serialize(csFrameSample));
-                curTickTime = 0.0f; 
+                networkService.Send((int)MessageType.CscsframeSample,ProtoHelper.Serialize(csFrameSample)); 
+                curTickTime -= tickTime; 
             }
         }
 

@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using FixedMath;
 using UnityEngine;
 
@@ -40,3 +41,5 @@ namespace MyGame
         }
     }
 }
+#endif
+

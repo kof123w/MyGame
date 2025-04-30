@@ -32,12 +32,11 @@ message CSFrameSample{
     int64 playerId = 1;
     int32 roomId = 2;
     int32 clientCurFrame = 3;   //客户端当前帧数
-    repeated FrameInput frameInputList = 4;
+    FrameInput frameInput = 4;
 }
 
 message FrameInput{
-    int64 subFrameTime = 1;
-    repeated PlayerInput playerInputList = 2;
+    PlayerInput playerInput = 2;
 }
 
 //玩家输入

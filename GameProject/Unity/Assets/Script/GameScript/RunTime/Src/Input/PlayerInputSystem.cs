@@ -45,10 +45,10 @@ namespace MyGame
         }
 
         //讲键盘输入转成signal
-        private float Dup = 0.0f;
-        private float Ddown = 0.0f;
-        private float Dright = 0.0f;
-        private float Dleft = 0.0f;
+        private int Dup = 0;
+        private int Ddown = 0;
+        private int Dright = 0;
+        private int Dleft = 0;
         private float UpVelocity = 0.0f;
         private float RightVelocity = 0.0f; 
         private bool isRunning = false;  
@@ -81,21 +81,25 @@ namespace MyGame
                 isRunning = Input.GetKey(runningKeyCode);
             }
 
-            float dup = Dup - Ddown;
-            float dright = Dright - Dleft;     
-            
-            UpVelocity = Mathf.SmoothDamp(UpVelocity, dup, ref UpVelocity, 0.05f);
+            int dup = Dup - Ddown;
+            int dright = Dright - Dleft;      
+            /*UpVelocity = Mathf.SmoothDamp(UpVelocity, dup, ref UpVelocity, 0.05f);
             RightVelocity = Mathf.SmoothDamp(RightVelocity, dright, ref RightVelocity, 0.05f);
 
             if (!Mathf.Approximately(UpVelocity,0.0001f) || !Mathf.Approximately(RightVelocity,0.0001f))
             {
                 GameEvent.Push(SignalEvent.SignalControl_MoveSignal, UpVelocity, -RightVelocity);
-            } 
+            } */
+            
+            if (dup!=0 || dright!=0)
+            {
+                GameEvent.Push(InputSignal.InputSignal_MoveSignal, (float)dup, (float)-dright);
+            }
             
             // 检测鼠标左键按下时的滑动
             Vector3 currentMousePosition = Input.mousePosition;
             Vector3 delta = currentMousePosition - previousMousePosition;
-            GameEvent.Push(SignalEvent.SignalControl_CameraMoveSignal, delta);
+            GameEvent.Push(InputSignal.InputSignal_CameraMoveSignal, delta);
             previousMousePosition = Input.mousePosition;
         }
 
@@ -103,31 +107,31 @@ namespace MyGame
         {
             if (inputKey == InputKey.MoveForward)
             {
-                Dup = isRunning ? 2.0f :  1.0f;
+                Dup = isRunning ? 2 :  1;
             }
 
             else if (inputKey == InputKey.BackForward)
             {
-                Ddown = isRunning ? 2.0f :  1.0f;
+                Ddown = isRunning ? 2 :  1;
             }
 
             else if (inputKey == InputKey.Right)
             {
-                Dright = isRunning ? 2.0f :  1.0f;
+                Dright = isRunning ? 2 :  1;
             }
 
             else if (inputKey == InputKey.Left)
             {
-                Dleft = isRunning ? 2.0f :  1.0f;
+                Dleft = isRunning ? 2 :  1;
             }
         }
 
         private void ClearInput()
         {
-            Dup = 0.0f;
-            Ddown = 0.0f;
-            Dright = 0.0f;
-            Dleft = 0.0f;
+            Dup = 0;
+            Ddown = 0;
+            Dright = 0;
+            Dleft = 0;
         }
         
         private void SquareToCircle(ref float up,ref float right)

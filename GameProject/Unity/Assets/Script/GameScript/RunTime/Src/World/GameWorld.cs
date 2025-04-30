@@ -1,5 +1,6 @@
 using System.Collections.Generic; 
-using DebugTool; 
+using DebugTool;
+using EventSystem;
 using ObjectPool;
 using SingleTool;
 using UnityEngine; 
@@ -8,8 +9,8 @@ namespace MyGame
 {
     public sealed class GameWorld : Singleton<GameWorld>
     { 
-        private Transform gameWorldTrans;
-        private GameObject gameWorldGO;
+        private Transform worldTrans;
+        private GameObject gameWorldGo;
         
         //场景相关
         private SceneType currentScene = SceneType.None;
@@ -19,23 +20,31 @@ namespace MyGame
         private BaseSubScene previousSubScene;
         
         //场景角色
-        private List<BasePerformer> performers = new();
-        private PlayerCharacter playerCharacter;
+        private readonly Dictionary<long,PerformerVisual> performers = new();
         private Camera mainCamera;   //场景相机
          
         public void Init()
         {
-            DLogger.Log("==============>Init world system!");
+            DLogger.Log("==============>Init world system!"); 
             //关掉物理系统
             Physics.autoSyncTransforms = false;  //射线检测关闭
             Physics.autoSimulation = false;
-            
-            DLogger.Log("==============>Init scene Object");
             mainCamera = GameObject.Find("MainCamera").GetComponent<Camera>();
-            gameWorldGO = NodePool.MallocEmptyNode();
-            gameWorldTrans = gameWorldGO.transform;
+            gameWorldGo = NodePool.MallocEmptyNode();
+            worldTrans = gameWorldGo.transform;
+            
+            this.Subscribe<long,Vector3,Quaternion>(VisualSignal.VisualSignal_SetVisualPosition,SetVisualPosition);
         }
-        
+
+        private void SetVisualPosition(long roleId,Vector3 position,Quaternion rotation)
+        {
+            if (performers.TryGetValue(roleId,out var performer))
+            {
+                performer.SetWorldPos(position);
+                performer.SetWorldRot(rotation);
+            }
+        } 
+
         public void Tick()
         { 
            // todo ..
@@ -51,15 +60,10 @@ namespace MyGame
           
         }
 
-        public static Transform GetGameWorldTransform()
+        public static Transform GetWorldTrans()
         {
-            return Instance.gameWorldTrans;
+            return Instance.worldTrans;
         }
-
-        public static void SetObjectToGameWorld(Transform trans,Vector3 position)
-        { 
-            trans.position = position;
-        }  
 
         public void AddSubScene(BaseSubScene scene)
         {
@@ -90,40 +94,21 @@ namespace MyGame
                     } 
                 }
             }  
-        } 
-
-        //创建玩家角色
-        public void CreatePlayerRole(int id)
-        {
-            if (playerCharacter != null)
-            {
-                if (playerCharacter.IsLoaded)
-                {
-                    playerCharacter.UnLoadResources().Forget(); 
-                }
-            }
-            else
-            {
-                playerCharacter = Pool.Malloc<PlayerCharacter>();
-            }
-
-            playerCharacter.SetConfigID(id); 
-            playerCharacter.SetGameObjectName("PlayerRole"); 
         }
+
+        public RoleVisual CreateRole(long roleId,int id)
+        {
+            RoleVisual visual = Pool.Malloc<RoleVisual>();
+            visual.SetConfigID(id);
+            visual.SetGameObjectName("PlayerRoleVisual");
+            performers.Add(roleId,visual);
+            return visual;
+        } 
+       
 
         public Camera GetMainCamera()
         {
             return mainCamera;
-        }
-
-        public PlayerCharacter GetPlayerCharacter()
-        {
-            return playerCharacter;
-        }
-
-        /*public static BEPUphysicsSpace GetPhysicsSpace()
-        {
-            return Instance.bEpUPhysicsSpace;
-        }*/
+        } 
     }  
 }

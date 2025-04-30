@@ -22,17 +22,18 @@ public static partial class MatchReflection {
   static MatchReflection() {
     byte[] descriptorData = global::System.Convert.FromBase64String(
         string.Concat(
-          "CgtNYXRjaC5wcm90bxoQUmVzdWxlQ29kZS5Qcm90byIhCgpDU01hdGNoUmVx",
-          "EhMKC3VzZXJBY2NvdW50GAEgASgJIn4KClNDTWF0Y2hSZXMSDQoFc3RhdGUY",
-          "ASABKAUSEQoJdWRwQWRyZXNzGAIgASgJEgwKBHBvcnQYAyABKAUSDgoGcm9v",
-          "bUlkGAQgASgFEhIKCnJhbmRvbVNlZWQYBSABKAUSDgoGcm9sZUlkGAYgASgF",
-          "EgwKBHRpY2sYByABKAUiDwoNQ1NDYW5jZWxNYXRjaCItCg1TQ0NhbmNlbE1h",
-          "dGNoEhwKB3Jlc0NvZGUYASABKA4yCy5SZXN1bGVDb2RlYgZwcm90bzM="));
+          "CgtNYXRjaC5wcm90bxoQUmVzdWxlQ29kZS5Qcm90bxoMUGxheWVyLnByb3Rv",
+          "IiEKCkNTTWF0Y2hSZXESEwoLdXNlckFjY291bnQYASABKAkinwEKClNDTWF0",
+          "Y2hSZXMSDQoFc3RhdGUYASABKAUSEQoJdWRwQWRyZXNzGAIgASgJEgwKBHBv",
+          "cnQYAyABKAUSDgoGcm9vbUlkGAQgASgFEhIKCnJhbmRvbVNlZWQYBSABKAUS",
+          "DgoGcm9sZUlkGAYgASgDEgwKBHRpY2sYByABKAUSHwoKcGxheWVyTGlzdBgI",
+          "IAMoCzILLlBsYXllckRhdGEiDwoNQ1NDYW5jZWxNYXRjaCItCg1TQ0NhbmNl",
+          "bE1hdGNoEhwKB3Jlc0NvZGUYASABKA4yCy5SZXN1bGVDb2RlYgZwcm90bzM="));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-        new pbr::FileDescriptor[] { global::ResuleCodeReflection.Descriptor, },
+        new pbr::FileDescriptor[] { global::ResuleCodeReflection.Descriptor, global::PlayerReflection.Descriptor, },
         new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
           new pbr::GeneratedClrTypeInfo(typeof(global::CSMatchReq), global::CSMatchReq.Parser, new[]{ "UserAccount" }, null, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::SCMatchRes), global::SCMatchRes.Parser, new[]{ "State", "UdpAdress", "Port", "RoomId", "RandomSeed", "RoleId", "Tick" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::SCMatchRes), global::SCMatchRes.Parser, new[]{ "State", "UdpAdress", "Port", "RoomId", "RandomSeed", "RoleId", "Tick", "PlayerList" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CSCancelMatch), global::CSCancelMatch.Parser, null, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::SCCancelMatch), global::SCCancelMatch.Parser, new[]{ "ResCode" }, null, null, null, null)
         }));
@@ -290,6 +291,7 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
     randomSeed_ = other.randomSeed_;
     roleId_ = other.roleId_;
     tick_ = other.tick_;
+    playerList_ = other.playerList_.Clone();
     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
   }
 
@@ -376,13 +378,13 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
 
   /// <summary>Field number for the "roleId" field.</summary>
   public const int RoleIdFieldNumber = 6;
-  private int roleId_;
+  private long roleId_;
   /// <summary>
-  ///房间里玩家索引
+  ///房间里玩家自己的id
   /// </summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-  public int RoleId {
+  public long RoleId {
     get { return roleId_; }
     set {
       roleId_ = value;
@@ -402,6 +404,20 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
     set {
       tick_ = value;
     }
+  }
+
+  /// <summary>Field number for the "playerList" field.</summary>
+  public const int PlayerListFieldNumber = 8;
+  private static readonly pb::FieldCodec<global::PlayerData> _repeated_playerList_codec
+      = pb::FieldCodec.ForMessage(66, global::PlayerData.Parser);
+  private readonly pbc::RepeatedField<global::PlayerData> playerList_ = new pbc::RepeatedField<global::PlayerData>();
+  /// <summary>
+  ///匹配成功的时候下发玩家列表
+  /// </summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public pbc::RepeatedField<global::PlayerData> PlayerList {
+    get { return playerList_; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -426,6 +442,7 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
     if (RandomSeed != other.RandomSeed) return false;
     if (RoleId != other.RoleId) return false;
     if (Tick != other.Tick) return false;
+    if(!playerList_.Equals(other.playerList_)) return false;
     return Equals(_unknownFields, other._unknownFields);
   }
 
@@ -438,8 +455,9 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
     if (Port != 0) hash ^= Port.GetHashCode();
     if (RoomId != 0) hash ^= RoomId.GetHashCode();
     if (RandomSeed != 0) hash ^= RandomSeed.GetHashCode();
-    if (RoleId != 0) hash ^= RoleId.GetHashCode();
+    if (RoleId != 0L) hash ^= RoleId.GetHashCode();
     if (Tick != 0) hash ^= Tick.GetHashCode();
+    hash ^= playerList_.GetHashCode();
     if (_unknownFields != null) {
       hash ^= _unknownFields.GetHashCode();
     }
@@ -478,14 +496,15 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
       output.WriteRawTag(40);
       output.WriteInt32(RandomSeed);
     }
-    if (RoleId != 0) {
+    if (RoleId != 0L) {
       output.WriteRawTag(48);
-      output.WriteInt32(RoleId);
+      output.WriteInt64(RoleId);
     }
     if (Tick != 0) {
       output.WriteRawTag(56);
       output.WriteInt32(Tick);
     }
+    playerList_.WriteTo(output, _repeated_playerList_codec);
     if (_unknownFields != null) {
       _unknownFields.WriteTo(output);
     }
@@ -516,14 +535,15 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
       output.WriteRawTag(40);
       output.WriteInt32(RandomSeed);
     }
-    if (RoleId != 0) {
+    if (RoleId != 0L) {
       output.WriteRawTag(48);
-      output.WriteInt32(RoleId);
+      output.WriteInt64(RoleId);
     }
     if (Tick != 0) {
       output.WriteRawTag(56);
       output.WriteInt32(Tick);
     }
+    playerList_.WriteTo(ref output, _repeated_playerList_codec);
     if (_unknownFields != null) {
       _unknownFields.WriteTo(ref output);
     }
@@ -549,12 +569,13 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
     if (RandomSeed != 0) {
       size += 1 + pb::CodedOutputStream.ComputeInt32Size(RandomSeed);
     }
-    if (RoleId != 0) {
-      size += 1 + pb::CodedOutputStream.ComputeInt32Size(RoleId);
+    if (RoleId != 0L) {
+      size += 1 + pb::CodedOutputStream.ComputeInt64Size(RoleId);
     }
     if (Tick != 0) {
       size += 1 + pb::CodedOutputStream.ComputeInt32Size(Tick);
     }
+    size += playerList_.CalculateSize(_repeated_playerList_codec);
     if (_unknownFields != null) {
       size += _unknownFields.CalculateSize();
     }
@@ -582,12 +603,13 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
     if (other.RandomSeed != 0) {
       RandomSeed = other.RandomSeed;
     }
-    if (other.RoleId != 0) {
+    if (other.RoleId != 0L) {
       RoleId = other.RoleId;
     }
     if (other.Tick != 0) {
       Tick = other.Tick;
     }
+    playerList_.Add(other.playerList_);
     _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
   }
 
@@ -628,11 +650,15 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
           break;
         }
         case 48: {
-          RoleId = input.ReadInt32();
+          RoleId = input.ReadInt64();
           break;
         }
         case 56: {
           Tick = input.ReadInt32();
+          break;
+        }
+        case 66: {
+          playerList_.AddEntriesFrom(input, _repeated_playerList_codec);
           break;
         }
       }
@@ -675,11 +701,15 @@ public sealed partial class SCMatchRes : pb::IMessage<SCMatchRes>
           break;
         }
         case 48: {
-          RoleId = input.ReadInt32();
+          RoleId = input.ReadInt64();
           break;
         }
         case 56: {
           Tick = input.ReadInt32();
+          break;
+        }
+        case 66: {
+          playerList_.AddEntriesFrom(ref input, _repeated_playerList_codec);
           break;
         }
       }

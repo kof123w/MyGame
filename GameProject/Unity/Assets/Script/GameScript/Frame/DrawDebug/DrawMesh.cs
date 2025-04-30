@@ -1,6 +1,6 @@
+#if UNITY_EDITOR
 using System.Collections.Generic;
-using BEPUphysics.CollisionShapes;
-using FixedMath;
+using BEPUphysics.CollisionShapes; 
 using UnityEngine;
 
 namespace MyGame
@@ -50,3 +50,5 @@ namespace MyGame
         }
     }
 }
+
+#endif

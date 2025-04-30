@@ -1,4 +1,6 @@
-﻿using EventSystem;
+﻿using System.Collections.Generic;
+using EventSystem;
+using FixedMath;
 using FixMath.NET;
 using UnityEngine;
 
@@ -14,16 +16,16 @@ namespace MyGame
 
         internal void SubscribeEvent()
         {
-            this.Subscribe<float,float>(SignalEvent.SignalControl_MoveSignal,SignalControl_MoveSignal);
+            this.Subscribe<float,float>(InputSignal.InputSignal_MoveSignal,SignalControl_MoveSignal);
         }
 
         internal void UnSubscribeEvent()
         {
-            this.UnSubscribe(SignalEvent.SignalControl_MoveSignal);
+            this.UnSubscribe(InputSignal.InputSignal_MoveSignal);
         }
 
-        internal void InputSample(Fix64 currTickTime,Fix64 tickTime)
-        {
+        internal void InputSample(float currTickTime,float tickTime)
+        { 
             if (needSample)
             {
                 FrameInput frameInput = ObjectPool.Pool.Malloc<FrameInput>();
@@ -44,7 +46,7 @@ namespace MyGame
         {
             dup = u;
             dright = r;
-            needSample = true;
+            needSample = true; 
         }
     }
 }

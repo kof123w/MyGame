@@ -26,17 +26,16 @@ public static partial class FrameSyncReflection {
           "ZUhlYXJ0QmVhdCISChBTQ0ZyYW1lSGVhcnRCZWF0IjoKFkNTUG9zdENsaWVu",
           "dFVkcEFkZHJlc3MSEAoIcGxheWVySWQYASABKAMSDgoGcm9vbUlkGAIgASgF",
           "IgwKCkNTRXhpdEdhbWUiLQoKU0NFeGl0R2FtZRIfCgpyZXN1bGVDb2RlGAEg",
-          "ASgOMgsuUmVzdWxlQ29kZSJuCg1DU0ZyYW1lU2FtcGxlEhAKCHBsYXllcklk",
+          "ASgOMgsuUmVzdWxlQ29kZSJqCg1DU0ZyYW1lU2FtcGxlEhAKCHBsYXllcklk",
           "GAEgASgDEg4KBnJvb21JZBgCIAEoBRIWCg5jbGllbnRDdXJGcmFtZRgDIAEo",
-          "BRIjCg5mcmFtZUlucHV0TGlzdBgEIAMoCzILLkZyYW1lSW5wdXQiSQoKRnJh",
-          "bWVJbnB1dBIUCgxzdWJGcmFtZVRpbWUYASABKAMSJQoPcGxheWVySW5wdXRM",
-          "aXN0GAIgAygLMgwuUGxheWVySW5wdXQiKgoLUGxheWVySW5wdXQSCwoDZHVw",
-          "GAEgASgDEg4KBmRyaWdodBgCIAEoAyIwCgtTQ0ZyYW1lRGF0YRIhCg1mcmFt",
-          "ZURhdGFMaXN0GAEgAygLMgouRnJhbWVEYXRhIksKCUZyYW1lRGF0YRINCgVm",
-          "cmFtZRgBIAEoBRIvChRGcmFtZVBsYXllcklucHV0TGlzdBgCIAMoCzIRLkZy",
-          "YW1lUGxheWVySW5wdXQiRQoQRnJhbWVQbGF5ZXJJbnB1dBIQCghwbGF5ZXJJ",
-          "ZBgBIAEoAxIfCgpmcmFtZUlucHV0GAIgASgLMgsuRnJhbWVJbnB1dGIGcHJv",
-          "dG8z"));
+          "BRIfCgpmcmFtZUlucHV0GAQgASgLMgsuRnJhbWVJbnB1dCIvCgpGcmFtZUlu",
+          "cHV0EiEKC3BsYXllcklucHV0GAIgASgLMgwuUGxheWVySW5wdXQiKgoLUGxh",
+          "eWVySW5wdXQSCwoDZHVwGAEgASgDEg4KBmRyaWdodBgCIAEoAyIwCgtTQ0Zy",
+          "YW1lRGF0YRIhCg1mcmFtZURhdGFMaXN0GAEgAygLMgouRnJhbWVEYXRhIksK",
+          "CUZyYW1lRGF0YRINCgVmcmFtZRgBIAEoBRIvChRGcmFtZVBsYXllcklucHV0",
+          "TGlzdBgCIAMoCzIRLkZyYW1lUGxheWVySW5wdXQiRQoQRnJhbWVQbGF5ZXJJ",
+          "bnB1dBIQCghwbGF5ZXJJZBgBIAEoAxIfCgpmcmFtZUlucHV0GAIgASgLMgsu",
+          "RnJhbWVJbnB1dGIGcHJvdG8z"));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { global::ResuleCodeReflection.Descriptor, },
         new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -45,8 +44,8 @@ public static partial class FrameSyncReflection {
           new pbr::GeneratedClrTypeInfo(typeof(global::CSPostClientUdpAddress), global::CSPostClientUdpAddress.Parser, new[]{ "PlayerId", "RoomId" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CSExitGame), global::CSExitGame.Parser, null, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::SCExitGame), global::SCExitGame.Parser, new[]{ "ResuleCode" }, null, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::CSFrameSample), global::CSFrameSample.Parser, new[]{ "PlayerId", "RoomId", "ClientCurFrame", "FrameInputList" }, null, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::FrameInput), global::FrameInput.Parser, new[]{ "SubFrameTime", "PlayerInputList" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::CSFrameSample), global::CSFrameSample.Parser, new[]{ "PlayerId", "RoomId", "ClientCurFrame", "FrameInput" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::FrameInput), global::FrameInput.Parser, new[]{ "PlayerInput" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::PlayerInput), global::PlayerInput.Parser, new[]{ "Dup", "Dright" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::SCFrameData), global::SCFrameData.Parser, new[]{ "FrameDataList" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::FrameData), global::FrameData.Parser, new[]{ "Frame", "FramePlayerInputList" }, null, null, null, null),
@@ -1029,7 +1028,7 @@ public sealed partial class CSFrameSample : pb::IMessage<CSFrameSample>
     playerId_ = other.playerId_;
     roomId_ = other.roomId_;
     clientCurFrame_ = other.clientCurFrame_;
-    frameInputList_ = other.frameInputList_.Clone();
+    frameInput_ = other.frameInput_ != null ? other.frameInput_.Clone() : null;
     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
   }
 
@@ -1078,15 +1077,16 @@ public sealed partial class CSFrameSample : pb::IMessage<CSFrameSample>
     }
   }
 
-  /// <summary>Field number for the "frameInputList" field.</summary>
-  public const int FrameInputListFieldNumber = 4;
-  private static readonly pb::FieldCodec<global::FrameInput> _repeated_frameInputList_codec
-      = pb::FieldCodec.ForMessage(34, global::FrameInput.Parser);
-  private readonly pbc::RepeatedField<global::FrameInput> frameInputList_ = new pbc::RepeatedField<global::FrameInput>();
+  /// <summary>Field number for the "frameInput" field.</summary>
+  public const int FrameInputFieldNumber = 4;
+  private global::FrameInput frameInput_;
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-  public pbc::RepeatedField<global::FrameInput> FrameInputList {
-    get { return frameInputList_; }
+  public global::FrameInput FrameInput {
+    get { return frameInput_; }
+    set {
+      frameInput_ = value;
+    }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1107,7 +1107,7 @@ public sealed partial class CSFrameSample : pb::IMessage<CSFrameSample>
     if (PlayerId != other.PlayerId) return false;
     if (RoomId != other.RoomId) return false;
     if (ClientCurFrame != other.ClientCurFrame) return false;
-    if(!frameInputList_.Equals(other.frameInputList_)) return false;
+    if (!object.Equals(FrameInput, other.FrameInput)) return false;
     return Equals(_unknownFields, other._unknownFields);
   }
 
@@ -1118,7 +1118,7 @@ public sealed partial class CSFrameSample : pb::IMessage<CSFrameSample>
     if (PlayerId != 0L) hash ^= PlayerId.GetHashCode();
     if (RoomId != 0) hash ^= RoomId.GetHashCode();
     if (ClientCurFrame != 0) hash ^= ClientCurFrame.GetHashCode();
-    hash ^= frameInputList_.GetHashCode();
+    if (frameInput_ != null) hash ^= FrameInput.GetHashCode();
     if (_unknownFields != null) {
       hash ^= _unknownFields.GetHashCode();
     }
@@ -1149,7 +1149,10 @@ public sealed partial class CSFrameSample : pb::IMessage<CSFrameSample>
       output.WriteRawTag(24);
       output.WriteInt32(ClientCurFrame);
     }
-    frameInputList_.WriteTo(output, _repeated_frameInputList_codec);
+    if (frameInput_ != null) {
+      output.WriteRawTag(34);
+      output.WriteMessage(FrameInput);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(output);
     }
@@ -1172,7 +1175,10 @@ public sealed partial class CSFrameSample : pb::IMessage<CSFrameSample>
       output.WriteRawTag(24);
       output.WriteInt32(ClientCurFrame);
     }
-    frameInputList_.WriteTo(ref output, _repeated_frameInputList_codec);
+    if (frameInput_ != null) {
+      output.WriteRawTag(34);
+      output.WriteMessage(FrameInput);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(ref output);
     }
@@ -1192,7 +1198,9 @@ public sealed partial class CSFrameSample : pb::IMessage<CSFrameSample>
     if (ClientCurFrame != 0) {
       size += 1 + pb::CodedOutputStream.ComputeInt32Size(ClientCurFrame);
     }
-    size += frameInputList_.CalculateSize(_repeated_frameInputList_codec);
+    if (frameInput_ != null) {
+      size += 1 + pb::CodedOutputStream.ComputeMessageSize(FrameInput);
+    }
     if (_unknownFields != null) {
       size += _unknownFields.CalculateSize();
     }
@@ -1214,7 +1222,12 @@ public sealed partial class CSFrameSample : pb::IMessage<CSFrameSample>
     if (other.ClientCurFrame != 0) {
       ClientCurFrame = other.ClientCurFrame;
     }
-    frameInputList_.Add(other.frameInputList_);
+    if (other.frameInput_ != null) {
+      if (frameInput_ == null) {
+        FrameInput = new global::FrameInput();
+      }
+      FrameInput.MergeFrom(other.FrameInput);
+    }
     _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
   }
 
@@ -1247,7 +1260,10 @@ public sealed partial class CSFrameSample : pb::IMessage<CSFrameSample>
           break;
         }
         case 34: {
-          frameInputList_.AddEntriesFrom(input, _repeated_frameInputList_codec);
+          if (frameInput_ == null) {
+            FrameInput = new global::FrameInput();
+          }
+          input.ReadMessage(FrameInput);
           break;
         }
       }
@@ -1282,7 +1298,10 @@ public sealed partial class CSFrameSample : pb::IMessage<CSFrameSample>
           break;
         }
         case 34: {
-          frameInputList_.AddEntriesFrom(ref input, _repeated_frameInputList_codec);
+          if (frameInput_ == null) {
+            FrameInput = new global::FrameInput();
+          }
+          input.ReadMessage(FrameInput);
           break;
         }
       }
@@ -1327,8 +1346,7 @@ public sealed partial class FrameInput : pb::IMessage<FrameInput>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public FrameInput(FrameInput other) : this() {
-    subFrameTime_ = other.subFrameTime_;
-    playerInputList_ = other.playerInputList_.Clone();
+    playerInput_ = other.playerInput_ != null ? other.playerInput_.Clone() : null;
     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
   }
 
@@ -1338,27 +1356,16 @@ public sealed partial class FrameInput : pb::IMessage<FrameInput>
     return new FrameInput(this);
   }
 
-  /// <summary>Field number for the "subFrameTime" field.</summary>
-  public const int SubFrameTimeFieldNumber = 1;
-  private long subFrameTime_;
+  /// <summary>Field number for the "playerInput" field.</summary>
+  public const int PlayerInputFieldNumber = 2;
+  private global::PlayerInput playerInput_;
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-  public long SubFrameTime {
-    get { return subFrameTime_; }
+  public global::PlayerInput PlayerInput {
+    get { return playerInput_; }
     set {
-      subFrameTime_ = value;
+      playerInput_ = value;
     }
-  }
-
-  /// <summary>Field number for the "playerInputList" field.</summary>
-  public const int PlayerInputListFieldNumber = 2;
-  private static readonly pb::FieldCodec<global::PlayerInput> _repeated_playerInputList_codec
-      = pb::FieldCodec.ForMessage(18, global::PlayerInput.Parser);
-  private readonly pbc::RepeatedField<global::PlayerInput> playerInputList_ = new pbc::RepeatedField<global::PlayerInput>();
-  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-  public pbc::RepeatedField<global::PlayerInput> PlayerInputList {
-    get { return playerInputList_; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1376,8 +1383,7 @@ public sealed partial class FrameInput : pb::IMessage<FrameInput>
     if (ReferenceEquals(other, this)) {
       return true;
     }
-    if (SubFrameTime != other.SubFrameTime) return false;
-    if(!playerInputList_.Equals(other.playerInputList_)) return false;
+    if (!object.Equals(PlayerInput, other.PlayerInput)) return false;
     return Equals(_unknownFields, other._unknownFields);
   }
 
@@ -1385,8 +1391,7 @@ public sealed partial class FrameInput : pb::IMessage<FrameInput>
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public override int GetHashCode() {
     int hash = 1;
-    if (SubFrameTime != 0L) hash ^= SubFrameTime.GetHashCode();
-    hash ^= playerInputList_.GetHashCode();
+    if (playerInput_ != null) hash ^= PlayerInput.GetHashCode();
     if (_unknownFields != null) {
       hash ^= _unknownFields.GetHashCode();
     }
@@ -1405,11 +1410,10 @@ public sealed partial class FrameInput : pb::IMessage<FrameInput>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
     output.WriteRawMessage(this);
   #else
-    if (SubFrameTime != 0L) {
-      output.WriteRawTag(8);
-      output.WriteInt64(SubFrameTime);
+    if (playerInput_ != null) {
+      output.WriteRawTag(18);
+      output.WriteMessage(PlayerInput);
     }
-    playerInputList_.WriteTo(output, _repeated_playerInputList_codec);
     if (_unknownFields != null) {
       _unknownFields.WriteTo(output);
     }
@@ -1420,11 +1424,10 @@ public sealed partial class FrameInput : pb::IMessage<FrameInput>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-    if (SubFrameTime != 0L) {
-      output.WriteRawTag(8);
-      output.WriteInt64(SubFrameTime);
+    if (playerInput_ != null) {
+      output.WriteRawTag(18);
+      output.WriteMessage(PlayerInput);
     }
-    playerInputList_.WriteTo(ref output, _repeated_playerInputList_codec);
     if (_unknownFields != null) {
       _unknownFields.WriteTo(ref output);
     }
@@ -1435,10 +1438,9 @@ public sealed partial class FrameInput : pb::IMessage<FrameInput>
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public int CalculateSize() {
     int size = 0;
-    if (SubFrameTime != 0L) {
-      size += 1 + pb::CodedOutputStream.ComputeInt64Size(SubFrameTime);
+    if (playerInput_ != null) {
+      size += 1 + pb::CodedOutputStream.ComputeMessageSize(PlayerInput);
     }
-    size += playerInputList_.CalculateSize(_repeated_playerInputList_codec);
     if (_unknownFields != null) {
       size += _unknownFields.CalculateSize();
     }
@@ -1451,10 +1453,12 @@ public sealed partial class FrameInput : pb::IMessage<FrameInput>
     if (other == null) {
       return;
     }
-    if (other.SubFrameTime != 0L) {
-      SubFrameTime = other.SubFrameTime;
+    if (other.playerInput_ != null) {
+      if (playerInput_ == null) {
+        PlayerInput = new global::PlayerInput();
+      }
+      PlayerInput.MergeFrom(other.PlayerInput);
     }
-    playerInputList_.Add(other.playerInputList_);
     _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
   }
 
@@ -1474,12 +1478,11 @@ public sealed partial class FrameInput : pb::IMessage<FrameInput>
         default:
           _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
           break;
-        case 8: {
-          SubFrameTime = input.ReadInt64();
-          break;
-        }
         case 18: {
-          playerInputList_.AddEntriesFrom(input, _repeated_playerInputList_codec);
+          if (playerInput_ == null) {
+            PlayerInput = new global::PlayerInput();
+          }
+          input.ReadMessage(PlayerInput);
           break;
         }
       }
@@ -1501,12 +1504,11 @@ public sealed partial class FrameInput : pb::IMessage<FrameInput>
         default:
           _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
           break;
-        case 8: {
-          SubFrameTime = input.ReadInt64();
-          break;
-        }
         case 18: {
-          playerInputList_.AddEntriesFrom(ref input, _repeated_playerInputList_codec);
+          if (playerInput_ == null) {
+            PlayerInput = new global::PlayerInput();
+          }
+          input.ReadMessage(PlayerInput);
           break;
         }
       }

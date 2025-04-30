@@ -11,22 +11,27 @@ namespace AssetsLoad
     {
         public void UnloadUnusedAssets()
         {
-#if UNITY_LOCAL_SCRIPT 
+#if UNITY_EDITOR 
             Resources.UnloadUnusedAssets();
 #else
+            Resources.UnloadUnusedAssets();
 #endif
         } 
 
         public async UniTask<Object> LoadAsync(string path,CancellationToken token, IProgress<float> progress = null)
         {
-#if UNITY_LOCAL_SCRIPT
+#if UNITY_EDITOR
             var request = Resources.LoadAsync<GameObject>(path); 
             var progressTask = Track(request,CancellationTokenSource.CreateLinkedTokenSource(token).Token, progress);
             var loadTask = request.ToUniTask(cancellationToken: token);
             await UniTask.WhenAny(loadTask, progressTask); 
             return request.asset;
 #else
-            return null;
+            var request = Resources.LoadAsync<GameObject>(path); 
+            var progressTask = Track(request,CancellationTokenSource.CreateLinkedTokenSource(token).Token, progress);
+            var loadTask = request.ToUniTask(cancellationToken: token);
+            await UniTask.WhenAny(loadTask, progressTask); 
+            return request.asset;
 #endif
         }
 

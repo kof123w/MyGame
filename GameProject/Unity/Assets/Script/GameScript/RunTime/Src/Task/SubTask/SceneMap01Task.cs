@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using EventSystem;
 using FixedMath;
-using FixMath.NET;
 using UnityEngine; 
 
 namespace MyGame
 { 
     public class SceneMap01Task : ITask
     {
-
         public async UniTaskVoid Run()
         {
             await UIManager.Show<LoadUI>();
@@ -19,16 +15,19 @@ namespace MyGame
             {
                 previous.UnloadScene().Forget();
             }
-            GameWorld.Instance.CreatePlayerRole(1);
-            PlayerCharacter playerCharacter = GameWorld.Instance.GetPlayerCharacter();
             LoadTaskSort loadTaskSort = new LoadTaskSort();
             //加载场景
             loadTaskSort.AddLoadTask(current.LoadScene(),current);
-            //加载玩家
-            loadTaskSort.AddLoadTask(playerCharacter.LoadActor(),playerCharacter);
+            //处理需要创建的玩家
+            var playerDataList = FrameContext.Context.GetPlayerDataList();
+            for (int i = 0; i < playerDataList.Count; i++)
+            {
+                var roleVisual = GameWorld.Instance.CreateRole(playerDataList[i].PlayerRoleId,1);
+                loadTaskSort.AddLoadTask(roleVisual.LoadActor(),roleVisual);
+            }
+            
             await loadTaskSort.WaitAllTasksAsync();
             await UniTask.Yield(PlayerLoopTiming.Update);
-            playerCharacter.SetWorldPos(new Vector3(0,10,0)); 
             var terrain = current.GetComponentInChild<Terrain>();
             var heightmapResolution = terrain.terrainData.heightmapResolution;
             var heights = terrain.terrainData.GetHeights(0,0, heightmapResolution, heightmapResolution);
@@ -45,7 +44,6 @@ namespace MyGame
             var meshFilters = current.GetComponentByNodeName<MeshFilter>("Building");
             if (meshFilters != null && meshFilters.Length > 0)
             {
-                
                 foreach (var meshFilter in meshFilters)
                 { 
                     var vs = new FPVector3[meshFilter.mesh.vertices.Length];
@@ -60,10 +58,11 @@ namespace MyGame
                     meshPositions.Add(meshFilter.transform.position);
                     meshScales.Add(meshFilter.transform.localScale);
                 }
-            }   
+            }
             
- 
-            FrameContext.Context.InitWorldTerrain(
+            //把网格数据传入局内
+            FrameContext.Context.InitWorldTerrain
+            (
                 heightmapResolutionParam:heightmapResolution, 
                 heightsParam:heights, 
                 terrainSizeParam:terrainSize, 
@@ -74,11 +73,13 @@ namespace MyGame
                 meshTrianglesParam:meshTriangles,
                 meshPositionsParam:meshPositions,
                 meshScalesParam:meshScales
-                );
+            ); 
             
+            FrameContext.Instance.CreateLogicRole(); 
             UIManager.Close<LoadUI>();
             UIManager.Close<MatchUI>();
             FrameContext.Context.Start();
+            await UIManager.Show<FrameSortUI>();
         } 
     }
 }

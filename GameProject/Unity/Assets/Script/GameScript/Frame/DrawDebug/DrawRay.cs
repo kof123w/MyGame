@@ -1,6 +1,5 @@
-using System;
+#if UNITY_EDITOR
 using UnityEngine;
-
 namespace MyGame
 {
     public class DrawRay : MonoBehaviour
@@ -35,3 +34,7 @@ namespace MyGame
         }
     }
 }
+#endif
+
+
+

@@ -12,7 +12,7 @@ namespace MyGame
 
         protected override Entity CreateEntityShape()
         {
-            unityCapsule = (CapsuleCollider)entityCollider;
+            /*unityCapsule = (CapsuleCollider)entityCollider;
             //获取 Unity CapsuleCollider参数
             Radius = unityCapsule.radius;
             Height = unityCapsule.height;
@@ -45,7 +45,8 @@ namespace MyGame
             var capsule = new BEPUphysics.Entities.Prefabs.Capsule(bePuStart, bePuEnd, Radius, mass); 
             var physicsSpace = FrameContext.Context.GetSpace();
             physicsSpace.Add(capsule);
-            return capsule;
+            return capsule;*/
+            return null;
         }
         
         public new void OnDestroy()

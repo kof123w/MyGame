@@ -19,20 +19,18 @@ namespace MyGame
 
             for (int i = 0; i < frameInputs.Count; i++) {
                 global::FrameInput frameInput = new global::FrameInput(); 
-                var sample = frameInputs[i];
-                frameInput.SubFrameTime = sample.SubFrameTime.RawValue;
-                for (int j = 0; j < sample.GetCount();j++)
+                var sample = frameInputs[i]; 
+                if (sample.GetCount() > 0)
                 {
-                    var inputCommand = sample.GetInputCommand(j);
+                    var inputCommand = sample.GetInputCommand(sample.GetCount() - 1);
                     PlayerInput playerInput = new PlayerInput
                     {
                         Dright = inputCommand.Dright.RawValue,
                         Dup = inputCommand.Dup.RawValue
                     };
-                    frameInput.PlayerInputList.Add(playerInput);
-                }
-
-                csFrameSample.FrameInputList.Add(frameInput);
+                    frameInput.PlayerInput = playerInput;
+                } 
+                csFrameSample.FrameInput = frameInput;
             }
             ClearInputs();
             return csFrameSample;

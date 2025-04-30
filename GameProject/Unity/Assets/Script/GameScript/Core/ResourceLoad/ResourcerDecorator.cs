@@ -35,7 +35,7 @@ namespace AssetsLoad
 
         public async UniTask<Object> LoadUIResourceAsync(string resourceName,CancellationToken token)
         {
-#if UNITY_LOCAL_SCRIPT  
+#if UNITY_EDITOR  
             string path = $"UIPrefabs/{resourceName}";
             return await Resourcer.LoadAsync(path,token);
 #else
@@ -45,7 +45,7 @@ namespace AssetsLoad
 
         public async UniTask<Object> LoadResourceAsync(string path,CancellationToken token,IProgress<float> progress = null)
         {
-#if UNITY_LOCAL_SCRIPT  
+#if UNITY_EDITOR  
             return await Resourcer.LoadAsync(path,token,progress);
 #else
            return null;

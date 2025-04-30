@@ -3,6 +3,7 @@ using System.Threading;
 using BEPUphysics.Entities;
 using UnityEngine;
 using FixedMath;
+using FixMath.NET;
 using Object = UnityEngine.Object;
 
 namespace MyGame
@@ -11,18 +12,10 @@ namespace MyGame
     public class Fix64Shape : IMemoryPool
     {
         #region 物理更新
-        private CancellationTokenSource fixedUpdateToken; 
-        protected Vector3 offsetCenter = Vector3.zero;
-        protected float mass = 1;
-        private Entity entityShape; 
-        protected Collider entityCollider;  //unity的碰撞器直接用到这里来
+        private Entity entityShape;   
+        protected Fix64 Mass = 1.5M;
 
-        protected void SetEntityCollider(Collider entityColliderParam)
-        {
-            entityCollider = entityColliderParam;
-        }
-
-        protected Entity EntityShape {
+        public Entity EntityShape {
             get
             {
                 if (entityShape != null)
@@ -31,17 +24,31 @@ namespace MyGame
                 }
 
                 entityShape = CreateEntityShape();
+                InitEntityShapeParam();
                 return entityShape;
             }
-            set => entityShape = value;
+        }
+
+        public void SetPosition(FPVector3 position)
+        {
+            EntityShape.Position = position;
+        }
+
+        public virtual void SyncWorld()
+        {
+            
+        }
+
+        protected virtual void InitEntityShapeParam()
+        {
+            
         }
 
         protected virtual Entity CreateEntityShape()
         {
             return null;
         } 
-        
-        
+         
         
         #endregion
 

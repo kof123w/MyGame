@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Net;
 using ConsoleApp1.TCPServer.Src.ServerParam;
 using MyGame;
@@ -7,23 +8,25 @@ namespace MyServer;
 //房间信息
 public class Room
 {
-    readonly List<Player> _players = new();
+    readonly List<Player> players = new();
     public int RoomId { get; set; }
     public int RandomSeed { get; set; }
 
-    public volatile bool IsStarted = false;
+    private volatile bool IsStarted = false;
     
-    public int CurRoomFrame { get; set; }
+    private int CurRoomFrame { get; set; }
     
     private CancellationTokenSource cancellationTokenSource; 
     private List<FrameData> frameDataList = new List<FrameData>();
     
+    public List<Player> Players => players;
+    
     public int JoinRoom(PlayerServerData playerData)
     {
-        lock (_players)
+        lock (players)
         {
-            for (int i = 0; i < _players.Count; i++) {
-                var player = _players[i];
+            for (int i = 0; i < players.Count; i++) {
+                var player = players[i];
                 if (player.PlayerId == playerData.RoleId)
                 {
                     return i;
@@ -33,20 +36,20 @@ public class Room
             Player newPlay = new Player();
             newPlay.PlayerId = playerData.RoleId; 
             AddPlayer(newPlay);
-            return _players.Count;
+            return players.Count;
         }  
     }
 
     private void AddPlayer(Player player)
     {
-        _players.Add(player);
+        players.Add(player);
     }
 
     public void SetPlayerState(long playerRoleId,IPEndPoint ipEndPoint)
     {
-        lock (_players)
+        lock (players)
         {
-            foreach (var player in _players)
+            foreach (var player in players)
             {
                 if (player.PlayerId == playerRoleId)
                 {
@@ -65,10 +68,10 @@ public class Room
 
     public void ExitRoom(long playerRoleId)
     {
-        lock (_players)
+        lock (players)
         {
             bool isAllPlayerExited = true;
-            foreach (var player in _players)
+            foreach (var player in players)
             {
                 if (player.PlayerId == playerRoleId)
                 { 
@@ -98,33 +101,34 @@ public class Room
                 return;
             }
             var frameData = frameDataList[^1];
-            for (int i = 0; i < sample.FrameInputList.Count; i++)
+            
+            FramePlayerInput framePlayerInput = null;
+            for (int j = 0; j < frameData.FramePlayerInputList.Count; j++) {
+                if (frameData.FramePlayerInputList[j].PlayerId == sample.PlayerId)
+                {
+                    framePlayerInput = frameData.FramePlayerInputList[j];
+                    //framePlayerInput.FrameInput.Add(sample.FrameInputList);
+                    framePlayerInput.FrameInput = sample.FrameInput;
+                }
+            }
+
+            if (framePlayerInput == null)
             {
-                FramePlayerInput framePlayerInput = null;
-                for (int j = 0; j < frameData.FramePlayerInputList.Count; j++) {
-                    if (frameData.FramePlayerInputList[j].PlayerId == sample.PlayerId)
-                    {
-                        framePlayerInput = frameData.FramePlayerInputList[j];
-                    }
-                }
-
-                if (framePlayerInput == null)
+                framePlayerInput = new FramePlayerInput();
+                framePlayerInput.PlayerId = sample.PlayerId;
+                //framePlayerInput.FrameInput.Add(sample.FrameInputList);
+                framePlayerInput.FrameInput = sample.FrameInput;
+                frameData.FramePlayerInputList.Add(framePlayerInput);
+            }  
+            
+            foreach (var player in players)
+            {
+                if (player.PlayerId == sample.PlayerId)
                 {
-                    framePlayerInput = new FramePlayerInput();
-                    framePlayerInput.PlayerId = sample.PlayerId;
-                    frameData.FramePlayerInputList.Add(framePlayerInput);
-                } 
-                foreach (var player in _players)
-                {
-                    if (player.PlayerId == sample.PlayerId)
-                    {
-                        player.RunFrame = sample.ClientCurFrame;
-                    }
+                    player.RunFrame = sample.ClientCurFrame;
                 }
-            } 
-        }
-
-      
+            }
+        } 
     }
 
     public void CloseRoom()
@@ -134,7 +138,8 @@ public class Room
             cancellationTokenSource?.Cancel();
             cancellationTokenSource?.Dispose(); 
         }
-        _players.Clear(); 
+        players.Clear(); 
+        frameDataList.Clear();
     }
 
     public void StartRoom()
@@ -146,10 +151,73 @@ public class Room
             cancellationTokenSource?.Dispose(); 
         }
         cancellationTokenSource = new CancellationTokenSource();
-        Tick(cancellationTokenSource.Token);
+        //var task = Tick(cancellationTokenSource.Token); 
+        var thread = new Thread(Tick) { IsBackground = true }; // 设置为后台线程
+        thread.Start();
         IsStarted = true;
+    } 
+
+    private void Tick()
+    {
+        while (true)
+        {
+            try
+            {
+                // ReSharper disable once PossibleLossOfFraction
+                PreciseDelay(1000/ LunchParam.ServerTick);
+                bool isPlayerAllExited = FrameSyncLogic();
+                if (isPlayerAllExited)
+                {
+                    CloseRoom();
+                    return;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+    }
+
+    private void PreciseDelay(float milliseconds)
+    {
+        var sw = Stopwatch.StartNew();
+        var spinner = new SpinWait();
+        while (sw.ElapsedMilliseconds < milliseconds)
+        {
+            spinner.SpinOnce();
+        }
     }
     
+    private bool FrameSyncLogic()
+    {
+        bool isAllPlayerExited = true;
+        //处理服务器当前帧逻辑  
+        lock (players)
+        {
+            foreach (var player in players)
+            {
+                if (player.IsPlaying)
+                {
+                    SCFrameData scFrameData = new SCFrameData();
+                    scFrameData.FrameDataList.Add(frameDataList.Skip(player.RunFrame));
+                    UDPServer.Instance.Send(MessageType.ScframeData,scFrameData,player.EndPoint);
+                    isAllPlayerExited = false;
+                }
+            }
+        }
+        FrameData frameData = new FrameData();
+        frameData.Frame = CurRoomFrame;
+        lock (frameDataList)
+        { 
+            frameDataList.Add(frameData);
+        }
+        CurRoomFrame++;
+        Console.WriteLine($"服务器，房间号:{RoomId},最新帧数{CurRoomFrame}");
+        return isAllPlayerExited;
+    } 
+
     //直接用异步的方法来处理
     private async Task Tick(CancellationToken token)
     {
@@ -157,29 +225,8 @@ public class Room
         {
             try
             {
-                await Task.Delay(1000/LunchParam.ServerTick);
-                //处理服务器当前帧逻辑
-                FrameData frameData = new FrameData();
-                frameData.Frame = CurRoomFrame;
-                lock (frameDataList)
-                { 
-                    frameDataList.Add(frameData);
-                }
-
-                lock (_players)
-                {
-                    foreach (var player in _players)
-                    {
-                        if (player.IsPlaying)
-                        {
-                            SCFrameData scFrameData = new SCFrameData();
-                            scFrameData.FrameDataList.Add(frameDataList.Skip(player.RunFrame));
-                            UDPServer.Instance.Send(MessageType.ScframeData,scFrameData,player.EndPoint);
-                        }
-                    }
-                }
-            
-                CurRoomFrame++;
+                await Task.Delay(1000/ LunchParam.ServerTick, token);
+                FrameSyncLogic();
             }
             catch (Exception e)
             {
