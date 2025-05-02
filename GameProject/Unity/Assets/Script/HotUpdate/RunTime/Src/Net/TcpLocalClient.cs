@@ -47,7 +47,7 @@ namespace MyGame
 
         private async UniTask ReceivedData(CancellationToken token)
         {
-            while (!token.IsCancellationRequested)
+            while (!token.IsCancellationRequested && tcpClient.Connected)
             {
                 // 1. 读取4字节长度前缀（使用ArrayPool）
                 var prefixBuffer = ArrayPool<byte>.Shared.Rent(4);
@@ -89,10 +89,11 @@ namespace MyGame
                     break;
                 }
                 finally
-                {
+                { 
                     ArrayPool<byte>.Shared.Return(prefixBuffer);
                 }
             }
+            Disconnect();
         }
 
         public void Disconnect()

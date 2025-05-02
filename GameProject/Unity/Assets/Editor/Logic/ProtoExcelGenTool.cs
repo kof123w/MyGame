@@ -13,9 +13,9 @@ namespace MyGame.Editor
 {
     public static class ProtoExcelGenTool
     {
-        private const string OutPutPathGlo = "Assets/Resources/Config";
+        private const string OutPutPathGlo = "Assets/Resources_moved/Config";
         private const string ExcelIndexGlo = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        private const string VoPathGlo = "Assets\\Script\\GameScript\\Excel\\ConfigVO";
+        private const string VoPathGlo = "Assets\\Script\\HotUpdate\\Config\\ConfigVO";
         private static string ProtoVoPathGlo = string.Empty;
 
         private const int ExploreRowGlo = 2; //注释掉的列索引
@@ -133,7 +133,7 @@ namespace MyGame.Editor
             }
 
             className = currentWorksheet.Cells["B1"].Value as string;
-            filePath = $"{OutPutPathGlo}/{className}.bin";
+            filePath = $"{OutPutPathGlo}/{className}.bytes";
             maxRow = row - 1; 
         }
 
@@ -234,7 +234,7 @@ namespace MyGame.Editor
         {
             // 获取所有用户程序集（排除系统程序集）
             var userAssemblies = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(a => a.FullName.StartsWith("GameScript_Excel"));
+                .Where(a => a.FullName.StartsWith("GameScript_Config"));
 
             foreach (var assembly in userAssemblies)
             {
@@ -265,71 +265,56 @@ namespace MyGame.Editor
         private static void GenVoClassBinCache(ExcelWorksheet worksheet, string tableName)
         {
             string fileName = $"{VoPathGlo}\\{tableName}BinCahce.cs";
-            string fileMgrPath = $"Assets\\\\Resources\\\\Config\\\\{tableName}.bin";
+            string fileMgrPath = $"Assets\\\\Resources_moved\\\\Config\\\\{tableName}.bytes";
             //主字段名
-            string mainDataName = worksheet.Cells["C1"].Value as string;
-            string mainDataType = worksheet.Cells["B4"].Value as string;
+            //string mainDataName = worksheet.Cells["C1"].Value as string;
+            //string mainDataType = worksheet.Cells["B4"].Value as string;
             
             using (StreamWriter sw = new StreamWriter(fileName))
             {
                 sw.WriteLine("using System.Collections.Generic;");
                 sw.WriteLine("using System.IO;");
                 sw.WriteLine("using Google.Protobuf;");
+                sw.WriteLine("using AssetsLoad;");
+                sw.WriteLine("using Cysharp.Threading.Tasks;");
+                sw.WriteLine("using UnityEngine;");
                 sw.WriteLine("namespace Config");
                 sw.WriteLine("{");
                 sw.WriteLine($"  class {tableName}BinCache:CacheObject<{tableName}>");
                 sw.WriteLine("  {");
                 sw.WriteLine($"    public {tableName}BinCache()");
-                sw.WriteLine("    {");
-                sw.WriteLine("#if UNITY_EDITOR");
-                sw.WriteLine($"      byte[] data = File.ReadAllBytes(\"{fileMgrPath}\");");
+                sw.WriteLine("    {"); 
+                sw.WriteLine("         LoadConfig();");
+                /*sw.WriteLine("#if UNITY_LOCAL_SCRIPT"); 
+                sw.WriteLine("         LoadConfig();");
                 sw.WriteLine("#else");
-                // todo ..
-                sw.WriteLine("#endif"); 
-                sw.WriteLine($"      var list = {tableName}List.Parser.ParseFrom(data);");
-                sw.WriteLine($"      var enumerator = list.DataList.GetEnumerator();"); 
-                sw.WriteLine($"      while (enumerator.MoveNext())"); 
-                sw.WriteLine("      {"); 
-                sw.WriteLine("         CacheList.Add(enumerator.Current);");  
-                sw.WriteLine("       }"); 
-                sw.WriteLine($"       enumerator.Dispose();"); 
+                sw.WriteLine("         LoadConfig().Forget();");
+                sw.WriteLine("#endif");*/
                 sw.WriteLine("    }");
-                sw.WriteLine("  }");
+                
+                sw.WriteLine("#if UNITY_LOCAL_SCRIPT");
+                sw.WriteLine($"    private void LoadConfig()");
+                sw.WriteLine("     {"); 
+                sw.WriteLine($"        byte[] data = File.ReadAllBytes(\"{fileMgrPath}\");");
+                sw.WriteLine("#else");
+                sw.WriteLine($"    private async UniTaskVoid LoadConfig()");
+                sw.WriteLine("    {");  
+                sw.WriteLine($"        TextAsset textAsset =  await ResourcerDecorator.Instance.LoadConfigAssetAsync(\"{tableName}\");");
+                sw.WriteLine($"        byte[] data =  textAsset.bytes;");
+                sw.WriteLine("#endif");
+                sw.WriteLine($"        var list = {tableName}List.Parser.ParseFrom(data);");
+                sw.WriteLine($"        var enumerator = list.DataList.GetEnumerator();");
+                sw.WriteLine($"        while (enumerator.MoveNext())");
+                sw.WriteLine("        {");
+                sw.WriteLine("           CacheList.Add(enumerator.Current);");
+                sw.WriteLine("         }");
+                sw.WriteLine($"         enumerator.Dispose();");
+                sw.WriteLine($"         IsCompleteLoad = true;"); 
+                sw.WriteLine("       }"); 
+                sw.WriteLine("    }"); 
                 sw.WriteLine("}");
             }
-            
-            /*using (StreamWriter sw = new StreamWriter(fileName))
-            { 
-                sw.WriteLine("using System.Collections.Generic;");
-                sw.WriteLine("using System.IO;");
-                sw.WriteLine("using Google.Protobuf;");
-                sw.WriteLine("namespace Config");
-                sw.WriteLine("{");
-                sw.WriteLine($"  class {tableName}BinCache:CacheObject<{tableName}>");
-                sw.WriteLine("  {");
-                sw.WriteLine($"    public {tableName}BinCache()");
-                sw.WriteLine("    {");
-                sw.WriteLine($"      byte[] data = File.ReadAllBytes(\"{fileMgrPath}\");");
-                sw.WriteLine($"      using (var input = new CodedInputStream(data))");
-                sw.WriteLine("      {");
-                sw.WriteLine("        // 读取消息长度（对于 protobuf，通常需要手动管理长度）");
-                sw.WriteLine("        int size = input.ReadInt32(); // 注意：这里的 size 是消息的实际大小，不包括长度字段本身。");
-                sw.WriteLine("        byte[] messageData = input.ReadRawBytes(size); // 读取实际的消息数据。");
-                sw.WriteLine("        using (var subInput = new CodedInputStream(messageData)){");
-                sw.WriteLine($"          {tableName}List message = new {tableName}List(); // 创建消息实例");
-                sw.WriteLine($"          message.MergeFrom(subInput); // 从子输入流中合并数据到消息实例中"); 
-                sw.WriteLine($"          var enumerator = message.DataList.GetEnumerator();"); 
-                sw.WriteLine($"          while (enumerator.MoveNext())"); 
-                sw.WriteLine("          {"); 
-                sw.WriteLine("            CacheList.Add(enumerator.Current);");  
-                sw.WriteLine("          }"); 
-                sw.WriteLine($"          enumerator.Dispose();"); 
-                sw.WriteLine("        }"); 
-                sw.WriteLine("      }");
-                sw.WriteLine("    }");
-                sw.WriteLine("  }");
-                sw.WriteLine("}");
-            }*/
+           
         }
 
         //生成 proto vo bin 文件

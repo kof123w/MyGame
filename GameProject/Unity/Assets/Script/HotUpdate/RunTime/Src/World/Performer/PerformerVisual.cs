@@ -19,14 +19,15 @@ namespace MyGame
             await UnloadResource(); 
         } 
         
-        public void SetConfigID(int id)
+        public async void SetConfigID(int id)
         {
-            roleResourceConfig = ResourceConfigManager.Instance.GetRoleResourceConfig(id);
-            roleBaseAttributeConfig = RoleBaseAttributeConfigManager.Instance.GetRoleBaseAttributeConfig(id);
+            roleResourceConfig = await ResourceConfigManager.Instance.GetRoleResourceConfig(id);
+            roleBaseAttributeConfig = await RoleBaseAttributeConfigManager.Instance.GetRoleBaseAttributeConfig(id);
         } 
         
         public async UniTask LoadActor()
         {
+            await UniTask.WaitUntil(() => roleResourceConfig != null);
             await LoadAsset(roleResourceConfig.AssetPath); 
             trans.localPosition = Vector3.zero;
             roleTransform = trans.Find("RoleModel");

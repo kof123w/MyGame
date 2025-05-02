@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: ConfigAsset
+  m_EditorClassIdentifier: 
+  m_GroupName: ConfigAsset
+  m_GUID: 09f1f8b0b1a03a44f878f1be8125d0a2
+  m_SerializeEntries:
+  - m_GUID: 05b4420a36d052845b4518c5c1605f89
+    m_Address: TestConfig
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Config
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 09c4fd3ded0ec744e9262e1ebdb2482c
+    m_Address: SceneLoadResourceConfig
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Config
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3014a3d31cd6e3f42ba179f52ebd672f
+    m_Address: DefInputConfig
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Config
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 42ca1ff5a6f20b04897351e67c31d773
+    m_Address: RoleBaseAttributeConfig
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Config
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cd05cf4ef46cb304a965a632b6b4c154
+    m_Address: RoleResourceConfig
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Config
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: df8fdafee44945148924ed8992d488fa, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: a751ab78e64fbae4a824f3fc218aa309, type: 2}
+    - {fileID: 11400000, guid: a65dda5302e1ee742a22fe26e864bf62, type: 2}

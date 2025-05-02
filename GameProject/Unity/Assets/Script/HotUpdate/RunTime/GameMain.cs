@@ -2,6 +2,7 @@
 using System.Reflection;
 using AssetsLoad;
 using Config;
+using Cysharp.Threading.Tasks;
 using DebugTool;
 using EventSystem;
 using GameTimer;
@@ -11,21 +12,22 @@ namespace MyGame
 {
     public class GameMain
     {
-        public static void LaunchGame(int logMode, int netMode, int resourceType)
+        public static async void LaunchGame(int logMode, int netMode, int resourceType)
         {
             try
             {
+                DLogger.Error("lunch game...LaunchGame");
                 #region 参数设置和前置设置
                 DLogger.LogType = (DebugMode)logMode;
-                ResourcerDecorator.Instance.SetLoaderResourceType(resourceType); 
+                ResourcerDecorator.Instance.Init();
+                ResourcerDecorator.Instance.SetLoaderResourceType(resourceType);  
                 PreProcess();
                 //预加载一下配置
                 ConfigPreRead.PreRead();
                 #endregion
                 #region 前置系统初始化   
                 EventListenManager.Instance.Init();
-                GameTimerManager.Instance.Init();
-                ResourcerDecorator.Instance.Init();
+                GameTimerManager.Instance.Init(); 
                 UIManager.Instance.Init();
                 TaskManager.Instance.Init();
                 PlayerInputSystem.Instance.Init(); 
@@ -104,9 +106,11 @@ namespace MyGame
             //MainCamera DirectionalLight UIFramework StartGame GlobalVolume 这些进入不销毁到状态
             UnityEngine.Object.DontDestroyOnLoad(GameObject.Find("MainCamera"));
             UnityEngine.Object.DontDestroyOnLoad(GameObject.Find("DirectionalLight"));
-            UnityEngine.Object.DontDestroyOnLoad(GameObject.Find("UIFramework"));
+          
             UnityEngine.Object.DontDestroyOnLoad(GameObject.Find("StartGame"));
-            UnityEngine.Object.DontDestroyOnLoad(GameObject.Find("GlobalVolume"));  
+            UnityEngine.Object.DontDestroyOnLoad(GameObject.Find("GlobalVolume"));
+            var uiFrameworkRoot = GameObject.Find("UIFramework");
+            UnityEngine.Object.DontDestroyOnLoad(uiFrameworkRoot); 
         }
 
         //这里统一进行程序集里面的程序进行初步初始化和分类避免后面其他模块多次进行程序扫描浪费性能

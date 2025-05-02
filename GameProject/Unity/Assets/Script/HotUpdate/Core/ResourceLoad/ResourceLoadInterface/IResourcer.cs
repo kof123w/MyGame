@@ -2,6 +2,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using Object = UnityEngine.Object;
 
 namespace AssetsLoad
@@ -9,7 +10,7 @@ namespace AssetsLoad
     public interface IResourcer
     {
         public void UnloadUnusedAssets();
-        UniTask<Object> LoadAsync(string path,CancellationToken token,IProgress<float> progress = null);
-        UniTask Track(ResourceRequest request,CancellationToken token,IProgress<float> progress = null);
-    }
+        UniTask<Object> LoadAsync(string resName,CancellationToken token,IProgress<float> progress = null); 
+        UniTask Track(AsyncOperationHandle<GameObject> request,CancellationToken token,IProgress<float> progress = null);
+    } 
 }

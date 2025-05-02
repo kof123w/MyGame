@@ -2,14 +2,15 @@
     "name": "GameScript_Config",
     "rootNamespace": "",
     "references": [
-        "GUID:45d9b7d2576528b4995f99652191bcf4"
+        "GUID:45d9b7d2576528b4995f99652191bcf4",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
-    "allowUnsafeCode": false,
+    "allowUnsafeCode": true,
     "overrideReferences": false,
     "precompiledReferences": [],
-    "autoReferenced": false,
+    "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],
     "noEngineReferences": false

@@ -1,4 +1,5 @@
-﻿using MyGame;
+﻿using Cysharp.Threading.Tasks;
+using MyGame;
 using SingleTool;
 
 namespace Config
@@ -14,14 +15,14 @@ namespace Config
             roleResourceConfigDict.Init(t=>t.ID);
         }
 
-        public SceneLoadResourceConfig GetSceneResourceConfig(int sceneId)
+        public async UniTask<SceneLoadResourceConfig> GetSceneResourceConfig(int sceneId)
         { 
-            return sceneLoadResourceDict.TryGetVal(sceneId);
+             return await sceneLoadResourceDict.TryGetVal(sceneId);
         }
 
-        public RoleResourceConfig GetRoleResourceConfig(int roleId)
+        public async UniTask<RoleResourceConfig> GetRoleResourceConfig(int roleId)
         {
-            return roleResourceConfigDict.TryGetVal(roleId);
+            return await roleResourceConfigDict.TryGetVal(roleId);
         }
     }
 }

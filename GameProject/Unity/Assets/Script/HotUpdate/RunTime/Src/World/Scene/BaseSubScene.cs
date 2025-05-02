@@ -1,4 +1,5 @@
-﻿using Config;
+﻿using System;
+using Config;
 using Cysharp.Threading.Tasks;
 
 namespace MyGame
@@ -9,10 +10,10 @@ namespace MyGame
         private SceneLoadResourceConfig sceneConfig;
         private SceneType sceneType;
 
-        public void SetScene(int configId, SceneType st)
+        public async void SetScene(int configId, SceneType st)
         {
             sceneType = st;
-            sceneConfig = ResourceConfigManager.Instance.GetSceneResourceConfig(configId);
+            sceneConfig = await ResourceConfigManager.Instance.GetSceneResourceConfig(configId);
         } 
         
         public virtual async UniTask LoadScene()    

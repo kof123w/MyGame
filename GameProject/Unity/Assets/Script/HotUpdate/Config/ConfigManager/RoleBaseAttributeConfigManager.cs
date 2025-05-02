@@ -1,4 +1,5 @@
-﻿using SingleTool;
+﻿using Cysharp.Threading.Tasks;
+using SingleTool;
 
 namespace Config
 {
@@ -12,9 +13,9 @@ namespace Config
             roleBaseAttributeConfigDict.Init(t=>t.ID);
         }
 
-        public RoleBaseAttributeConfig GetRoleBaseAttributeConfig(int id)
+        public async UniTask<RoleBaseAttributeConfig> GetRoleBaseAttributeConfig(int id)
         {  
-            return roleBaseAttributeConfigDict.TryGetVal(id);
+            return await roleBaseAttributeConfigDict.TryGetVal(id);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using DebugTool;
 using SingleTool;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -20,6 +21,7 @@ namespace AssetsLoad
 
         public void Init()
         {
+            DLogger.Log("Init Resourcer");
             Resourcer = new Resourcer();
         }
 
@@ -27,29 +29,25 @@ namespace AssetsLoad
         {
             this.loaderResourceType = (ResourceLoadMethod)loaderResourceTypeParam;
         }
-
+        
         public ResourceLoadMethod GetLoaderResourceType()
         {
             return loaderResourceType;
         }
 
+        public async UniTask<TextAsset> LoadConfigAssetAsync(string resName)
+        { 
+            return await Resourcer.LoadConfigAsset(resName);
+        }
+
         public async UniTask<Object> LoadUIResourceAsync(string resourceName,CancellationToken token)
         {
-#if UNITY_EDITOR  
-            string path = $"UIPrefabs/{resourceName}";
-            return await Resourcer.LoadAsync(path,token);
-#else
-            return null;
-#endif
+            return await Resourcer.LoadAsync(resourceName,token);
         }
 
         public async UniTask<Object> LoadResourceAsync(string path,CancellationToken token,IProgress<float> progress = null)
         {
-#if UNITY_EDITOR  
             return await Resourcer.LoadAsync(path,token,progress);
-#else
-           return null;
-#endif
         } 
 
         //直接销毁

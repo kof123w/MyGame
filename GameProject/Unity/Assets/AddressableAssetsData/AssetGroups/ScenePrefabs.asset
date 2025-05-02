@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: ScenePrefabs
+  m_EditorClassIdentifier: 
+  m_GroupName: ScenePrefabs
+  m_GUID: a16d0654eb42ee042b24030a447288ea
+  m_SerializeEntries:
+  - m_GUID: 049caef6da1c21345aa96e30d7652b55
+    m_Address: ScenePrefabs/Map01
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Map
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 04fae4e972de8f14b9509544f1c67616
+    m_Address: Assets/Resources_moved/Materials/Brick/brick180404LQ_base_AlbedoTransparency.mat
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MapMaterial
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 33078fba9b4a7354491841d5d81f1654
+    m_Address: Assets/Resources_moved/Shader/TerrainShader.shader
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MapMaterial
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ae1a4e47036ecf849a49262afd886dcb
+    m_Address: Assets/Resources_moved/TerrainData/Map01.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MapData
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: df8fdafee44945148924ed8992d488fa, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 958043527863e8047ac5eb7385cf23dc, type: 2}
+    - {fileID: 11400000, guid: 7924b7eba47c846459ae80695cb5640f, type: 2}
