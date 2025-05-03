@@ -16,6 +16,7 @@ _ReSharper.CSharp/
 Unity/.gradle
 Unity/Bundles
 Unity/Library
+Unity/ServerData
 Unity/Logs
 Unity/UserSettings
 Unity/*.csproj

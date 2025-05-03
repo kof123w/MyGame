@@ -1,4 +1,5 @@
-using System.Collections.Generic;  
+using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using SingleTool;
 
 namespace Config
@@ -12,9 +13,9 @@ namespace Config
             defInputConfigDict.Init(t=>t.ID);
         }
 
-        public List<DefInputConfig> GetInputConfigs()
+        public async UniTask<List<DefInputConfig>> GetInputConfigs()
         {
-            return defInputConfigDict.GetCacheList;
+            return await defInputConfigDict.GetCacheList();
         }  
     }
 }

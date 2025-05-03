@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Config;
+using Cysharp.Threading.Tasks;
 using DebugTool;
 using EventSystem;
 using SingleTool;
@@ -16,10 +17,10 @@ namespace MyGame
         private Vector3 previousMousePosition;
         private DefInputConfig runningConfig = null;
         private KeyCode runningKeyCode = KeyCode.None;
-        public void Init()
+        public async UniTaskVoid Init()
         {
             DLogger.Log("==============>Init Input Module");
-            defInputConfigs = DefInputConfigManager.Instance.GetInputConfigs();
+            defInputConfigs = await DefInputConfigManager.Instance.GetInputConfigs();
             if (defInputConfigs != null)
             {
                 for (int i = 0; i < defInputConfigs.Count; i++)
@@ -56,7 +57,7 @@ namespace MyGame
 
         //接收输入
         public void RevInput()
-        {
+        { 
             //收集前先清理一下
             ClearInput();
             //这里收集这一帧数的输入
@@ -93,6 +94,7 @@ namespace MyGame
             
             if (dup!=0 || dright!=0)
             {
+                Debug.Log("RevInput InputSignal.InputSignal_MoveSignal");
                 GameEvent.Push(InputSignal.InputSignal_MoveSignal, (float)dup, (float)-dright);
             }
             

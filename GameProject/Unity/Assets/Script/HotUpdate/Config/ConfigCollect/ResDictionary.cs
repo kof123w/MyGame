@@ -11,9 +11,10 @@ namespace Config
         private Dictionary<T1, T2> dict = new Dictionary<T1, T2>();
         private CacheObject<T2> cacheObject = null;
         private bool initialized = false;
-        public List<T2> GetCacheList
+        public async UniTask<List<T2>> GetCacheList()
         {
-            get { return cacheObject.CacheList; }
+            await UniTask.WaitUntil(() => initialized);
+            return cacheObject.CacheList;
         }
  
         public ResDictionary(CacheObject<T2> cacheObject)

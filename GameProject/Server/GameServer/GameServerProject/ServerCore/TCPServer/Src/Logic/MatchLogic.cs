@@ -34,12 +34,15 @@ public class MatchLogic : Singleton<MatchLogic>
         //临时让玩家直接进入房间内 
         int roomId = 9980; //房间号需要产生的，这里直接写死9980
         SCMatchRes scMatchRes = new SCMatchRes();
-        bool isJoinRoom = matchedPlayers.Count > 0;
+        bool isJoinRoom = matchedPlayers.Count > 1;
         if (isJoinRoom)
         {
-            RoomLogic.Instance.JoinRoom(roomId, player);
-            var room = RoomLogic.Instance.GetRoom(roomId);
-
+            for (int i = 0;i < matchedPlayers.Count; i++) {
+                var playerData = matchedPlayers[i];
+                RoomLogic.Instance.JoinRoom(roomId, playerData);
+            } 
+          
+            var room = RoomLogic.Instance.GetRoom(roomId); 
             for (int i = 0; i < room.Players.Count; i++) {
                 var roomPlayer = room.Players[i];
                 PlayerData playerData = new PlayerData
@@ -57,7 +60,16 @@ public class MatchLogic : Singleton<MatchLogic>
         scMatchRes.RoleId = player.RoleId;
         scMatchRes.Tick = LunchParam.ServerTick; 
 
-        Console.WriteLine($"发送客户端匹配信息{scMatchRes.UdpAdress}");
-        player.Send(MessageType.ScmatchRes, scMatchRes);
+        Console.WriteLine($"发送客户端匹配信息{scMatchRes.UdpAdress}"); 
+
+        for (int i = 0;i < matchedPlayers.Count; i++) {
+            var playerData = matchedPlayers[i];
+            playerData.Send(MessageType.ScmatchRes, scMatchRes);
+        }
+
+        if (isJoinRoom)
+        {
+            matchedPlayers.Clear();
+        }
     }
 }

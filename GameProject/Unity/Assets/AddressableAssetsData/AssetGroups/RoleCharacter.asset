@@ -18,7 +18,8 @@ MonoBehaviour:
   - m_GUID: 6b0dee6552deaf447ab7d0b4394b227f
     m_Address: Assets/Resources_moved/Materials/YBot/Alpha_Body_MAT.mat
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Role
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ca02bdea237430540bc45594fa6efa60
     m_Address: Character/RoleCharacter
@@ -29,7 +30,8 @@ MonoBehaviour:
   - m_GUID: df9c4d8d49602654387ada5dc92e84b8
     m_Address: Assets/Resources_moved/Materials/YBot/Alpha_Joints_MAT.mat
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Role
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: df8fdafee44945148924ed8992d488fa, type: 2}

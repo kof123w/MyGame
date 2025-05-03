@@ -31,8 +31,8 @@ namespace MyGame
                 csPostClientUdpAddress.RoomId = scMatchRes.RoomId;
                 csPostClientUdpAddress.PlayerId = pd.GetId(); 
                 UDPNetManager.Instance.Send(MessageType.CspostClientUdpAddress,csPostClientUdpAddress);
-                //初始化帧同步需要的参数
-                FrameContext.Context.InitParam(scMatchRes.RandomSeed,scMatchRes.Tick,scMatchRes.RoleId,scMatchRes.RoomId,scMatchRes.PlayerList,UDPNetManager.Instance);
+                //初始化帧同步需要的参数 
+                FrameContext.Context.InitParam(scMatchRes.RandomSeed,scMatchRes.Tick,pd.GetId(),scMatchRes.RoomId,scMatchRes.PlayerList,UDPNetManager.Instance);
                 GameEvent.Push(TaskEvent.TaskChange,typeof(SceneMap01Task));
             } 
         }

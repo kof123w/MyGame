@@ -46,11 +46,10 @@ namespace MyGame
             curTickTime += Time.fixedDeltaTime;
             
             //进行输入采集 
-            frameInputSample.InputSample(curTickTime,tickTime);  
-            frameExecutor.Execute(frameData); 
+            frameInputSample.InputSample(curTickTime,tickTime);   
             if (curTickTime >= tickTime)
-            {
-                frameData = frameBuffer.GetNextFrame(); 
+            { 
+                frameExecutor.Execute(frameBuffer.GetNextFrame()); 
                 //打包发送
                 CSFrameSample csFrameSample = frameInputSample.PackInput();
                 csFrameSample.PlayerId = FrameContext.Context.CtrlRoleID;

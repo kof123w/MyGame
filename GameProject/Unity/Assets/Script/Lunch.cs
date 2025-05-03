@@ -49,7 +49,7 @@ namespace Script
 #if !UNITY_LOCAL_SCRIPT
         private async void Start()
         { 
-           // await LoadMetaDll();
+            await LoadMetaDll();
             //加载下来所有的dll.bytes
             //List<string> keys = new List<string>() { "HotUpdateDll" };
             List<string> hotDllName = new List<string>() { "GameScript_Core","GameScript_Proto","GameScript_Config","GameScript_Frame","GameScript_Runtime" };

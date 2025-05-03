@@ -14,6 +14,7 @@ namespace MyGame
                 for (int i = 0;i < frameData.FramePlayerInputList.Count;i++) {
                      var framePlayerInput = frameData.FramePlayerInputList[i]; 
                      var playerEntity = FrameContext.Context.GetEntityFromWorld(framePlayerInput.PlayerId);
+                     playerEntity.linearVelocity = new FPVector3(0, playerEntity.linearVelocity.y, 0);
                      if (framePlayerInput.FrameInput != null)
                      {
                          var x = default(Fix64);
@@ -24,12 +25,9 @@ namespace MyGame
                          {
                              DLogger.Log($"Frame executed:X Axis: {(float)x}, Z Axis: {(float)-z}"); 
                          }
-                         playerEntity.linearVelocity = new FPVector3(x,playerEntity.linearVelocity.y,-z);
-                     }
-                     else
-                     {
-                         playerEntity.linearVelocity = new FPVector3(0, playerEntity.linearVelocity.y, 0);
-                     }
+                         //playerEntity.linearVelocity = new FPVector3(x,playerEntity.linearVelocity.y,-z);
+                         playerEntity.position +=  new FPVector3(x,0,-z);
+                     } 
                 }
             } 
         }
